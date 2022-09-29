@@ -1,0 +1,34 @@
+{
+  "name": "infobip-exchange-agenda-demo",
+  "version": "1.0.0",
+  "description": "This repository will help you to create an end-to-end integration between this app and the Infobip Products using Exchange.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "back:dev": "nodemon server/index.js --ignore db.json",
+    "front:dev": "cd client && npm run start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm-run-all --parallel back:dev front:dev",
+    "start-client": "react-scripts start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infobip-community/infobip-exchange-agenda-demo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/infobip-community/infobip-exchange-agenda-demo/issues"
+  },
+  "homepage": "https://github.com/infobip-community/infobip-exchange-agenda-demo#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "lodash": "^4.17.21",
+    "lowdb": "^3.0.0",
+    "nodemon": "^2.0.19",
+    "npm-run-all": "^4.1.5",
+    "path": "^0.12.7",
+    "url": "^0.11.0"
+  }
+}
