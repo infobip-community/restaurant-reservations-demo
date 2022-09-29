@@ -1,46 +1,15 @@
 {
   "meetings": [
     {
-      "id": "1",
-      "title": "Sprint Review",
-      "room": "Amigo Room",
-      "description": "Review last sprint",
-      "start_datetime": "2022-07-05T05:54:07.867Z",
-      "end_datetime": "2020-02-06T17:26:25.659Z",
-      "host": "Amigo",
-      "guest": [
-        "Amigo1",
-        "Amigo2"
-      ],
-      "status": "Active"
-    },
-    {
-      "id": "2",
-      "title": "Grooming",
-      "room": "Guadalajara Room",
-      "description": "Review",
-      "start_datetime": "2021-02-21T09:23:40.168Z",
-      "end_datetime": "2021-06-22T10:35:40.070Z",
-      "host": "Amigo",
-      "guest": [
-        "Amigo1",
-        "Amigo2"
-      ],
-      "status": "Active"
-    },
-    {
-      "id": "3",
-      "title": "Retrospective",
-      "room": "Mexico Room",
-      "description": "Review test",
-      "start_datetime": "2020-06-04T23:44:07.375Z",
-      "end_datetime": "2016-03-19T21:35:17.061Z",
-      "host": "Amigo",
-      "guest": [
-        "Amigo1",
-        "Amigo2"
-      ],
-      "status": "Active"
+      "id": "5beb1dbc-2282-4199-9a5f-ccbbeef79bcb",
+      "title": "aslkjdklajsd",
+      "room": "lkajsdlkj",
+      "description": "lkajsdlkjasdasd",
+      "start_time": "8:59",
+      "end_time": "8:59",
+      "date": "9/27/2022",
+      "host": "lkjasldkj",
+      "guest": "alksjdalksjd"
     }
   ]
 }

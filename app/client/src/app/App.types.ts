@@ -1,11 +1,19 @@
+import { AlertColor } from "@mui/material";
+
+export interface AlertI {
+  isLoading?: boolean;
+  message?: string;
+  type?: AlertColor;
+  isVisible?: boolean;
+}
 export interface APIResponseI {
   message?: string;
 }
 
-export enum TimePeriodI {
-  TODAY = "today",
-  TOMORROW = "tomorrow",
-  ALL="all",
+export enum TimeFrameI {
+  TODAY = "TODAY",
+  TOMORROW = "TOMORROW",
+  ALL = "ALL",
 }
 
 export interface MeetingI {
@@ -13,9 +21,24 @@ export interface MeetingI {
   title: string;
   room: string;
   description: string;
-  start_datetime: string;
-  end_datetime: string;
+  start_time: string;
+  end_time: string;
+  date: string;
   host: string;
-  guest: string[];
-  status: string;
+  guest: string;
+}
+
+export interface ErrorI {
+  title: boolean;
+  room: boolean;
+  description: boolean;
+  host: boolean;
+  guest: boolean;
+}
+
+export interface TabPanelProps {
+  children?: React.ReactNode;
+  dir?: string;
+  index: number;
+  value: number;
 }

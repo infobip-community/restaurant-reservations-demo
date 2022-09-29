@@ -1,1 +1,1 @@
-export const APIPath = "exchange/agenda-demo/";
+export const APIPath = "exchange/agenda-demo/meetings";
