@@ -16,6 +16,15 @@ export enum TimeFrameI {
   ALL = "ALL",
 }
 
+export interface ReservationI {
+  host_email?: string | undefined;
+  host_name?: string| undefined;
+  hour?: string| undefined;
+  date?: string| undefined;
+  party_size?: string| undefined;
+
+}
+
 export interface MeetingI {
   id: string;
   title: string;

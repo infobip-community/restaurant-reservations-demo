@@ -1,15 +1,3 @@
 {
-  "meetings": [
-    {
-      "id": "5beb1dbc-2282-4199-9a5f-ccbbeef79bcb",
-      "title": "aslkjdklajsd",
-      "room": "lkajsdlkj",
-      "description": "lkajsdlkjasdasd",
-      "start_time": "8:59",
-      "end_time": "8:59",
-      "date": "9/27/2022",
-      "host": "lkjasldkj",
-      "guest": "alksjdalksjd"
-    }
-  ]
+  "meetings": []
 }

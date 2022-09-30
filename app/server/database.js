@@ -40,13 +40,13 @@ export const addMeeting = async (meeting) => {
 export const updateMeeting = async (meetingUpdated) => {
   db.chain = lodash.chain(db.data);
   const meeting = db.chain.get("meetings");
-  meeting.chain().find({ id: meetingUpdated.id }).assign(meetingUpdated).value();
+  meeting.chain().find({ host_name: meetingUpdated.host_name }).assign(meetingUpdated).value();
   await db.write();
 };
 
 export const deleteMeeting = async (meetingDeleted) => {
   db.chain = lodash.chain(db.data);
-  db.chain.get("meetings").remove({ id: meetingDeleted.id }).value();
+  db.chain.get("meetings").remove({ host_name: meetingDeleted.host_name }).value();
 
   await db.write();
 };
