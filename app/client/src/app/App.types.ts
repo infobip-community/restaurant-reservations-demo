@@ -18,23 +18,10 @@ export enum TimeFrameI {
 
 export interface ReservationI {
   host_email?: string | undefined;
-  host_name?: string| undefined;
-  hour?: string| undefined;
-  date?: string| undefined;
-  party_size?: string| undefined;
-
-}
-
-export interface MeetingI {
-  id: string;
-  title: string;
-  room: string;
-  description: string;
-  start_time: string;
-  end_time: string;
-  date: string;
-  host: string;
-  guest: string;
+  host_name?: string | undefined;
+  hour?: string | undefined;
+  date?: string | undefined;
+  party_size?: string | undefined;
 }
 
 export interface ErrorI {

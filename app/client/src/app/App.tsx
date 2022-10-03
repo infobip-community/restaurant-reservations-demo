@@ -1,34 +1,21 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { AlertI, MeetingI, TabPanelProps, TimeFrameI } from "./App.types";
-import styled from "@emotion/styled";
-import { APIPath } from "../const";
+import React, { useState } from "react";
+import { AlertI, TabPanelProps } from "./App.types";
 import Reservations from "../components/meetingList/Reservations";
 import {
   Alert,
   Tab,
   Tabs,
-  Select,
-  MenuItem,
-  Grid,
-  Typography,
   Container,
-  InputLabel,
-  FormControl,
   useTheme,
   IconButton,
+  Typography,
   Backdrop,
+  Grid,
 } from "@mui/material";
 import SwipeableViews from "react-swipeable-views";
 import CreateReservation from "../components/createReservation/CreateReservation";
 import CloseIcon from "@mui/icons-material/Close";
 import { CircularProgress } from "@mui/material";
-
-const FormRow = styled.div`
-  margin: 2rem 0;
-  width: 100%;
-  display: flex;
-  justify-content: end;
-`;
 
 export const AlertContext = React.createContext<AlertI>({
   isLoading: false,
@@ -45,10 +32,6 @@ const App = () => {
     message: "Meeting successfully updated",
   });
 
-  const [meetingsList, setMeetingsList] = React.useState<MeetingI[]>([]);
-  const [timeframe, setTimeframe] = React.useState<TimeFrameI>(
-    TimeFrameI.TODAY
-  );
   const [value, setValue] = React.useState(0);
   const theme = useTheme();
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -59,24 +42,8 @@ const App = () => {
     setValue(index);
   };
 
-  const getMeetings = useCallback(async () => {
-    const params =
-      timeframe !== TimeFrameI.ALL ? `?timeframe=${timeframe}` : "";
-    const result = await fetch(`${APIPath}${params}`);
-    const body = await result.json();
-    setMeetingsList(body.meetings);
-  }, [timeframe]);
-
-  useEffect(() => {
-    getMeetings();
-  }, [getMeetings, value]);
-
-  const handleTimeChange = (value: TimeFrameI) => {
-    setTimeframe(value);
-  };
-
   const handleUpdate = () => {
-    getMeetings();
+    // getReservation();
   };
 
   function TabPanel(props: TabPanelProps) {
@@ -138,7 +105,11 @@ const App = () => {
             )}
           </AlertContext.Provider>
 
-          <Tabs value={value} onChange={handleChange} aria-label="Meetings">
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="Reservations  "
+          >
             <Tab value={0} label="My reservations" wrapped />
             <Tab value={1} label="Create Reservation" />
           </Tabs>
@@ -149,12 +120,11 @@ const App = () => {
             onChangeIndex={handleChangeIndex}
           >
             <TabPanel value={value} index={0} dir={theme.direction}>
-                <Reservations
-                  data={meetingsList}
-                  onUpdate={handleUpdate}
-                  setAlertMessage={handleAlertChanges}
-                  isLoading={!!alert.isLoading}
-                />
+              <br />
+              <Reservations
+                onUpdate={handleUpdate}
+                setAlertMessage={handleAlertChanges}
+              />
             </TabPanel>
 
             <TabPanel value={value} index={1} dir={theme.direction}>

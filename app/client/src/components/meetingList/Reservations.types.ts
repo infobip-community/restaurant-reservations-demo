@@ -1,15 +1,6 @@
-import { AlertI, MeetingI } from "../../app/App.types";
+import { AlertI } from "../../app/App.types";
 
-export interface MeetingsPropsI {
-  data: MeetingI[];
+export interface ReservationPropsI {
   onUpdate: () => void;
   setAlertMessage: (alert: AlertI) => void;
-  isLoading: boolean;
-}
-
-export interface RowPropsI {
-  data: MeetingI;
-  onSave: (meeting: MeetingI) => void;
-  onDelete: (meeting: MeetingI) => void;
-  isLoading: boolean;
 }

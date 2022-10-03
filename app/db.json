@@ -1,3 +1,20 @@
 {
-  "meetings": []
+  "meetings": [
+    {
+      "host_email": "asd@asd.com",
+      "host_name": "Holi",
+      "hour": "13:04",
+      "date": "10/3/2022",
+      "party_size": "2",
+      "id": "bc9283d6-4223-43dc-b32c-6bb94e508a91"
+    },
+    {
+      "host_email": "asdasd",
+      "host_name": "asd",
+      "hour": "13:59",
+      "date": "10/3/2022",
+      "party_size": "2",
+      "id": "30c023ef-1a6c-4ce1-b5b0-02c101c62125"
+    }
+  ]
 }
