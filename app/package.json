@@ -1,5 +1,5 @@
 {
-  "name": "infobip-exchange-agenda-demo",
+  "name": "restaurant-reservations-demo",
   "version": "1.0.0",
   "description": "This repository will help you to create an end-to-end integration between this app and the Infobip Products using Exchange.",
   "main": "index.js",

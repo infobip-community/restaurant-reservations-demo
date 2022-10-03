@@ -1,5 +1,5 @@
 import express from 'express';
-import { createConnection, getByDate, updateMeeting, deleteMeeting, addMeeting } from "./database.js";
+import {createConnection, getByDate, updateMeeting, deleteMeeting, addMeeting, getAllMeetings} from "./database.js";
 
 const PORT = process.env.PORT || 3001;
 const app = express()
@@ -15,7 +15,7 @@ app.post("/exchange/agenda-demo/meetings", async (req, res) => {
 });
 
 app.get("/exchange/agenda-demo/meetings",  async (req, res) => {
-  return res.json({meetings: await getByDate(req.query.timeframe)});
+  return res.json({reservations: await getAllMeetings()});
 });
 
 app.delete("/exchange/agenda-demo/meetings",  (req, res) => {

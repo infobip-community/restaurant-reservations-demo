@@ -1,10 +1,11 @@
 import * as React from "react";
-import { TextField } from "@mui/material";
+import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TableTypeMap, TextField} from "@mui/material";
 import { useState } from "react";
 import Button from "@mui/material/Button";
-import {ErrorI, MeetingI} from "../../app/App.types";
+import {ErrorI, MeetingI, ReservationI} from "../../app/App.types";
 import { APIPath } from "../../const";
-import { NewMeetingPropsI } from "./NewMeeting.types";
+import Diversity3Icon from '@mui/icons-material/Diversity3';
+import { NewReservationPropsI } from "./CreateReservation.types";
 import { Grid } from "@mui/material";
 import styled from "@emotion/styled";
 
@@ -12,22 +13,21 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
 import { validateField , isMeetingValid } from "../shared/Validations/Validations";
+import {Diversity3} from "@mui/icons-material";
 
 const TODAY = new Date();
+const MINUTE =  TODAY.getMinutes();
 const REQUIRED_FIELD_ERROR_MESSAGE = 'This is a required field';
-const emptyMeeting = {
-  id: "",
-  title: "",
-  room: "",
-  description: "",
-  start_time: `${TODAY.getHours()}:${TODAY.getMinutes()}`,
-  end_time: `${TODAY.getHours()}:${TODAY.getMinutes()}`,
+
+const emptyNewReservation = {
+  host_email: "",
+  host_name: "",
+  hour: `${TODAY.getHours()}:${MINUTE && MINUTE < 10 ? `0${MINUTE}` : MINUTE}`,
   date: `${
-    TODAY.getUTCMonth() + 1
+      TODAY.getUTCMonth() + 1
   }/${TODAY.getUTCDate()}/${TODAY.getUTCFullYear()}`,
-  host: "",
-  guest: "",
-};
+  party_size: '2',
+}
 
 const errorObject = {
   title: false,
@@ -52,12 +52,11 @@ const FieldContainer = styled.div`
   }
 `;
 
-const NewMeeting = ({ setAlertMessage, isLoading }: NewMeetingPropsI) => {
-  const [newMeeting, setNewMeeting] = useState<MeetingI>(emptyMeeting);
+const CreateReservation = ({ setAlertMessage, isLoading }: NewReservationPropsI) => {
+  const [newReservation, setNewReservation] = useState<ReservationI>(emptyNewReservation);
   const [errors, setErrors] = useState<ErrorI>(errorObject);
   const [date, setDate] = useState<Date | null>(new Date());
   const [startTime, setStartTime] = useState<Date | null>(new Date());
-  const [endTime, setEndTime] = useState<Date | null>(new Date());
 
   const handleChange = (newValue: Date | null, field: string) => {
     let today = new Date(newValue ? newValue : "");
@@ -74,23 +73,19 @@ const NewMeeting = ({ setAlertMessage, isLoading }: NewMeetingPropsI) => {
           setDate(newValue);
         }
         break;
-      case "start_time":
+      case "hour":
         value = `${hour}:${minute && minute < 10 ? `0${minute}` : minute}`;
         setStartTime(newValue);
         break;
-      case "end_time":
-        value = `${hour}:${minute && minute < 10 ? `0${minute}` : minute}`;
-        setEndTime(newValue);
-        break;
     }
-    setNewMeeting({ ...newMeeting, [field]: value });
+    setNewReservation({ ...newReservation, [field]: value });
   };
 
-  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const trimValue = e.target.value.trim();
+  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent) => {
+    const trimValue = e.target.value.toString().trim();
     const isValid = validateField(trimValue);
-    setErrors({ ...errors, [e.target.id.toString()]: isValid })
-    setNewMeeting({ ...newMeeting, [e.target.id.toString()]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: isValid });
+    setNewReservation({...newReservation,  [e.target.name]: e.target.value})
   };
 
   const addMeeting = async () => {
@@ -98,33 +93,22 @@ const NewMeeting = ({ setAlertMessage, isLoading }: NewMeetingPropsI) => {
     await fetch(`${APIPath}`, {
       method: "post",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newMeeting),
+      body: JSON.stringify(newReservation),
     });
     setAlertMessage({
-      message: "Meeting successfully created!",
+      message: "Your reservation successfully created!",
       isVisible: true,
       isLoading: false,
     });
-    setNewMeeting({ ...emptyMeeting });
+    setNewReservation({...newReservation});
   };
 
   return (
     <>
       <br />
       <Grid container spacing={2} rowSpacing="1rem">
-        <Grid item xs={12}>
-          <TextField
-            fullWidth
-            error={errors.title}
-            id="title"
-            label="Title"
-            value={newMeeting.title}
-            onChange={handleChangeInput}
-            helperText={errors.title ? REQUIRED_FIELD_ERROR_MESSAGE : ''}
-          />
-        </Grid>
 
-        <Grid item xs={12} md={12}>
+        <Grid item xs={6} md={6}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <FieldContainer>
               <DesktopDatePicker
@@ -139,29 +123,17 @@ const NewMeeting = ({ setAlertMessage, isLoading }: NewMeetingPropsI) => {
           </LocalizationProvider>
         </Grid>
 
-        <Grid item xs={12} md={12}>
+        <Grid item xs={6} md={6}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Grid container spacing={2} rowSpacing="1rem">
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <FieldContainer>
                   <TimePicker
-                    data-test-id="startTime"
+                    data-test-id="hour"
                     ampm={false}
-                    label="Start time"
+                    label="Hour"
                     value={startTime}
-                    onChange={(value) => handleChange(value, "start_time")}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                </FieldContainer>
-              </Grid>
-              <Grid item xs={6}>
-                <FieldContainer>
-                  <TimePicker
-                    data-test-id="endTime"
-                    ampm={false}
-                    label="End time"
-                    value={endTime}
-                    onChange={(value) => handleChange(value, "end_time")}
+                    onChange={(value) => handleChange(value, "hour")}
                     renderInput={(params) => <TextField {...params} />}
                   />
                 </FieldContainer>
@@ -170,52 +142,44 @@ const NewMeeting = ({ setAlertMessage, isLoading }: NewMeetingPropsI) => {
           </LocalizationProvider>
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            fullWidth
-            error={errors.guest}
-            id="guest"
-            label="Guest"
-            value={newMeeting.guest}
-            onChange={handleChangeInput}
-            helperText={errors.guest ? REQUIRED_FIELD_ERROR_MESSAGE : ''}
-          />
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label" >
+                <Diversity3/>
+              </InputLabel>
+            <Select
+                name='party_size'
+                value={newReservation.party_size}
+                label="size"
+                onChange={handleChangeInput}
+            >
+              {Array.from(Array(22), (e, i) => {
+                return i > 0 && <MenuItem key={i} value={i}>{`${i < 21 ? i : ' '} ${i === 1 ? 'person' : i < 21 ? 'people' : 'Larger party'}`}</MenuItem>
+              })}
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={12}>
           <TextField
             fullWidth
             error={errors.host}
-            id="host"
-            label="Host"
-            value={newMeeting.host}
+            name="host_name"
+            label="Host Name"
+            value={newReservation.host_name}
             onChange={handleChangeInput}
             helperText={errors.host ? REQUIRED_FIELD_ERROR_MESSAGE : ''}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
-            fullWidth
-            error={errors.room}
-            id="room"
-            label="Room"
-            value={newMeeting.room}
-            onChange={handleChangeInput}
-            helperText={errors.room ? REQUIRED_FIELD_ERROR_MESSAGE : ''}
+              fullWidth
+              error={errors.host}
+              name="host_email"
+              label="Host Email"
+              value={newReservation.host_email}
+              onChange={handleChangeInput}
+              helperText={errors.host ? REQUIRED_FIELD_ERROR_MESSAGE : ''}
           />
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            fullWidth
-            rows={2}
-            id="description"
-            error={errors.description}
-            label="Description"
-            multiline={true}
-            value={newMeeting.description}
-            onChange={handleChangeInput}
-            helperText={errors.description ? REQUIRED_FIELD_ERROR_MESSAGE : ''}
-          />
-        </Grid>
-
         <Grid item xs={12} md={12} lg={12}>
           <ButtonContainer>
             <Button
@@ -224,7 +188,7 @@ const NewMeeting = ({ setAlertMessage, isLoading }: NewMeetingPropsI) => {
               variant="contained"
               disabled={isLoading || isMeetingValid(errors)}
             >
-              Add
+              Create
             </Button>
           </ButtonContainer>
         </Grid>
@@ -233,4 +197,4 @@ const NewMeeting = ({ setAlertMessage, isLoading }: NewMeetingPropsI) => {
   );
 };
 
-export default NewMeeting;
+export default CreateReservation;
