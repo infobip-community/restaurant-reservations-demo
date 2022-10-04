@@ -21,7 +21,7 @@ export const AlertContext = React.createContext<AlertI>({
   isLoading: false,
   isVisible: false,
   type: "success",
-  message: "Meeting successfully updated",
+  message: "Reservation successfully updated",
 });
 
 function TabPanel(props: TabPanelProps) {
@@ -45,7 +45,7 @@ const App = () => {
     isLoading: false,
     isVisible: false,
     type: "success",
-    message: "Meeting successfully updated",
+    message: "Reservation successfully updated",
   });
 
   const [value, setValue] = React.useState(0);

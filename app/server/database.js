@@ -52,10 +52,10 @@ export const addReservation = async (reservation) => {
   });
 };
 
-export const updateReservation = async (id, meetingUpdated) => {
+export const updateReservation = async (id, reservationUpdated) => {
   db.chain = lodash.chain(db.data);
   const Reservation = db.chain.get("reservations");
-  Reservation.chain().find({ id }).assign(meetingUpdated).value();
+  Reservation.chain().find({ id }).assign(reservationUpdated).value();
   await db.write();
 };
 
