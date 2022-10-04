@@ -18,16 +18,11 @@ import styled from "@emotion/styled";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
-import {
-  validateField,
-  isMeetingValid,
-} from "../shared/Validations/Validations";
 import { Diversity3 } from "@mui/icons-material";
+import { validateReservation } from "../../utlis/validations/validateReservation";
 
 const TODAY = new Date();
 const MINUTE = TODAY.getMinutes();
-const REQUIRED_FIELD_ERROR_MESSAGE = "This is a required field";
-
 const emptyNewReservation = {
   host_email: "",
   host_name: "",
@@ -36,14 +31,6 @@ const emptyNewReservation = {
     TODAY.getUTCMonth() + 1
   }/${TODAY.getUTCDate()}/${TODAY.getUTCFullYear()}`,
   party_size: "2",
-};
-
-const errorObject = {
-  title: false,
-  room: false,
-  description: false,
-  host: false,
-  guest: false,
 };
 
 const ButtonContainer = styled.div`
@@ -65,9 +52,10 @@ const CreateReservation = ({
   setAlertMessage,
   isLoading,
 }: NewReservationPropsI) => {
+  const initializeRef = React.useRef<boolean>(false);
   const [newReservation, setNewReservation] =
     useState<ReservationI>(emptyNewReservation);
-  const [errors, setErrors] = useState<ErrorI>(errorObject);
+  const [errors, setErrors] = useState<ErrorI>({});
   const [date, setDate] = useState<Date | null>(new Date());
   const [startTime, setStartTime] = useState<Date | null>(new Date());
 
@@ -99,37 +87,52 @@ const CreateReservation = ({
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
       | SelectChangeEvent
   ) => {
-    const trimValue = e.target.value.toString().trim();
-    const isValid = validateField(trimValue);
-    setErrors({ ...errors, [e.target.name]: isValid });
     setNewReservation({ ...newReservation, [e.target.name]: e.target.value });
   };
 
-  const addMeeting = async () => {
-    setAlertMessage({ isLoading: true });
-    const response = (await fetch(`${APIPath}`, {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newReservation),
-    })) as any;
-    const result = await response.json();
-    if (result["id"]) {
-      setAlertMessage({
-        type: "success",
-        message: "Your reservation successfully created!",
-        isVisible: true,
-        isLoading: false,
-      });
-      setNewReservation({ ...newReservation });
-    } else {
-      setAlertMessage({
-        message: result["error"],
-        type: "error",
-        isVisible: true,
-        isLoading: false,
-      });
+  const isReservationValid = () => {
+    return !!Object.values(errors).length;
+  };
+
+  const addReservation = async () => {
+    const errors = validateReservation(newReservation);
+    setErrors({ ...errors, isSubmitted: true });
+
+    if (isReservationValid()) {
+      setAlertMessage({ isLoading: true });
+      const response = (await fetch(`${APIPath}`, {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newReservation),
+      })) as any;
+      const result = await response.json();
+      if (result["id"]) {
+        setAlertMessage({
+          type: "success",
+          message: "Your reservation successfully created!",
+          isVisible: true,
+          isLoading: false,
+        });
+        setNewReservation({ ...newReservation });
+      } else {
+        setAlertMessage({
+          message: result["error"],
+          type: "error",
+          isVisible: true,
+          isLoading: false,
+        });
+      }
     }
   };
+
+  React.useEffect(() => {
+    if (initializeRef.current) {
+      const errors = validateReservation(newReservation);
+      setErrors(errors);
+    } else {
+      initializeRef.current = true;
+    }
+  }, [newReservation]);
 
   return (
     <>
@@ -194,32 +197,32 @@ const CreateReservation = ({
         <Grid item xs={12}>
           <TextField
             fullWidth
-            error={errors.host}
+            error={!!errors.host_name}
             name="host_name"
             label="Host Name"
             value={newReservation.host_name}
             onChange={handleChangeInput}
-            helperText={errors.host ? REQUIRED_FIELD_ERROR_MESSAGE : ""}
+            helperText={errors.host_name || ""}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
             fullWidth
-            error={errors.host}
+            error={!!errors.host_email}
             name="host_email"
             label="Host Email"
             value={newReservation.host_email}
             onChange={handleChangeInput}
-            helperText={errors.host ? REQUIRED_FIELD_ERROR_MESSAGE : ""}
+            helperText={errors.host_email || ""}
           />
         </Grid>
         <Grid item xs={12} md={12} lg={12}>
           <ButtonContainer>
             <Button
               size={"large"}
-              onClick={addMeeting}
+              onClick={addReservation}
               variant="contained"
-              disabled={isLoading || isMeetingValid(errors)}
+              disabled={isLoading || isReservationValid()}
             >
               Create
             </Button>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { AlertI, TabPanelProps } from "./App.types";
-import Reservations from "../components/meetingList/Reservations";
+import Reservations from "../components/reservations/Reservations";
 import {
   Alert,
   Tab,
@@ -101,11 +101,7 @@ const App = () => {
             )}
           </AlertContext.Provider>
 
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="Reservations  "
-          >
+          <Tabs value={value} onChange={handleChange} aria-label="Reservations">
             <Tab value={0} label="My reservations" wrapped />
             <Tab value={1} label="Create Reservation" />
           </Tabs>

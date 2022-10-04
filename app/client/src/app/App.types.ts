@@ -10,12 +10,6 @@ export interface APIResponseI {
   message?: string;
 }
 
-export enum TimeFrameI {
-  TODAY = "TODAY",
-  TOMORROW = "TOMORROW",
-  ALL = "ALL",
-}
-
 export interface ReservationI {
   id?: string;
   host_email?: string;
@@ -26,11 +20,11 @@ export interface ReservationI {
 }
 
 export interface ErrorI {
-  title: boolean;
-  room: boolean;
-  description: boolean;
-  host: boolean;
-  guest: boolean;
+  host_email?: string;
+  host_name?: string;
+  hour?: string;
+  date?: string;
+  isSubmitted?: boolean;
 }
 
 export interface TabPanelProps {

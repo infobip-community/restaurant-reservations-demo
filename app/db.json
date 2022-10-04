@@ -15,6 +15,14 @@
       "date": "10/28/2022",
       "party_size": 20,
       "id": "cd2b9987-09a4-4f4e-a426-b9c1cd30b60d"
+    },
+    {
+      "host_email": "",
+      "host_name": "",
+      "hour": "11:58",
+      "date": "10/4/2022",
+      "party_size": "2",
+      "id": "0331d769-d964-4cf8-b517-7f77ba75e5e8"
     }
   ]
 }

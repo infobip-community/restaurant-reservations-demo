@@ -34,7 +34,7 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
-import { validateField } from "../shared/Validations/Validations";
+// import { validateField } from "../shared/Validations/Validations";
 
 const FieldContainer = styled.div`
   & > div {
@@ -43,6 +43,8 @@ const FieldContainer = styled.div`
 `;
 
 const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
+  const initializeRef = React.useRef<boolean>(false);
+
   const [reservationsList, setReservationsList] = useState<ReservationI[]>([]);
   const [reservationSelected, setReservationSelected] = useState<
     ReservationI | undefined
@@ -142,7 +144,7 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
       | SelectChangeEvent
   ) => {
     const trimValue = e.target.value.toString().trim();
-    const isValid = validateField(trimValue);
+    // const isValid = validateField(trimValue);
     //setErrors({ ...errors, [e.target.name]: isValid });
     setTemporalReservation({
       ...temporalReservation,
