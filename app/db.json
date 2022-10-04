@@ -1,20 +1,20 @@
 {
   "reservations": [
     {
-      "host_email": "other",
-      "host_name": "other",
-      "hour": "10:23",
-      "date": "10/21/2022",
-      "party_size": 9,
-      "id": "c5e7a41d-efe7-486e-942a-70d9b82030fc"
+      "host_email": "1",
+      "host_name": "1",
+      "hour": "11:28",
+      "date": "10/4/2022",
+      "party_size": 21,
+      "id": "5a6d717a-67e9-4e73-9992-fbaad6334404"
     },
     {
-      "host_email": "asd",
-      "host_name": "asd",
-      "hour": "11:55",
-      "date": "10/1/2022",
-      "party_size": 7,
-      "id": "108ff56c-582d-402f-9945-f2954465c9f2"
+      "host_email": "2",
+      "host_name": "2",
+      "hour": "11:28",
+      "date": "10/28/2022",
+      "party_size": 20,
+      "id": "cd2b9987-09a4-4f4e-a426-b9c1cd30b60d"
     }
   ]
 }

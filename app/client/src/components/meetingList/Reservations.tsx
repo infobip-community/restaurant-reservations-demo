@@ -55,12 +55,14 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
   const [date, setDate] = useState<Date | null>();
   const [startTime, setStartTime] = useState<Date | null>();
 
+  const getReservations = async () => {
+    const result = await fetch(`${APIPath}`);
+    const body = await result.json();
+    setReservationsList(body.reservations);
+  };
+
   useEffect(() => {
-    (async () => {
-      const result = await fetch(`${APIPath}`);
-      const body = await result.json();
-      setReservationsList(body.reservations);
-    })();
+    getReservations();
   }, []);
 
   const selectedReservation = (
@@ -87,35 +89,46 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
   };
 
   const handleSave = async () => {
-    await fetch(`${APIPath}`, {
-      method: "PUT",
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-      body: JSON.stringify(temporalReservation),
-    }).catch((error) => {
-      setAlertMessage({ message: error, isVisible: true });
-    });
-    setAlertMessage({
-      type: "success",
-      message: "Your reservation has been updated succesfully!",
-      isVisible: true,
-      isLoading: false,
-    });
-    setEditing(false);
-    setReservationSelected(temporalReservation);
+    if (temporalReservation) {
+      await fetch(`${APIPath}/${temporalReservation.id}`, {
+        method: "PUT",
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+        body: JSON.stringify(temporalReservation),
+      }).catch((error) => {
+        setAlertMessage({ message: error, isVisible: true });
+      });
+      setAlertMessage({
+        type: "success",
+        message: "Your reservation has been updated succesfully!",
+        isVisible: true,
+        isLoading: false,
+      });
+      setEditing(false);
+      setReservationSelected(temporalReservation);
+      getReservations();
+    }
   };
 
   const handleDelete = async () => {
-    setEditing(false);
-    await fetch(`${APIPath}`, {
-      method: "DELETE",
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-      body: JSON.stringify(reservationSelected),
-    }).then((error) => {
-      //setAlertMessage({ message: error, isVisible: true });
+    if (reservationSelected) {
       setEditing(false);
-      setAutocompleteValue("");
-      setReservationSelected(undefined);
-    });
+      await fetch(`${APIPath}/${reservationSelected.id}`, {
+        method: "DELETE",
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+        body: JSON.stringify(reservationSelected),
+      }).then((error) => {
+        getReservations();
+        setAlertMessage({
+          type: "success",
+          message: "Your reservation has been deleted succesfully!",
+          isVisible: true,
+          isLoading: false,
+        });
+        setEditing(false);
+        setAutocompleteValue("");
+        setReservationSelected(undefined);
+      });
+    }
   };
 
   const handleCloseEdit = () => {

@@ -24,6 +24,22 @@ export const AlertContext = React.createContext<AlertI>({
   message: "Meeting successfully updated",
 });
 
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      {value === index && <div>{children}</div>}
+    </div>
+  );
+}
+
 const App = () => {
   const [alert, setAlert] = useState<AlertI>({
     isLoading: false,
@@ -41,22 +57,6 @@ const App = () => {
   const handleChangeIndex = (index: number) => {
     setValue(index);
   };
-
-  function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`full-width-tabpanel-${index}`}
-        aria-labelledby={`full-width-tab-${index}`}
-        {...other}
-      >
-        {value === index && <div>{children}</div>}
-      </div>
-    );
-  }
 
   const handleAlertChanges = (newChanges: AlertI) => {
     setAlert({ ...alert, ...newChanges });

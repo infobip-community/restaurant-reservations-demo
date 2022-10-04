@@ -25,6 +25,12 @@ export const getAllReservations = () => {
   return db.data.reservations;
 };
 
+export const getByEmail = (host_email) => {
+  db.chain = lodash.chain(db.data);
+  const reservation = db.chain.get("reservations").find({ host_email }).value();
+  return reservation;
+};
+
 export const addReservation = async (reservation) => {
   return new Promise(async (resolve, reject) => {
     const reservationWithId = { ...reservation, id: uuidv4() };
@@ -33,6 +39,7 @@ export const addReservation = async (reservation) => {
       .get("reservations")
       .find({ host_email: reservation.host_email })
       .value();
+
     if (!existingReservation) {
       db.chain.get("reservations").chain().push(reservationWithId).value();
       await db.write();
@@ -45,46 +52,15 @@ export const addReservation = async (reservation) => {
   });
 };
 
-export const updateReservation = async (meetingUpdated) => {
+export const updateReservation = async (id, meetingUpdated) => {
   db.chain = lodash.chain(db.data);
   const Reservation = db.chain.get("reservations");
-  Reservation.chain()
-    .find({ host_name: meetingUpdated.host_name })
-    .assign(meetingUpdated)
-    .value();
+  Reservation.chain().find({ id }).assign(meetingUpdated).value();
   await db.write();
 };
 
-export const deleteReservation = async (meetingDeleted) => {
+export const deleteReservation = async (id) => {
   db.chain = lodash.chain(db.data);
-  db.chain
-    .get("reservations")
-    .remove({ host_name: meetingDeleted.host_name })
-    .value();
-
+  db.chain.get("reservations").remove({ id }).value();
   await db.write();
-};
-
-export const getByDate = async (timeFrame) => {
-  const today = new Date();
-  const day = today.getDate();
-  const month = today.getMonth() + 1;
-  const year = today.getFullYear();
-  db.chain = lodash.chain(db.data);
-
-  if (timeFrame === "TODAY") {
-    const Reservation = await db.chain
-      .get("reservations")
-      .filter({ date: `${month}/${day}/${year}` })
-      .value();
-    return Reservation ? meeting : [];
-  }
-  if (timeFrame === "TOMORROW") {
-    const Reservation = await db.chain
-      .get("reservations")
-      .filter({ date: `${month}/${day + 1}/${year}` })
-      .value();
-    return Reservation ? meeting : [];
-  }
-  return getAllReservations();
 };
