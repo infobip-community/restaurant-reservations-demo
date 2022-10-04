@@ -62,8 +62,7 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
       console.log(body);
       setReservationsList(body.reservations);
     })();
-    console.log("reservations ", reservationsList);
-  }, [reservationSelected]);
+  }, []);
 
   const selectedReservation = (
     event: React.SyntheticEvent,

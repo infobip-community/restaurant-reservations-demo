@@ -107,17 +107,28 @@ const CreateReservation = ({
 
   const addMeeting = async () => {
     setAlertMessage({ isLoading: true });
-    await fetch(`${APIPath}`, {
+    const response = (await fetch(`${APIPath}`, {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newReservation),
-    });
-    setAlertMessage({
-      message: "Your reservation successfully created!",
-      isVisible: true,
-      isLoading: false,
-    });
-    setNewReservation({ ...newReservation });
+    })) as any;
+    const result = await response.json();
+    if (result["id"]) {
+      setAlertMessage({
+        type: "success",
+        message: "Your reservation successfully created!",
+        isVisible: true,
+        isLoading: false,
+      });
+      setNewReservation({ ...newReservation });
+    } else {
+      setAlertMessage({
+        message: result["error"],
+        type: "error",
+        isVisible: true,
+        isLoading: false,
+      });
+    }
   };
 
   return (
