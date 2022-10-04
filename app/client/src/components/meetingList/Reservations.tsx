@@ -59,7 +59,6 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
     (async () => {
       const result = await fetch(`${APIPath}`);
       const body = await result.json();
-      console.log(body);
       setReservationsList(body.reservations);
     })();
   }, []);
@@ -95,7 +94,12 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
     }).catch((error) => {
       setAlertMessage({ message: error, isVisible: true });
     });
-
+    setAlertMessage({
+      type: "success",
+      message: "Your reservation has been updated succesfully!",
+      isVisible: true,
+      isLoading: false,
+    });
     setEditing(false);
     setReservationSelected(temporalReservation);
   };

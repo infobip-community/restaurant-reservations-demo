@@ -42,10 +42,6 @@ const App = () => {
     setValue(index);
   };
 
-  const handleUpdate = () => {
-    // getReservation();
-  };
-
   function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
 
@@ -121,10 +117,7 @@ const App = () => {
           >
             <TabPanel value={value} index={0} dir={theme.direction}>
               <br />
-              <Reservations
-                onUpdate={handleUpdate}
-                setAlertMessage={handleAlertChanges}
-              />
+              <Reservations setAlertMessage={handleAlertChanges} />
             </TabPanel>
 
             <TabPanel value={value} index={1} dir={theme.direction}>
