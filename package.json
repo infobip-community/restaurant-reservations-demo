@@ -19,7 +19,7 @@
     "back:dev": "nodemon server/index.js --ignore db.json",
     "back": "node server/index.js --ignore db.json",
     "start:dev": "npm-run-all --parallel front:dev back:dev",
-    "start": "npm --workspace=client run build && export NODE_ENV=production && npm run back"
+    "start": "export NODE_ENV=production && npm run back"
   },
   "repository": {
     "type": "git",
