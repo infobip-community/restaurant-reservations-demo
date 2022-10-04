@@ -24,7 +24,6 @@ export interface ErrorI {
   host_name?: string;
   hour?: string;
   date?: string;
-  isSubmitted?: boolean;
 }
 
 export interface TabPanelProps {

@@ -52,12 +52,12 @@ const CreateReservation = ({
   setAlertMessage,
   isLoading,
 }: NewReservationPropsI) => {
-  const initializeRef = React.useRef<boolean>(false);
   const [newReservation, setNewReservation] =
     useState<ReservationI>(emptyNewReservation);
   const [errors, setErrors] = useState<ErrorI>({});
   const [date, setDate] = useState<Date | null>(new Date());
   const [startTime, setStartTime] = useState<Date | null>(new Date());
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (newValue: Date | null, field: string) => {
     let today = new Date(newValue ? newValue : "");
@@ -88,17 +88,23 @@ const CreateReservation = ({
       | SelectChangeEvent
   ) => {
     setNewReservation({ ...newReservation, [e.target.name]: e.target.value });
+    const errors = validateReservation(newReservation);
+    if (isReservationValid(errors)) {
+      setAlertMessage({ isVisible: false });
+    }
+    setErrors(errors);
   };
 
-  const isReservationValid = () => {
-    return !!Object.values(errors).length;
+  const isReservationValid = (errors: ErrorI) => {
+    return !Object.values(errors).length;
   };
 
   const addReservation = async () => {
     const errors = validateReservation(newReservation);
-    setErrors({ ...errors, isSubmitted: true });
+    setIsSubmitted(true);
+    setErrors({ ...errors });
 
-    if (isReservationValid()) {
+    if (isReservationValid(errors)) {
       setAlertMessage({ isLoading: true });
       const response = (await fetch(`${APIPath}`, {
         method: "post",
@@ -122,17 +128,15 @@ const CreateReservation = ({
           isLoading: false,
         });
       }
+    } else {
+      setAlertMessage({
+        type: "error",
+        message: "Please fill required fields",
+        isVisible: true,
+        isLoading: false,
+      });
     }
   };
-
-  React.useEffect(() => {
-    if (initializeRef.current) {
-      const errors = validateReservation(newReservation);
-      setErrors(errors);
-    } else {
-      initializeRef.current = true;
-    }
-  }, [newReservation]);
 
   return (
     <>
@@ -197,7 +201,7 @@ const CreateReservation = ({
         <Grid item xs={12}>
           <TextField
             fullWidth
-            error={!!errors.host_name}
+            error={!!errors.host_name && isSubmitted}
             name="host_name"
             label="Host Name"
             value={newReservation.host_name}
@@ -208,7 +212,7 @@ const CreateReservation = ({
         <Grid item xs={12}>
           <TextField
             fullWidth
-            error={!!errors.host_email}
+            error={!!errors.host_email && isSubmitted}
             name="host_email"
             label="Host Email"
             value={newReservation.host_email}
@@ -222,7 +226,9 @@ const CreateReservation = ({
               size={"large"}
               onClick={addReservation}
               variant="contained"
-              disabled={isLoading || isReservationValid()}
+              disabled={
+                isLoading || (isSubmitted && !isReservationValid(errors))
+              }
             >
               Create
             </Button>
