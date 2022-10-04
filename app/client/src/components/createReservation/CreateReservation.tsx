@@ -119,7 +119,7 @@ const CreateReservation = ({
           isVisible: true,
           isLoading: false,
         });
-        setNewReservation({ ...newReservation });
+        setNewReservation({ ...emptyNewReservation });
       } else {
         setAlertMessage({
           message: result["error"],
@@ -206,7 +206,7 @@ const CreateReservation = ({
             label="Host Name"
             value={newReservation.host_name}
             onChange={handleChangeInput}
-            helperText={errors.host_name || ""}
+            helperText={isSubmitted ? errors.host_name : ""}
           />
         </Grid>
         <Grid item xs={12}>
@@ -217,7 +217,7 @@ const CreateReservation = ({
             label="Host Email"
             value={newReservation.host_email}
             onChange={handleChangeInput}
-            helperText={errors.host_email || ""}
+            helperText={isSubmitted ? errors.host_email : ""}
           />
         </Grid>
         <Grid item xs={12} md={12} lg={12}>
