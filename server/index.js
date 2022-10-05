@@ -8,7 +8,7 @@ import {
   getByEmail,
 } from "./database.js";
 
-const PORT = process.env.PORT || 3001;
+const port = process.env.PORT || 3001;
 const app = express();
 
 if (process.env.NODE_ENV === "production") {
@@ -42,6 +42,6 @@ app.put("/exchange/restaurant/reservations/:id", (req, res) => {
   res.json(updateReservation(req.params.id, req.body));
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server listening on ${port}`);
 });
