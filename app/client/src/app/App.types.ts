@@ -10,39 +10,20 @@ export interface APIResponseI {
   message?: string;
 }
 
-export enum TimeFrameI {
-  TODAY = "TODAY",
-  TOMORROW = "TOMORROW",
-  ALL = "ALL",
-}
-
 export interface ReservationI {
-  host_email?: string | undefined;
-  host_name?: string| undefined;
-  hour?: string| undefined;
-  date?: string| undefined;
-  party_size?: string| undefined;
-
-}
-
-export interface MeetingI {
-  id: string;
-  title: string;
-  room: string;
-  description: string;
-  start_time: string;
-  end_time: string;
-  date: string;
-  host: string;
-  guest: string;
+  id?: string;
+  host_email?: string;
+  host_name?: string;
+  hour?: string;
+  date?: string;
+  party_size?: string;
 }
 
 export interface ErrorI {
-  title: boolean;
-  room: boolean;
-  description: boolean;
-  host: boolean;
-  guest: boolean;
+  host_email?: string;
+  host_name?: string;
+  hour?: string;
+  date?: string;
 }
 
 export interface TabPanelProps {

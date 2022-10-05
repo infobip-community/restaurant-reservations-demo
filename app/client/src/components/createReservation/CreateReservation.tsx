@@ -1,10 +1,16 @@
 import * as React from "react";
-import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TableTypeMap, TextField} from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from "@mui/material";
 import { useState } from "react";
 import Button from "@mui/material/Button";
-import {ErrorI, MeetingI, ReservationI} from "../../app/App.types";
+import { ErrorI, ReservationI } from "../../app/App.types";
 import { APIPath } from "../../const";
-import Diversity3Icon from '@mui/icons-material/Diversity3';
 import { NewReservationPropsI } from "./CreateReservation.types";
 import { Grid } from "@mui/material";
 import styled from "@emotion/styled";
@@ -12,29 +18,19 @@ import styled from "@emotion/styled";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
-import { validateField , isMeetingValid } from "../shared/Validations/Validations";
-import {Diversity3} from "@mui/icons-material";
+import { Diversity3 } from "@mui/icons-material";
+import { validateReservation } from "../../utlis/validations/validateReservation";
 
 const TODAY = new Date();
-const MINUTE =  TODAY.getMinutes();
-const REQUIRED_FIELD_ERROR_MESSAGE = 'This is a required field';
-
+const MINUTE = TODAY.getMinutes();
 const emptyNewReservation = {
   host_email: "",
   host_name: "",
   hour: `${TODAY.getHours()}:${MINUTE && MINUTE < 10 ? `0${MINUTE}` : MINUTE}`,
   date: `${
-      TODAY.getUTCMonth() + 1
+    TODAY.getUTCMonth() + 1
   }/${TODAY.getUTCDate()}/${TODAY.getUTCFullYear()}`,
-  party_size: '2',
-}
-
-const errorObject = {
-  title: false,
-  room: false,
-  description: false,
-  host: false,
-  guest: false,
+  party_size: "2",
 };
 
 const ButtonContainer = styled.div`
@@ -42,7 +38,7 @@ const ButtonContainer = styled.div`
   width: 100%;
   justify-content: flex-end;
   & > button {
-  width: 100%
+    width: 100%;
   }
 `;
 
@@ -52,11 +48,16 @@ const FieldContainer = styled.div`
   }
 `;
 
-const CreateReservation = ({ setAlertMessage, isLoading }: NewReservationPropsI) => {
-  const [newReservation, setNewReservation] = useState<ReservationI>(emptyNewReservation);
-  const [errors, setErrors] = useState<ErrorI>(errorObject);
+const CreateReservation = ({
+  setAlertMessage,
+  isLoading,
+}: NewReservationPropsI) => {
+  const [newReservation, setNewReservation] =
+    useState<ReservationI>(emptyNewReservation);
+  const [errors, setErrors] = useState<ErrorI>({});
   const [date, setDate] = useState<Date | null>(new Date());
   const [startTime, setStartTime] = useState<Date | null>(new Date());
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (newValue: Date | null, field: string) => {
     let today = new Date(newValue ? newValue : "");
@@ -81,33 +82,66 @@ const CreateReservation = ({ setAlertMessage, isLoading }: NewReservationPropsI)
     setNewReservation({ ...newReservation, [field]: value });
   };
 
-  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent) => {
-    const trimValue = e.target.value.toString().trim();
-    const isValid = validateField(trimValue);
-    setErrors({ ...errors, [e.target.name]: isValid });
-    setNewReservation({...newReservation,  [e.target.name]: e.target.value})
+  const handleChangeInput = (
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent
+  ) => {
+    setNewReservation({ ...newReservation, [e.target.name]: e.target.value });
+    const errors = validateReservation(newReservation);
+    if (isReservationValid(errors)) {
+      setAlertMessage({ isVisible: false });
+    }
+    setErrors(errors);
   };
 
-  const addMeeting = async () => {
-    setAlertMessage({ isLoading: true });
-    await fetch(`${APIPath}`, {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newReservation),
-    });
-    setAlertMessage({
-      message: "Your reservation successfully created!",
-      isVisible: true,
-      isLoading: false,
-    });
-    setNewReservation({...newReservation});
+  const isReservationValid = (errors: ErrorI) => {
+    return !Object.values(errors).length;
+  };
+
+  const addReservation = async () => {
+    const errors = validateReservation(newReservation);
+    setIsSubmitted(true);
+    setErrors({ ...errors });
+
+    if (isReservationValid(errors)) {
+      setAlertMessage({ isLoading: true });
+      const response = (await fetch(`${APIPath}`, {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newReservation),
+      })) as any;
+      const result = await response.json();
+      if (result["id"]) {
+        setAlertMessage({
+          type: "success",
+          message: "Your reservation successfully created!",
+          isVisible: true,
+          isLoading: false,
+        });
+        setNewReservation({ ...emptyNewReservation });
+      } else {
+        setAlertMessage({
+          message: result["error"],
+          type: "error",
+          isVisible: true,
+          isLoading: false,
+        });
+      }
+    } else {
+      setAlertMessage({
+        type: "error",
+        message: "Please fill required fields",
+        isVisible: true,
+        isLoading: false,
+      });
+    }
   };
 
   return (
     <>
       <br />
       <Grid container spacing={2} rowSpacing="1rem">
-
         <Grid item xs={6} md={6}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <FieldContainer>
@@ -143,17 +177,23 @@ const CreateReservation = ({ setAlertMessage, isLoading }: NewReservationPropsI)
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label" >
-                <Diversity3/>
-              </InputLabel>
+            <InputLabel id="demo-simple-select-label">
+              <Diversity3 />
+            </InputLabel>
             <Select
-                name='party_size'
-                value={newReservation.party_size}
-                label="size"
-                onChange={handleChangeInput}
+              name="party_size"
+              value={newReservation.party_size}
+              label="size"
+              onChange={handleChangeInput}
             >
               {Array.from(Array(22), (e, i) => {
-                return i > 0 && <MenuItem key={i} value={i}>{`${i < 21 ? i : ' '} ${i === 1 ? 'person' : i < 21 ? 'people' : 'Larger party'}`}</MenuItem>
+                return (
+                  i > 0 && (
+                    <MenuItem key={i} value={i}>{`${i < 21 ? i : " "} ${
+                      i === 1 ? "person" : i < 21 ? "people" : "Larger party"
+                    }`}</MenuItem>
+                  )
+                );
               })}
             </Select>
           </FormControl>
@@ -161,32 +201,34 @@ const CreateReservation = ({ setAlertMessage, isLoading }: NewReservationPropsI)
         <Grid item xs={12}>
           <TextField
             fullWidth
-            error={errors.host}
+            error={!!errors.host_name && isSubmitted}
             name="host_name"
             label="Host Name"
             value={newReservation.host_name}
             onChange={handleChangeInput}
-            helperText={errors.host ? REQUIRED_FIELD_ERROR_MESSAGE : ''}
+            helperText={isSubmitted ? errors.host_name : ""}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
-              fullWidth
-              error={errors.host}
-              name="host_email"
-              label="Host Email"
-              value={newReservation.host_email}
-              onChange={handleChangeInput}
-              helperText={errors.host ? REQUIRED_FIELD_ERROR_MESSAGE : ''}
+            fullWidth
+            error={!!errors.host_email && isSubmitted}
+            name="host_email"
+            label="Host Email"
+            value={newReservation.host_email}
+            onChange={handleChangeInput}
+            helperText={isSubmitted ? errors.host_email : ""}
           />
         </Grid>
         <Grid item xs={12} md={12} lg={12}>
           <ButtonContainer>
             <Button
               size={"large"}
-              onClick={addMeeting}
+              onClick={addReservation}
               variant="contained"
-              disabled={isLoading || isMeetingValid(errors)}
+              disabled={
+                isLoading || (isSubmitted && !isReservationValid(errors))
+              }
             >
               Create
             </Button>

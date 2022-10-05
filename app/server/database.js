@@ -15,62 +15,52 @@ export const createConnection = async () => {
   // Use JSON file for storage
   // Read data from JSON file, this will set db.data content
   if (db.data === null) {
-    db.data = { meetings: [] };
+    db.data = { reservations: [] };
     await db.write();
   }
 };
 
-export const getAllMeetings = () => {
+export const getAllReservations = () => {
   db.chain = lodash.chain(db.data);
-  return db.data.meetings;
+  return db.data.reservations;
 };
 
-export const addMeeting = async (meeting) => {
+export const getByEmail = (host_email) => {
   db.chain = lodash.chain(db.data);
-  const meetingList = db.chain.get("meetings");
-  meetingList
-    .chain()
-    .push({ ...meeting, id: uuidv4() })
-    .value();
-  await db.write();
-
-  return meetingList;
+  const reservation = db.chain.get("reservations").find({ host_email }).value();
+  return reservation;
 };
 
-export const updateMeeting = async (meetingUpdated) => {
-  db.chain = lodash.chain(db.data);
-  const meeting = db.chain.get("meetings");
-  meeting.chain().find({ host_name: meetingUpdated.host_name }).assign(meetingUpdated).value();
-  await db.write();
-};
-
-export const deleteMeeting = async (meetingDeleted) => {
-  db.chain = lodash.chain(db.data);
-  db.chain.get("meetings").remove({ host_name: meetingDeleted.host_name }).value();
-
-  await db.write();
-};
-
-export const getByDate = async (timeFrame) => {
-  const today = new Date();
-  const day = today.getDate();
-  const month = today.getMonth() + 1;
-  const year = today.getFullYear();
-  db.chain = lodash.chain(db.data);
-
-  if (timeFrame === "TODAY") {
-    const meeting = await db.chain
-      .get("meetings")
-      .filter({ date: `${month}/${day}/${year}` })
+export const addReservation = async (reservation) => {
+  return new Promise(async (resolve, reject) => {
+    const reservationWithId = { ...reservation, id: uuidv4() };
+    db.chain = lodash.chain(db.data);
+    const existingReservation = db.chain
+      .get("reservations")
+      .find({ host_email: reservation.host_email })
       .value();
-    return meeting ? meeting : [];
-  }
-  if (timeFrame === "TOMORROW") {
-    const meeting = await db.chain
-      .get("meetings")
-      .filter({ date: `${month}/${day + 1}/${year}` })
-      .value();
-    return meeting ? meeting : [];
-  }
-  return getAllMeetings();
+
+    if (!existingReservation) {
+      db.chain.get("reservations").chain().push(reservationWithId).value();
+      await db.write();
+      resolve(reservationWithId);
+    } else {
+      reject(
+        "You have an existing reservation, please delete it before creating a new one or update existing one."
+      );
+    }
+  });
+};
+
+export const updateReservation = async (id, reservationUpdated) => {
+  db.chain = lodash.chain(db.data);
+  const Reservation = db.chain.get("reservations");
+  Reservation.chain().find({ id }).assign(reservationUpdated).value();
+  await db.write();
+};
+
+export const deleteReservation = async (id) => {
+  db.chain = lodash.chain(db.data);
+  db.chain.get("reservations").remove({ id }).value();
+  await db.write();
 };

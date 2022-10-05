@@ -1,4 +1,4 @@
-# Agenda demo
+# Restaurant demo
 This app will help you to create an end-to-end integration between this app and the Infobip Products using Exchange.
 
 Using NodeJS and React.
@@ -7,11 +7,11 @@ Using NodeJS and React.
 
 # 📦 Installation
 Clone repository from 
-`git@github.com:infobip-community/infobip-exchange-agenda-demo.git`
+`git@github.com:infobip-community/restaurant-reservations-demo.git`
 
 Install dependencies
 ```bash
-cd infobip-exchange-agenda-demo && npm i
+cd restaurant-reservations-demo && npm i
 ```
 
 # 🚀 Usage
@@ -36,124 +36,103 @@ This will create front end build and expose front-end app and API
 
 # 📚 API Documentation
 
-#### *Get all meetings 
-##### URL: `/exchange/agenda-demo/meetings?timeframe=today`
+#### *Get all reservations 
+##### URL: `/exchange/restaurant/reservations`
 ##### Method: `Get`
-##### Query Params: `{timeframe: "TODAY" | "TOMORROW"}`
 ##### Payload: NA
 ##### Response:
 ```json
 {
-   "meetings":[
+   "reservations":[
       {
-         "id":"71f9e656-e94b-45c8-a840-a4cddc983572",
-         "title":"Sprint Review",
-         "room":"Infobip room",
-         "description":"To review sprints",
-         "start_time":"14:14",
-         "end_time":"14:14",
-         "date":"9/26/2022",
-         "host":"Victoria Kanto",
-         "guest":"Infobip Team"
+         "id" : "cd2b9987-09a4-4f4e-a426-b9c1cd30b60d",
+         "date" : "10/28/2022",
+         "host_email" : "John@doe.com",
+         "host_name": : "John Doe",
+         "hour" : "11:28",
       },
       {
-         "id":"71f9e656-e94b-45c8-a840-a4cddc4350983",
-         "title":"Retrospective",
-         "room":"Guadalajara room",
-         "description":"To review sprint",
-         "start_time":"18:00",
-         "end_time":"19:00",
-         "date":"9/26/2022",
-         "host":"Francisco Zork",
-         "guest":"Infobip Team"
+         "id" : "0331d769-d964-4cf8-b517-7f77ba75e5e8",
+         "date" : "10/28/2022",
+         "host_email" : "Alice@Smith.com",
+         "host_name": : "Alice Smith",
+         "hour" : "11:28",
       }
    ]
 }
 ``` 
 
-#### *Create a meeting
-##### URL: `/exchange/agenda-demo/meetings`
+
+#### *Get reservation by email
+##### URL: `/exchange/restaurant/reservations/:email`
+##### Method: `Get`
+##### Params: `{email: "Alice@Smith.com"}`
+##### Payload: NA
+##### Response:
+```json
+{
+   "id" : "0331d769-d964-4cf8-b517-7f77ba75e5e8",
+   "date" : "10/28/2022",
+   "host_email" : "Alice@Smith.com",
+   "host_name": : "Alice Smith",
+   "hour" : "11:28",
+}
+``` 
+
+#### *Create a reservation
+##### URL: `/exchange/restaurant/reservations`
 ##### Method: `POST`
 ##### Payload: 
 ```json
 {
-   "id":"3043f8cb-b537-460f-a08e-1576eba052b6",
-   "date":"9/26/2022",
-   "description":"To review sprints",
-   "end_time":"14:14",
-   "guest":"InfobipTeam",
-   "host":"Infobip",
-   "room":"Infobip room",
-   "start_time":"14:14",
-   "title":"Sprint Review"
+   "date" : "10/28/2022",
+   "host_email" : "Alice@Smith.com",
+   "host_name": : "Alice Smith",
+   "hour" : "11:28",
 }
 ```
 
 ##### Response:
 ```json
 {
-   "id":"71f9e656-e94b-45c8-a840-a4cddc983572",
-   "title":"Sprint Review",
-   "room":"Infobip room",
-   "description":"To review sprints",
-   "start_time":"14:14",
-   "end_time":"14:14",
-   "date":"9/26/2022",
-   "host":"Infobip",
-   "guest":"Infobip Team"
+   "id" : "0331d769-d964-4cf8-b517-7f77ba75e5e8",
+   "date" : "10/28/2022",
+   "host_email" : "Alice@Smith.com",
+   "host_name": : "Alice Smith",
+   "hour" : "11:28",
 }
 ```
 #### *Update a meeting
 
-##### URL: `/exchange/agenda-demo/meetings`
+##### URL: `/exchange/restaurant/reservations/:id`
+##### Params: `{id: "0331d769-d964-4cf8-b517-7f77ba75e5e8"}`
 ##### Method: `PUT`
 ##### Payload: 
 ```json
 {
-   "id":"3043f8cb-b537-460f-a08e-1576eba052b6",
-   "date":"9/26/2022",
-   "description":"To review sprints Updated",
-   "end_time":"14:14",
-   "guest":"InfobipTeam",
-   "host":"Infobip",
-   "room":"Infobip room",
-   "start_time":"14:14",
-   "title":"Sprint Review"
+   "date" : "10/28/2022",
+   "host_email" : "Alice@Smith.com",
+   "host_name": : "Alice Smith",
+   "hour" : "09:00",
 }
 ```
 ##### Response:
 ```json
 {
-   "id":"71f9e656-e94b-45c8-a840-a4cddc983572",
-   "title":"Sprint Review",
-   "room":"Infobip room",
-   "description":"To review sprints Updated",
-   "start_time":"14:14",
-   "end_time":"14:14",
-   "date":"9/26/2022",
-   "host":"Infobip",
-   "guest":"Infobip Team"
+   "id" : "0331d769-d964-4cf8-b517-7f77ba75e5e8",
+   "date" : "10/28/2022",
+   "host_email" : "Alice@Smith.com",
+   "host_name": : "Alice Smith",
+   "hour" : "09:00",
 }
 ```
 
 #### *Delete a meeting
 
-##### URL: `/exchange/agenda-demo/meetings`
+##### URL: `/exchange/restaurant/reservations:id`
+##### Params: `{id: "0331d769-d964-4cf8-b517-7f77ba75e5e8"}`
 ##### Method: `DELETE`
-##### Payload: 
-```json
-{
-   "id":"3043f8cb-b537-460f-a08e-1576eba052b6",
-   "date":"9/26/2022",
-   "description":"To review sprints",
-   "end_time":"14:14",
-   "guest":"InfobipTeam",
-   "host":"Infobip",
-   "room":"Infobip room",
-   "start_time":"14:14",
-   "title":"Sprint Review"
-}
-```
+##### Payload: NA
 
 ---
 
