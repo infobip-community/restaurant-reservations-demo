@@ -48,6 +48,10 @@ const FieldContainer = styled.div`
   }
 `;
 
+const startTimeInitial = new Date();
+startTimeInitial.setHours(startTimeInitial.getHours() + 1);
+startTimeInitial.setMinutes(0);
+
 const CreateReservation = ({
   setAlertMessage,
   isLoading,
@@ -56,7 +60,7 @@ const CreateReservation = ({
     useState<ReservationI>(emptyNewReservation);
   const [errors, setErrors] = useState<ErrorI>({});
   const [date, setDate] = useState<Date | null>(new Date());
-  const [startTime, setStartTime] = useState<Date | null>(new Date());
+  const [startTime, setStartTime] = useState<Date | null>(startTimeInitial);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (newValue: Date | null, field: string) => {
@@ -169,6 +173,7 @@ const CreateReservation = ({
                     value={startTime}
                     onChange={(value) => handleChange(value, "hour")}
                     renderInput={(params) => <TextField {...params} />}
+                    minutesStep={30}
                   />
                 </FieldContainer>
               </Grid>

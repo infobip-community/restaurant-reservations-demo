@@ -19,7 +19,9 @@ createConnection();
 app.use(express.json()); // to support JSON-encoded bodies
 
 app.get("/exchange/restaurant/reservations/:email", async (req, res) => {
-  const reservation = getByEmail(req.params.email);
+  const reservation = await getByEmail(req.params.email).catch((error) => {
+    return res.status(500).json({ error });
+  });
   return res.json(reservation);
 });
 
