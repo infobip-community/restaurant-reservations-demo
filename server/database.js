@@ -27,8 +27,17 @@ export const getAllReservations = () => {
 
 export const getByEmail = (host_email) => {
   db.chain = lodash.chain(db.data);
-  const reservation = db.chain.get("reservations").find({ host_email }).value();
-  return reservation;
+  return new Promise(async (resolve, reject) => {
+    const reservation = db.chain
+      .get("reservations")
+      .find({ host_email })
+      .value();
+    if (reservation) {
+      resolve(reservation);
+    } else {
+      reject(`No reservation found with email: ${host_email}`);
+    }
+  });
 };
 
 export const addReservation = async (reservation) => {

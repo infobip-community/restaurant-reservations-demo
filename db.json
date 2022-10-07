@@ -1,3 +1,12 @@
 {
-  "reservations": []
+  "reservations": [
+    {
+      "host_email": "asd@asd.com",
+      "host_name": "asdasd",
+      "hour": "15:16",
+      "date": "10/6/2022",
+      "party_size": 5,
+      "id": "3cf007c2-f54c-4dda-900c-86208159d810"
+    }
+  ]
 }

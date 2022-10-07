@@ -2,13 +2,11 @@ import * as React from "react";
 import Restaurant from "@mui/icons-material/Restaurant";
 import { ReservationPropsI } from "./Reservations.types";
 import { ReservationI } from "../../app/App.types";
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { APIPath } from "../../const";
 
 import styled from "@emotion/styled";
 import {
-  Autocomplete,
   Box,
   Button,
   Card,
@@ -34,7 +32,6 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
-// import { validateField } from "../shared/Validations/Validations";
 
 const FieldContainer = styled.div`
   & > div {
@@ -43,59 +40,24 @@ const FieldContainer = styled.div`
 `;
 
 const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
-  const initializeRef = React.useRef<boolean>(false);
-
-  const [reservationsList, setReservationsList] = useState<ReservationI[]>([]);
   const [reservationSelected, setReservationSelected] = useState<
     ReservationI | undefined
   >();
-  const [temporalReservation, setTemporalReservation] = useState<
-    ReservationI | undefined
-  >();
   const [editing, setEditing] = useState<boolean>(false);
-  const [autocompleteValue, setAutocompleteValue] = useState<string>("");
+  const [searchValue, setSearchValue] = useState<string>("");
   const [date, setDate] = useState<Date | null>();
   const [startTime, setStartTime] = useState<Date | null>();
-
-  const getReservations = async () => {
-    const result = await fetch(`${APIPath}`);
-    const body = await result.json();
-    setReservationsList(body.reservations);
-  };
-
-  useEffect(() => {
-    getReservations();
-  }, []);
-
-  const selectedReservation = (
-    event: React.SyntheticEvent,
-    newValue: string | null
-  ) => {
-    const reservation = reservationsList.find(
-      (reservation) => reservation.host_name === newValue
-    );
-    setReservationSelected(reservation);
-    setTemporalReservation(reservation);
-    if (reservation) {
-      setDate(new Date(reservation.date ? reservation.date : ""));
-      setStartTime(
-        new Date(
-          reservation.hour ? `${reservation.date} ${reservation.hour}` : ""
-        )
-      );
-    }
-  };
 
   const handleOpenEdit = () => {
     setEditing(true);
   };
 
   const handleSave = async () => {
-    if (temporalReservation) {
-      await fetch(`${APIPath}/${temporalReservation.id}`, {
+    if (reservationSelected) {
+      await fetch(`${APIPath}/${reservationSelected.id}`, {
         method: "PUT",
         headers: { "Content-type": "application/json; charset=UTF-8" },
-        body: JSON.stringify(temporalReservation),
+        body: JSON.stringify(reservationSelected),
       }).catch((error) => {
         setAlertMessage({ message: error, isVisible: true });
       });
@@ -106,8 +68,6 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
         isLoading: false,
       });
       setEditing(false);
-      setReservationSelected(temporalReservation);
-      getReservations();
     }
   };
 
@@ -119,7 +79,6 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
         headers: { "Content-type": "application/json; charset=UTF-8" },
         body: JSON.stringify(reservationSelected),
       }).then((error) => {
-        getReservations();
         setAlertMessage({
           type: "success",
           message: "Your reservation has been deleted succesfully!",
@@ -127,7 +86,7 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
           isLoading: false,
         });
         setEditing(false);
-        setAutocompleteValue("");
+        setSearchValue("");
         setReservationSelected(undefined);
       });
     }
@@ -135,7 +94,19 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
 
   const handleCloseEdit = () => {
     setEditing(false);
-    setTemporalReservation(reservationSelected);
+    (async () => {
+      const result = await fetch(
+        `${APIPath}/${reservationSelected?.host_email}`
+      );
+      const response = await result.json();
+      if (response && response.id) {
+        setReservationSelected(response);
+        setDate(new Date(response.date ? response.date : ""));
+        setStartTime(
+          new Date(response.hour ? `${response.date} ${response.hour}` : "")
+        );
+      }
+    })();
   };
 
   const handleChangeInput = (
@@ -143,11 +114,8 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
       | SelectChangeEvent
   ) => {
-    const trimValue = e.target.value.toString().trim();
-    // const isValid = validateField(trimValue);
-    //setErrors({ ...errors, [e.target.name]: isValid });
-    setTemporalReservation({
-      ...temporalReservation,
+    setReservationSelected({
+      ...reservationSelected,
       [e.target.name]: e.target.value,
     });
   };
@@ -172,39 +140,70 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
         setStartTime(newValue);
         break;
     }
-    setTemporalReservation({ ...temporalReservation, [field]: value });
+    setReservationSelected({ ...reservationSelected, [field]: value });
   };
 
-  const handleInputChange = (event: React.SyntheticEvent, value: string) => {
-    setAutocompleteValue(value);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.currentTarget.value);
+  };
+
+  const handleSearch = () => {
+    (async () => {
+      const result = await fetch(`${APIPath}/${searchValue}`);
+      const response = await result.json();
+
+      if (response && response.id) {
+        setReservationSelected(response);
+        setDate(new Date(response.date ? response.date : ""));
+        setStartTime(
+          new Date(response.hour ? `${response.date} ${response.hour}` : "")
+        );
+        setAlertMessage({ isVisible: false, type: "success" });
+      } else {
+        setReservationSelected(undefined);
+        setAlertMessage({
+          type: "error",
+          message: response.error,
+          isVisible: true,
+          isLoading: false,
+        });
+      }
+    })();
+  };
+
+  const handleKeyDown = (event: any) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
   };
 
   return (
     <>
-      <Box sx={{ mb: 1, mt: 1 }}>
-        <Autocomplete
-          freeSolo
-          id="free-solo-2-demo"
-          disableClearable
-          value={autocompleteValue}
-          options={reservationsList.map((reservation) => reservation.host_name)}
-          onChange={selectedReservation}
-          onInputChange={handleInputChange}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Find your reservation"
-              InputProps={{
-                ...params.InputProps,
-                type: "search",
-              }}
-            />
-          )}
-        />
-      </Box>
+      <Grid container>
+        <Grid item xs={10} md={11}>
+          <TextField
+            fullWidth
+            type="search"
+            onChange={handleInputChange}
+            label="Enter your email"
+            onKeyDown={handleKeyDown}
+          />
+        </Grid>
+        <Grid
+          item
+          xs={2}
+          md={1}
+          justifyContent="center"
+          justifyItems="center"
+          display="flex"
+        >
+          <Button onClick={handleSearch}>Search</Button>
+        </Grid>
+      </Grid>
+      <br />
       {reservationSelected && (
         <Card variant="outlined">
-          <Box sx={{ m: 2 }}>
+          <Box sx={{ m: 2, pd: 2 }}>
             <CardContent>
               <Restaurant />
               <Box sx={{ display: "flex", flexFlow: "row", pt: 2 }}>
@@ -284,11 +283,7 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
                     </InputLabel>
                     <Select
                       name="party_size"
-                      value={
-                        temporalReservation
-                          ? temporalReservation.party_size
-                          : reservationSelected.party_size
-                      }
+                      value={reservationSelected.party_size}
                       label="size"
                       onChange={handleChangeInput}
                     >

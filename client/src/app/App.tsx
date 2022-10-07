@@ -102,7 +102,7 @@ const App = () => {
           </AlertContext.Provider>
 
           <Tabs value={value} onChange={handleChange} aria-label="Reservations">
-            <Tab value={0} label="My reservations" wrapped />
+            <Tab value={0} label="Search for a reservation" wrapped />
             <Tab value={1} label="Create Reservation" />
           </Tabs>
 
