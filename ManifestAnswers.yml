@@ -1,0 +1,150 @@
+functions:
+  - name: getAllReservations
+    description: Get all reservations
+    method: GET
+    uri: https://infobip-restaurant.herokuapp.com/exchange/restaurant/reservations
+    outSchema:
+      type: object
+      properties:
+        reservations:
+          type: object
+          title: reservations
+          required: true
+  - name: getReservationsByEmail
+    description: Get reservation by email
+    method: POST
+    uri: >-
+      https://infobip-restaurant.herokuapp.com/exchange/restaurant/reservations/email
+    inSchema:
+      type: object
+      properties:
+        email:
+          type: string
+          title: email
+          required: true
+    outSchema:
+      type: object
+      properties:
+        reservation:
+          type: object
+          title: reservation
+          required: true
+  - name: createReservation
+    description: Creates a reservation
+    method: POST
+    uri: https://infobip-restaurant.herokuapp.com/exchange/restaurant/reservations/
+    inSchema:
+      type: object
+      properties:
+        date:
+          type: string
+          title: date
+          required: true
+        host_name:
+          type: string
+          title: host_name
+          required: true
+        host_email:
+          type: string
+          title: host_email
+          required: true
+        hour:
+          type: string
+          title: hour
+          required: true
+        party_size:
+          type: string
+          title: party_size
+          required: true
+    outSchema:
+      type: object
+      properties:
+        id:
+          type: string
+          title: id
+          required: true
+        date:
+          type: string
+          title: date
+          required: true
+        host_name:
+          type: string
+          title: host_name
+          required: true
+        host_email:
+          type: string
+          title: host_email
+          required: true
+        hour:
+          type: string
+          title: hour
+          required: true
+        party_size:
+          type: string
+          title: party_size
+          required: true
+  - name: updateReservation
+    description: Updates a reservation
+    method: POST
+    uri: https://infobip-restaurant.herokuapp.com/exchange/restaurant/reservations/
+    inSchema:
+      type: object
+      properties:
+        id:
+          type: string
+          title: title
+          required: true
+        date:
+          type: string
+          title: date
+          required: true
+        host_name:
+          type: string
+          title: host_name
+          required: true
+        host_email:
+          type: string
+          title: host_email
+          required: true
+        hour:
+          type: string
+          title: hour
+          required: true
+        party_size:
+          type: string
+          title: party_size
+          required: true
+    outSchema:
+      type: object
+      properties:
+        date:
+          type: string
+          title: date
+          required: true
+        host_name:
+          type: string
+          title: host_name
+          required: true
+        host_email:
+          type: string
+          title: host_email
+          required: true
+        hour:
+          type: string
+          title: hour
+          required: true
+        party_size:
+          type: string
+          title: party_size
+          required: true
+  - name: deleteReservation
+    description: Deletes a reservation
+    method: DELETE
+    uri: https://infobip-restaurant.herokuapp.com/exchange/restaurant/reservations/
+    inSchema:
+      type: object
+      properties:
+        id:
+          type: string
+          title: title
+          required: true
