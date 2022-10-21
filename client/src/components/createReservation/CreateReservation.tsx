@@ -26,7 +26,7 @@ const MINUTE = TODAY.getMinutes();
 const emptyNewReservation = {
   host_email: "",
   host_name: "",
-  hour: `${TODAY.getHours()}:${MINUTE && MINUTE < 10 ? `0${MINUTE}` : MINUTE}`,
+  hour: `${TODAY.getHours()}:${MINUTE < 10 ? `0${MINUTE}` : MINUTE}`,
   date: `${
     TODAY.getUTCMonth() + 1
   }/${TODAY.getUTCDate()}/${TODAY.getUTCFullYear()}`,
@@ -79,7 +79,7 @@ const CreateReservation = ({
         }
         break;
       case "hour":
-        value = `${hour}:${minute && minute < 10 ? `0${minute}` : minute}`;
+        value = `${hour}:${minute < 10 ? `0${minute}` : minute}`;
         setStartTime(newValue);
         break;
     }
