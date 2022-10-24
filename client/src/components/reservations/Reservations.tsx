@@ -78,7 +78,7 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
         method: "DELETE",
         headers: { "Content-type": "application/json; charset=UTF-8" },
         body: JSON.stringify(reservationSelected),
-      }).then((error) => {
+      }).then(() => {
         setAlertMessage({
           type: "success",
           message: "Your reservation has been deleted succesfully!",
@@ -197,7 +197,7 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
           justifyItems="center"
           display="flex"
         >
-          <Button onClick={handleSearch}>Search</Button>
+          <Button disabled={!searchValue.length} onClick={handleSearch}>Search</Button>
         </Grid>
       </Grid>
       <br />
@@ -248,6 +248,7 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
                                 renderInput={(params) => (
                                   <TextField {...params} />
                                 )}
+                                minutesStep={30}
                               />
                             </FieldContainer>
                           </Grid>

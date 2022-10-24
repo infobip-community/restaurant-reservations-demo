@@ -22,11 +22,23 @@ import { Diversity3 } from "@mui/icons-material";
 import { validateReservation } from "../../utlis/validations/validateReservation";
 
 const TODAY = new Date();
-const MINUTE = TODAY.getMinutes();
+let MINUTE = TODAY.getMinutes();
+let HOUR = TODAY.getHours();
+const setTime = ()=>{
+  if (MINUTE > 30){
+    MINUTE = 30
+  }else {
+    MINUTE = 0;
+    HOUR += 1;
+  }
+  TODAY.setHours(HOUR);
+  TODAY.setMinutes(MINUTE);
+}
+setTime();
 const emptyNewReservation = {
   host_email: "",
   host_name: "",
-  hour: `${TODAY.getHours()}:${MINUTE && MINUTE < 10 ? `0${MINUTE}` : MINUTE}`,
+  hour: `${HOUR}:${MINUTE && MINUTE < 10 ? `0${MINUTE}` : MINUTE}`,
   date: `${
     TODAY.getUTCMonth() + 1
   }/${TODAY.getUTCDate()}/${TODAY.getUTCFullYear()}`,
@@ -48,9 +60,7 @@ const FieldContainer = styled.div`
   }
 `;
 
-const startTimeInitial = new Date();
-startTimeInitial.setHours(startTimeInitial.getHours() + 1);
-startTimeInitial.setMinutes(0);
+console.log('*-*-*-* ', TODAY);
 
 const CreateReservation = ({
   setAlertMessage,
@@ -60,7 +70,7 @@ const CreateReservation = ({
     useState<ReservationI>(emptyNewReservation);
   const [errors, setErrors] = useState<ErrorI>({});
   const [date, setDate] = useState<Date | null>(new Date());
-  const [startTime, setStartTime] = useState<Date | null>(startTimeInitial);
+  const [startTime, setStartTime] = useState<Date | null>(TODAY);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (newValue: Date | null, field: string) => {
