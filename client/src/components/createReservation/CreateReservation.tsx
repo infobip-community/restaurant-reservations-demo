@@ -38,7 +38,7 @@ setTime();
 const emptyNewReservation = {
   host_email: "",
   host_name: "",
-  hour: `${HOUR}:${MINUTE && MINUTE < 10 ? `0${MINUTE}` : MINUTE}`,
+  hour: `${HOUR}:${MINUTE < 10 ? `0${MINUTE}` : MINUTE}`,
   date: `${
     TODAY.getUTCMonth() + 1
   }/${TODAY.getUTCDate()}/${TODAY.getUTCFullYear()}`,
@@ -59,8 +59,6 @@ const FieldContainer = styled.div`
     width: 100%;
   }
 `;
-
-console.log('*-*-*-* ', TODAY);
 
 const CreateReservation = ({
   setAlertMessage,
@@ -89,7 +87,7 @@ const CreateReservation = ({
         }
         break;
       case "hour":
-        value = `${hour}:${minute && minute < 10 ? `0${minute}` : minute}`;
+        value = `${hour}:${minute < 10 ? `0${minute}` : minute}`;
         setStartTime(newValue);
         break;
     }
