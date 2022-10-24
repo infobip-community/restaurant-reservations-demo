@@ -35,7 +35,7 @@ export const getByEmail = (host_email) => {
     if (reservation) {
       resolve(reservation);
     } else {
-      reject(`No reservation found with email: ${host_email}`);
+      reject(`No reservation found for: ${host_email}`);
     }
   });
 };
