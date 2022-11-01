@@ -11,7 +11,6 @@ import { useState } from "react";
 import Button from "@mui/material/Button";
 import { ErrorI, ReservationI } from "../../app/App.types";
 import { APIPath } from "../../const";
-import { NewReservationPropsI } from "./CreateReservation.types";
 import { Grid } from "@mui/material";
 import styled from "@emotion/styled";
 
@@ -20,20 +19,21 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
 import { Diversity3 } from "@mui/icons-material";
 import { validateReservation } from "../../utlis/validations/validateReservation";
+import { AlertContext } from "../../contexts/AlertContext";
 
 const TODAY = new Date();
 let MINUTE = TODAY.getMinutes();
 let HOUR = TODAY.getHours();
-const setTime = ()=>{
-  if (MINUTE > 30){
-    MINUTE = 30
-  }else {
+const setTime = () => {
+  if (MINUTE > 30) {
+    MINUTE = 30;
+  } else {
     MINUTE = 0;
     HOUR += 1;
   }
   TODAY.setHours(HOUR);
   TODAY.setMinutes(MINUTE);
-}
+};
 setTime();
 const emptyNewReservation = {
   host_email: "",
@@ -60,16 +60,14 @@ const FieldContainer = styled.div`
   }
 `;
 
-const CreateReservation = ({
-  setAlertMessage,
-  isLoading,
-}: NewReservationPropsI) => {
+const CreateReservation = () => {
   const [newReservation, setNewReservation] =
     useState<ReservationI>(emptyNewReservation);
   const [errors, setErrors] = useState<ErrorI>({});
   const [date, setDate] = useState<Date | null>(new Date());
   const [startTime, setStartTime] = useState<Date | null>(TODAY);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const { updateAlertContext, isLoading } = React.useContext(AlertContext);
 
   const handleChange = (newValue: Date | null, field: string) => {
     let today = new Date(newValue ? newValue : "");
@@ -102,7 +100,12 @@ const CreateReservation = ({
     setNewReservation({ ...newReservation, [e.target.name]: e.target.value });
     const errors = validateReservation(newReservation);
     if (isReservationValid(errors)) {
-      setAlertMessage({ isVisible: false });
+      updateAlertContext({
+        isVisible: false,
+        message: "",
+        isLoading: false,
+        type: "success",
+      });
     }
     setErrors(errors);
   };
@@ -117,7 +120,7 @@ const CreateReservation = ({
     setErrors({ ...errors });
 
     if (isReservationValid(errors)) {
-      setAlertMessage({ isLoading: true });
+      updateAlertContext({ isLoading: true });
       const response = (await fetch(`${APIPath}`, {
         method: "post",
         headers: { "Content-Type": "application/json" },
@@ -125,7 +128,7 @@ const CreateReservation = ({
       })) as any;
       const result = await response.json();
       if (result["id"]) {
-        setAlertMessage({
+        updateAlertContext({
           type: "success",
           message: "Your reservation successfully created!",
           isVisible: true,
@@ -133,7 +136,7 @@ const CreateReservation = ({
         });
         setNewReservation({ ...emptyNewReservation });
       } else {
-        setAlertMessage({
+        updateAlertContext({
           message: result["error"],
           type: "error",
           isVisible: true,
@@ -141,7 +144,7 @@ const CreateReservation = ({
         });
       }
     } else {
-      setAlertMessage({
+      updateAlertContext({
         type: "error",
         message: "Please fill required fields",
         isVisible: true,

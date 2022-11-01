@@ -1,8 +1,7 @@
 import * as React from "react";
 import Restaurant from "@mui/icons-material/Restaurant";
-import { ReservationPropsI } from "./Reservations.types";
 import { ReservationI } from "../../app/App.types";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { APIPath } from "../../const";
 
 import styled from "@emotion/styled";
@@ -32,6 +31,7 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
+import { AlertContext } from "../../contexts/AlertContext";
 
 const FieldContainer = styled.div`
   & > div {
@@ -39,7 +39,7 @@ const FieldContainer = styled.div`
   }
 `;
 
-const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
+const Reservations = () => {
   const [reservationSelected, setReservationSelected] = useState<
     ReservationI | undefined
   >();
@@ -47,6 +47,7 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [date, setDate] = useState<Date | null>();
   const [startTime, setStartTime] = useState<Date | null>();
+  const alert = useContext(AlertContext);
 
   const handleOpenEdit = () => {
     setEditing(true);
@@ -59,9 +60,14 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
         headers: { "Content-type": "application/json; charset=UTF-8" },
         body: JSON.stringify(reservationSelected),
       }).catch((error) => {
-        setAlertMessage({ message: error, isVisible: true });
+        alert.updateAlertContext({
+          type: "error",
+          message: error,
+          isVisible: true,
+          isLoading: false,
+        });
       });
-      setAlertMessage({
+      alert.updateAlertContext({
         type: "success",
         message: "Your reservation has been updated succesfully!",
         isVisible: true,
@@ -79,7 +85,7 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
         headers: { "Content-type": "application/json; charset=UTF-8" },
         body: JSON.stringify(reservationSelected),
       }).then(() => {
-        setAlertMessage({
+        alert.updateAlertContext({
           type: "success",
           message: "Your reservation has been deleted succesfully!",
           isVisible: true,
@@ -158,10 +164,15 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
         setStartTime(
           new Date(response.hour ? `${response.date} ${response.hour}` : "")
         );
-        setAlertMessage({ isVisible: false, type: "success" });
+        alert.updateAlertContext({
+          isVisible: true,
+          type: "success",
+          isLoading: false,
+          message: "",
+        });
       } else {
         setReservationSelected(undefined);
-        setAlertMessage({
+        alert.updateAlertContext({
           type: "error",
           message: response.error,
           isVisible: true,
@@ -197,7 +208,9 @@ const Reservations = ({ setAlertMessage }: ReservationPropsI) => {
           justifyItems="center"
           display="flex"
         >
-          <Button disabled={!searchValue.length} onClick={handleSearch}>Search</Button>
+          <Button disabled={!searchValue.length} onClick={handleSearch}>
+            Search
+          </Button>
         </Grid>
       </Grid>
       <br />
