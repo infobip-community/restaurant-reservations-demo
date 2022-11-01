@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { AlertI, TabPanelProps } from "./App.types";
+import React, { useEffect, useState } from "react";
+import { AlertI, OauthContextI } from "./App.types";
 import Reservations from "../components/reservations/Reservations";
 import {
   Alert,
@@ -16,117 +16,141 @@ import SwipeableViews from "react-swipeable-views";
 import CreateReservation from "../components/createReservation/CreateReservation";
 import CloseIcon from "@mui/icons-material/Close";
 import { CircularProgress } from "@mui/material";
-
-export const AlertContext = React.createContext<AlertI>({
-  isLoading: false,
-  isVisible: false,
-  type: "success",
-  message: "Reservation successfully updated",
-});
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && <div>{children}</div>}
-    </div>
-  );
-}
+import { useAuth, AuthProvider } from "react-oauth2-pkce";
+import TabPanel from "../components/tabPanel/TabPanel";
+import {
+  AlertContext,
+  defaultAlertContextValue,
+} from "../contexts/AlertContext";
+import {
+  defaultOauthContextValue,
+  OauthContext,
+} from "../contexts/OauthContext";
+import oauthService from "../services/oauth";
 
 const App = () => {
-  const [alert, setAlert] = useState<AlertI>({
-    isLoading: false,
-    isVisible: false,
-    type: "success",
-    message: "Reservation successfully updated",
-  });
-
-  const [value, setValue] = React.useState(0);
+  const oauthEnabled = process.env["REACT_APP_OAUTH_ACTIVE"] === "true";
+  const { authService } = useAuth();
+  const [alert, setAlert] = useState<AlertI>(defaultAlertContextValue);
+  const [oauthContext, setOauthContext] = useState<OauthContextI>(
+    defaultOauthContextValue
+  );
+  const [currentTab, setCurrentTab] = React.useState(0);
   const theme = useTheme();
+
+  useEffect(() => {
+    const getOauth = async () => {
+      if (!authService.isAuthenticated()) {
+        return authService.authorize();
+      }
+      const { access_token, token_type } = authService.getAuthTokens();
+      const authToken = `${token_type} ${access_token}`;
+
+      if (access_token && token_type) {
+        setOauthContext({ access_token, token_type, authToken });
+      }
+    };
+
+    if (oauthEnabled) {
+      getOauth();
+    }
+  }, [oauthEnabled, authService]);
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+    setCurrentTab(newValue);
   };
 
   const handleChangeIndex = (index: number) => {
-    setValue(index);
+    setCurrentTab(index);
   };
 
-  const handleAlertChanges = (newChanges: AlertI) => {
+  const updateAlertContext = (newChanges: AlertI) => {
     setAlert({ ...alert, ...newChanges });
   };
 
   return (
-    <Container fixed>
-      <Grid container justifyContent="center">
-        <Grid item xs={12} md={10}>
-          <br />
-          <Typography variant="h4" component="h4">
-            Awesome Restaurant
-          </Typography>
-          <br />
+    <OauthContext.Provider value={oauthContext}>
+      <AlertContext.Provider value={{ ...alert, updateAlertContext }}>
+        <Container fixed>
+          {/* ONLY SHOWS APP IF OAUTH TOKEN IS RETRIEVED */}
+          {!oauthEnabled || oauthContext.authToken ? (
+            <Grid container justifyContent="center">
+              <Grid item xs={12} md={10}>
+                <br />
+                <Typography variant="h4" component="h4">
+                  Awesome Restaurant
+                </Typography>
+                <br />
 
-          <AlertContext.Provider value={alert}>
-            <Backdrop open={!!alert.isLoading} style={{ zIndex: 1 }}>
+                <Backdrop open={!!alert.isLoading} style={{ zIndex: 1 }}>
+                  <CircularProgress color="inherit" />
+                </Backdrop>
+
+                {alert.isVisible && (
+                  <>
+                    <Alert
+                      severity={alert.type}
+                      action={
+                        <IconButton
+                          aria-label="close"
+                          color="inherit"
+                          size="small"
+                          onClick={() => {
+                            updateAlertContext({ isVisible: false });
+                          }}
+                        >
+                          <CloseIcon fontSize="inherit" />
+                        </IconButton>
+                      }
+                    >
+                      {alert.message}
+                    </Alert>
+                    <br />
+                  </>
+                )}
+
+                <Tabs
+                  value={currentTab}
+                  onChange={handleChange}
+                  aria-label="Reservations"
+                >
+                  <Tab value={0} label="Manage reservations" wrapped />
+                  <Tab value={1} label="Create Reservation" />
+                </Tabs>
+
+                <SwipeableViews
+                  axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+                  index={currentTab}
+                  onChangeIndex={handleChangeIndex}
+                >
+                  <TabPanel value={currentTab} index={0} dir={theme.direction}>
+                    <br />
+                    <Reservations />
+                  </TabPanel>
+
+                  <TabPanel value={currentTab} index={1} dir={theme.direction}>
+                    <CreateReservation />
+                  </TabPanel>
+                </SwipeableViews>
+              </Grid>
+            </Grid>
+          ) : (
+            <Backdrop open={true} style={{ zIndex: 1 }}>
               <CircularProgress color="inherit" />
             </Backdrop>
-
-            {alert.isVisible && (
-              <>
-                <Alert
-                  severity={alert.type}
-                  action={
-                    <IconButton
-                      aria-label="close"
-                      color="inherit"
-                      size="small"
-                      onClick={() => {
-                        handleAlertChanges({ isVisible: false });
-                      }}
-                    >
-                      <CloseIcon fontSize="inherit" />
-                    </IconButton>
-                  }
-                >
-                  {alert.message}
-                </Alert>
-                <br />
-              </>
-            )}
-          </AlertContext.Provider>
-
-          <Tabs value={value} onChange={handleChange} aria-label="Reservations">
-            <Tab value={0} label="Manage reservations" wrapped />
-            <Tab value={1} label="Create Reservation" />
-          </Tabs>
-
-          <SwipeableViews
-            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-            index={value}
-            onChangeIndex={handleChangeIndex}
-          >
-            <TabPanel value={value} index={0} dir={theme.direction}>
-              <br />
-              <Reservations setAlertMessage={handleAlertChanges} />
-            </TabPanel>
-
-            <TabPanel value={value} index={1} dir={theme.direction}>
-              <CreateReservation
-                setAlertMessage={handleAlertChanges}
-                isLoading={!!alert.isLoading}
-              />
-            </TabPanel>
-          </SwipeableViews>
-        </Grid>
-      </Grid>
-    </Container>
+          )}
+        </Container>
+      </AlertContext.Provider>
+    </OauthContext.Provider>
   );
 };
 
-export default App;
+const AppWithOauth = () => {
+  return (
+    <AuthProvider authService={oauthService}>
+      <App />
+    </AuthProvider>
+  );
+};
+
+export default AppWithOauth;

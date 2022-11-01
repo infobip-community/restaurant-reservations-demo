@@ -6,6 +6,15 @@ export interface AlertI {
   type?: AlertColor;
   isVisible?: boolean;
 }
+
+export interface AlertContextI {
+  isLoading?: boolean;
+  message?: string;
+  type?: AlertColor;
+  isVisible?: boolean;
+  updateAlertContext: (alert: AlertI) => void;
+}
+
 export interface APIResponseI {
   message?: string;
 }
@@ -31,4 +40,10 @@ export interface TabPanelProps {
   dir?: string;
   index: number;
   value: number;
+}
+
+export interface OauthContextI {
+  access_token: string;
+  token_type: string;
+  authToken: string;
 }
