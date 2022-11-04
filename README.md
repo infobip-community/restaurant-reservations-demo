@@ -336,14 +336,16 @@ Steps for integration:
 
    2.2  Replace env variables values with your own
 
-   ```REACT_APP_OAUTH_ACTIVE="true"
-CLIENT_ID="123456789"
-PROVIDER="www.infobip.com"
-REDIRECT_URI="www.myawesomeapp.com"```
+```sh
+   REACT_APP_OAUTH_ACTIVE="true"
+   CLIENT_ID="123456789"
+   PROVIDER="www.infobip.com"
+   REDIRECT_URI="www.myawesomeapp.com"
+```
 
 3. Create your Auth Service instance with your credentials(If you followed step 2, you will have them ready on process.env object)
 
-```
+```js
 import { AuthService } from "react-oauth2-pkce";
 
 const oauthService = new AuthService({
@@ -364,7 +366,7 @@ You can trigger login functionality with authService.authorize()
 After the login page is prompted user will be redirected to where redirectUri is specified and you can get tokens using 
 authService.getAuthTokens().
 
-```
+```js
  useEffect(() => {
     const getOauth = async () => {
       if (!authService.isAuthenticated()) {
@@ -386,7 +388,8 @@ authService.getAuthTokens().
 
 Example of response
 
-```{
+```js
+{
    accountKey: "91823h-kj392-jkh8",
    email: "user@infobip.com",
    expires_at: "",
@@ -400,7 +403,7 @@ Example of response
 ```
 6.We are using React.Context to expose oauth token values to our app and we added some condition to give users access to the app if we have retrieved succesfully a access_token and token_type
 
-```
+``` js
    {!oauthEnabled || oauthContext.authToken ? (
      <Grid container justifyContent="center">
        <Grid item xs={12} md={10}>
