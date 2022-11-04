@@ -319,6 +319,98 @@ The link that you enter here will be the one that Infobip platform will use as a
 
 NOTE: For more information about OAuth2.0 PKCE click [here](https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow-with-proof-key-for-code-exchange-pkce).
 
+#### React Example
+
+In this repository you can find an example of using OAuth PKCE library for React.
+Steps for integration:
+
+1.  Add react-oauth2-pkce to your react app 
+
+`npm install react-oauth2-pkce –save`
+
+2. We have also added env-cmd to avoid exposing sensitive data on repositories, you can also follow this steps or skip if your able to enter your credentials directly.
+
+`npm install env-cmd –save`
+
+   2.1 Copy .env.sample file from that is on client folder
+
+   2.2  Replace env variables values with your own
+
+   ```REACT_APP_OAUTH_ACTIVE="true"
+CLIENT_ID="123456789"
+PROVIDER="www.infobip.com"
+REDIRECT_URI="www.myawesomeapp.com"```
+
+3. Create your Auth Service instance with your credentials(If you followed step 2, you will have them ready on process.env object)
+
+```
+import { AuthService } from "react-oauth2-pkce";
+
+const oauthService = new AuthService({
+  clientId: process.env.REACT_APP_CLIENT_ID || "",
+  provider: process.env.REACT_APP_PROVIDER || "",
+  redirectUri: process.env.REACT_APP_REDIRECT_URI || "",
+  scopes: ["conversations"],
+  location: window.location,
+});
+
+export default oauthService;
+```
+
+4. Add AuthProvider on your app, send the value of the service you created in step 3
+
+In our example, we are calling auth service as soon as it's defined. 
+You can trigger login functionality with authService.authorize()
+After the login page is prompted user will be redirected to where redirectUri is specified and you can get tokens using 
+authService.getAuthTokens().
+
+```
+ useEffect(() => {
+    const getOauth = async () => {
+      if (!authService.isAuthenticated()) {
+        return authService.authorize();
+      }
+      const { access_token, token_type } = authService.getAuthTokens();
+      const authToken = `${token_type} ${access_token}`;
+
+      if (access_token && token_type) {
+        setOauthContext({ access_token, token_type, authToken });
+      }
+    };
+
+    if (oauthEnabled) {
+      getOauth();
+    }
+  }, [oauthEnabled, authService]);
+```
+
+Example of response
+
+```{
+   accountKey: "91823h-kj392-jkh8",
+   email: "user@infobip.com",
+   expires_at: "",
+   groups: [],
+   roles: [],
+   token: "d8asdn-kjasd8912j-ahsdk",
+   tokenType: "IBSSO",
+   userKey: "123"
+   userName: "user"
+}
+```
+6.We are using React.Context to expose oauth token values to our app and we added some condition to give users access to the app if we have retrieved succesfully a access_token and token_type
+
+```
+   {!oauthEnabled || oauthContext.authToken ? (
+     <Grid container justifyContent="center">
+       <Grid item xs={12} md={10}>
+         <Typography variant="h4" component="h4">
+           Awesome Restaurant
+         </Typography>
+        </Grid>
+     </grid>)
+   }
+```
 ---
 
 ### Infobip Answers and the encrypted token
