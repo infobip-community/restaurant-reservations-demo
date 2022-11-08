@@ -54,7 +54,7 @@ const App = () => {
     if (oauthEnabled) {
       getOauth();
     }
-  }, [oauthEnabled, authService]);
+  }, [authService, oauthEnabled]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
