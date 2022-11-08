@@ -29,6 +29,7 @@ import {
 import oauthService from "../services/oauth";
 
 const App = () => {
+  console.log("oauth");
   const oauthEnabled = process.env["REACT_APP_OAUTH_ACTIVE"] === "true";
   const { authService } = useAuth();
   const [alert, setAlert] = useState<AlertI>(defaultAlertContextValue);
