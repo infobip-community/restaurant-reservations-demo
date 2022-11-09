@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AlertI, OauthContextI } from "./App.types";
+import { AlertI } from "./App.types";
 import Reservations from "../components/reservations/Reservations";
 import {
   Alert,
@@ -119,11 +119,11 @@ const App = () => {
           </Grid>
         )}
 
-        {authService.isPending() && !authService.isAuthenticated() && (
+        {/* {authService.isPending() && !authService.isAuthenticated() && (
           <Backdrop open={true} style={{ zIndex: 1 }}>
             <CircularProgress color="inherit" />
           </Backdrop>
-        )}
+        )} */}
 
         {!authService.isAuthenticated() && (
           <Button onClick={handleAuth}>Login</Button>
