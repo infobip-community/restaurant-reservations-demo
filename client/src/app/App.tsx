@@ -147,6 +147,10 @@ const App = () => {
   );
 };
 
-const AppWithOauth = () => {};
+const AppWithOauth = () => (
+  <AuthProvider authService={oauthService}>
+    <App />
+  </AuthProvider>
+);
 
 export default AppWithOauth;
