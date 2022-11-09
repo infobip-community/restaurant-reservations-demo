@@ -29,7 +29,7 @@ import {
 import oauthService from "../services/oauth";
 
 const App = () => {
-  console.log("oauth");
+  console.log("oautha");
   const oauthEnabled = "true";
   const { authService } = useAuth();
   const [alert, setAlert] = useState<AlertI>(defaultAlertContextValue);
