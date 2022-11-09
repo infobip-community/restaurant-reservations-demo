@@ -30,7 +30,7 @@ const App = () => {
   const [alert, setAlert] = useState<AlertI>(defaultAlertContextValue);
   const [currentTab, setCurrentTab] = React.useState(0);
   const theme = useTheme();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
@@ -69,6 +69,7 @@ const App = () => {
     if (!authService.isAuthenticated()) {
       if (!authService.getCodeFromLocation(window.location)) {
         authService.authorize();
+        setIsLoading(true);
       }
     } else {
       setIsLoading(false);
@@ -85,7 +86,7 @@ const App = () => {
               <br />
               <Typography variant="h4" component="h4">
                 Awesome Restaurant
-                <Button onClick={handleLogout}>Logout</Button>
+                {/* <Button onClick={handleLogout}>Logout</Button> */}
               </Typography>
               <br />
 
