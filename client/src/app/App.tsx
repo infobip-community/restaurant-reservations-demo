@@ -30,6 +30,7 @@ const App = () => {
   const [alert, setAlert] = useState<AlertI>(defaultAlertContextValue);
   const [currentTab, setCurrentTab] = React.useState(0);
   const theme = useTheme();
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
@@ -54,8 +55,14 @@ const App = () => {
   useEffect(() => {
     if (!authService.isAuthenticated()) {
       authService.authorize();
+    } else {
+      setIsLoading(false);
     }
-  }, [authService]);
+
+    if (!authService.isPending()) {
+      setIsLoading(false);
+    }
+  }, []);
 
   return (
     <AlertContext.Provider value={{ ...alert, updateAlertContext }}>
@@ -125,7 +132,7 @@ const App = () => {
           </Grid>
         )}
 
-        {authService.isPending() && !authService.isAuthenticated() && (
+        {isLoading && (
           <Backdrop open={true} style={{ zIndex: 1 }}>
             <CircularProgress color="inherit" />
           </Backdrop>
