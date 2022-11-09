@@ -54,8 +54,10 @@ const App = () => {
         }
       }
 
+      console.log("___", authService.getCodeFromLocation(window.location));
+
       if (!authService.isAuthenticated()) {
-        return authService.authorize();
+        // return authService.authorize();
       }
 
       const { access_token, token_type } = authService.getAuthTokens();
@@ -71,7 +73,7 @@ const App = () => {
     if (oauthEnabled) {
       getOauth();
     }
-  });
+  }, []);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
