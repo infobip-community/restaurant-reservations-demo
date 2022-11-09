@@ -44,14 +44,19 @@ const App = () => {
   };
 
   const handleAuth = () => {
+    console.log("__");
     authService.authorize();
   };
+
+  useEffect(() => {
+    console.log("TOKEN", authService.getAuthTokens());
+  }, [authService]);
 
   return (
     <AlertContext.Provider value={{ ...alert, updateAlertContext }}>
       <Container fixed>
         {/* ONLY SHOWS APP IF OAUTH TOKEN IS RETRIEVED */}
-        {!authService.isAuthenticated && (
+        {authService.isAuthenticated() && (
           <Grid container justifyContent="center">
             <Grid item xs={12} md={10}>
               <br />
@@ -114,7 +119,7 @@ const App = () => {
           </Grid>
         )}
 
-        {authService.isPending() && (
+        {authService.isPending() && !authService.isAuthenticated() && (
           <Backdrop open={true} style={{ zIndex: 1 }}>
             <CircularProgress color="inherit" />
           </Backdrop>
