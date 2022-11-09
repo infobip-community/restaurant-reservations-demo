@@ -41,6 +41,16 @@ const App = () => {
 
   useEffect(() => {
     const getOauth = async () => {
+      if (authService.isPending()) {
+        if (!authService.getCodeFromLocation(window.location)) {
+          //work arround to avoid getting stuck on pending becouse the token param is missing
+          localStorage.clear();
+        } else {
+          console.log("Pending...");
+          return;
+        }
+      }
+
       if (!authService.isAuthenticated()) {
         return authService.authorize();
       }
