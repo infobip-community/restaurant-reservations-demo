@@ -44,8 +44,11 @@ const App = () => {
   };
 
   const handleAuth = () => {
-    console.log("__");
     authService.authorize();
+  };
+
+  const handleLogout = () => {
+    authService.logout();
   };
 
   useEffect(() => {
@@ -62,6 +65,7 @@ const App = () => {
               <br />
               <Typography variant="h4" component="h4">
                 Awesome Restaurant
+                <Button onClick={handleLogout}>Login</Button>
               </Typography>
               <br />
 

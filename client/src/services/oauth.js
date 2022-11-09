@@ -8,7 +8,7 @@ const oauthService = new AuthService({
   provider: "https://oneapi.infobip.com/exchange/1/oauth",
   redirectUri: "https://restaurant-reservations-demo-oauth.azurewebsites.net/",
   scopes: ["conversations"],
-  location: "https://restaurant-reservations-demo-oauth.azurewebsites.net/",
+  location: window.location,
 });
 
 export default oauthService;
