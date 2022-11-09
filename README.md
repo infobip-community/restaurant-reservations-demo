@@ -321,7 +321,7 @@ NOTE: For more information about OAuth2.0 PKCE click [here](https://auth0.com/do
 
 #### React Example
 
-In this repository you can find an example of using OAuth PKCE library for React.
+In this repository you can find an example of using OAuth PKCE library for React. You can test it out [here](https://restaurant-reservations-demo-oauth.azurewebsites.net/)
 Steps for integration:
 
 1.  Add react-oauth2-pkce to your react app 
@@ -420,6 +420,22 @@ Example of response
     )
    }
 ```
+
+7. How to test it
+  7.1 Your app should redirect the user to the Infobip Portal login page. The library `react-oauth2-pkce` will do this automatically after you settingx up the `provider` props in auth service.
+  
+  `INSERT IMAGE HERE` 
+
+  7.2 If there is an issue with the login will show you a message error
+
+  7.3 After login in successfully it will automatically redirect to your app with an `code` param that will call your `tokenProvider` url that provided on auth service also to get the user token and information.
+
+  7.4 If token endpoint returns information correctly then the `authService.isAuthenticated()` method should return true and the app will be available.
+
+     `INSERT IMAGE HERE` 
+
+###### More oauth 2.0 information with examples [here](https://confluence.infobip.com/display/GOHP/OAuth+2.0)
+
 ---
 
 ### Infobip Answers and the encrypted token
