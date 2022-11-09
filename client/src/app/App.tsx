@@ -52,7 +52,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    console.log("TOKEN", authService.getAuthTokens());
+    authService.authorize();
   }, [authService]);
 
   return (
@@ -123,11 +123,11 @@ const App = () => {
           </Grid>
         )}
 
-        {/* {authService.isPending() && !authService.isAuthenticated() && (
+        {authService.isPending() && !authService.isAuthenticated() && (
           <Backdrop open={true} style={{ zIndex: 1 }}>
             <CircularProgress color="inherit" />
           </Backdrop>
-        )} */}
+        )}
 
         {!authService.isAuthenticated() && (
           <Button onClick={handleAuth}>Login</Button>
