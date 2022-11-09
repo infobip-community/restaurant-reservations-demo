@@ -27,9 +27,9 @@ import oauthService from "../services/oauth";
 
 const App = () => {
   const { authService } = useAuth();
+  const theme = useTheme();
   const [alert, setAlert] = useState<AlertI>(defaultAlertContextValue);
   const [currentTab, setCurrentTab] = React.useState(0);
-  const theme = useTheme();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -49,32 +49,21 @@ const App = () => {
   };
 
   const handleLogout = () => {
+    localStorage.clear();
     authService.logout();
   };
 
   useEffect(() => {
-    if (authService.isPending()) {
-      if (!authService.getCodeFromLocation(window.location)) {
-        //work arround to avoid getting stuck on pending becouse the token param is missing
-        localStorage.clear();
-        return;
-      } else {
-        setIsLoading(false);
-        return;
-      }
+    if (
+      !authService.isAuthenticated() &&
+      !authService.getCodeFromLocation(window.location)
+    ) {
+      setIsLoading(true);
+      authService.authorize();
     } else {
       setIsLoading(false);
     }
-
-    if (!authService.isAuthenticated()) {
-      if (!authService.getCodeFromLocation(window.location)) {
-        authService.authorize();
-        setIsLoading(true);
-      }
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
+  }, [authService]);
 
   return (
     <AlertContext.Provider value={{ ...alert, updateAlertContext }}>
@@ -86,7 +75,7 @@ const App = () => {
               <br />
               <Typography variant="h4" component="h4">
                 Awesome Restaurant
-                {/* <Button onClick={handleLogout}>Logout</Button> */}
+                <Button onClick={handleLogout}>Logout</Button>
               </Typography>
               <br />
 
@@ -150,7 +139,7 @@ const App = () => {
           </Backdrop>
         )}
 
-        {!authService.isAuthenticated() && (
+        {!authService.isAuthenticated() && !isLoading && (
           <Button onClick={handleAuth}>Login</Button>
         )}
       </Container>
@@ -158,12 +147,6 @@ const App = () => {
   );
 };
 
-const AppWithOauth = () => {
-  return (
-    <AuthProvider authService={oauthService}>
-      <App />
-    </AuthProvider>
-  );
-};
+const AppWithOauth = () => {};
 
 export default AppWithOauth;
