@@ -54,6 +54,7 @@ const App = () => {
       if (!authService.isAuthenticated()) {
         return authService.authorize();
       }
+
       const { access_token, token_type } = authService.getAuthTokens();
       const authToken = `${token_type} ${access_token}`;
 
@@ -62,10 +63,12 @@ const App = () => {
       }
     };
 
+    console.log("TOKEN", authService.getAuthTokens());
+
     if (oauthEnabled) {
       getOauth();
     }
-  }, [authService, oauthEnabled]);
+  }, []);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
