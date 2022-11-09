@@ -52,7 +52,9 @@ const App = () => {
   };
 
   useEffect(() => {
-    authService.authorize();
+    if (!authService.isAuthenticated()) {
+      authService.authorize();
+    }
   }, [authService]);
 
   return (
