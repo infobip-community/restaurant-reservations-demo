@@ -53,13 +53,21 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (!authService.isAuthenticated()) {
-      authService.authorize();
+    if (authService.isPending()) {
+      if (!authService.getCodeFromLocation(window.location)) {
+        //work arround to avoid getting stuck on pending becouse the token param is missing
+        localStorage.clear();
+      } else {
+        console.log("Pending...");
+        return;
+      }
     } else {
       setIsLoading(false);
     }
 
-    if (!authService.isPending()) {
+    if (!authService.isAuthenticated()) {
+      authService.authorize();
+    } else {
       setIsLoading(false);
     }
   }, []);
