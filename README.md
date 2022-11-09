@@ -328,19 +328,18 @@ Steps for integration:
 
 `npm install react-oauth2-pkce –save`
 
-2. We have also added env-cmd to avoid exposing sensitive data on repositories, you can also follow this steps or skip if your able to enter your credentials directly.
+2. We have also added .env files to avoid exposing sensitive data on repositories, you can also follow this steps or skip if your able to enter your credentials directly.
 
-`npm install env-cmd –save`
-
-   2.1 Copy .env.sample file from that is on client folder
+   2.1 Copy .env.sample file from that is on client folder to .env file
 
    2.2  Replace env variables values with your own
 
 ```sh
-   REACT_APP_OAUTH_ACTIVE="true"
-   CLIENT_ID="123456789"
-   PROVIDER="www.infobip.com"
-   REDIRECT_URI="www.myawesomeapp.com"
+  REACT_APP_OAUTH_ACTIVE="true"
+  REACT_APP_CLIENT_ID="eaf2lk1j940e0124f0e7c68a121c0582"
+  REACT_APP_PROVIDER="https://portal.infobip.com/api/amg/exchange/1/oauth"
+  REACT_APP_TOKEN="https://oneapi.ioinfobip.com/exchange/1/oauth"
+  REACT_APP_REDIRECT_URI="https://restaurant-reservations-demo-oauth.azurewebsites.net/"
 ```
 
 3. Create your Auth Service instance with your credentials(If you followed step 2, you will have them ready on process.env object)
@@ -351,6 +350,7 @@ import { AuthService } from "react-oauth2-pkce";
 const oauthService = new AuthService({
   clientId: process.env.REACT_APP_CLIENT_ID || "",
   provider: process.env.REACT_APP_PROVIDER || "",
+  tokenEndpoint: process.env.REACT_APP_TOKEN || "",
   redirectUri: process.env.REACT_APP_REDIRECT_URI || "",
   scopes: ["conversations"],
   location: window.location,
@@ -359,7 +359,17 @@ const oauthService = new AuthService({
 export default oauthService;
 ```
 
-4. Add AuthProvider on your app, send the value of the service you created in step 3
+4. Wrap your app in our AuthProvider, send the value of the service you created in step 3
+
+```js
+ const AppWithOauth = () => (
+  <AuthProvider authService={oauthService}>
+    <App />
+  </AuthProvider>
+);
+
+export default AppWithOauth;
+```
 
 In our example, we are calling auth service as soon as it's defined. 
 You can trigger login functionality with authService.authorize()
@@ -367,23 +377,17 @@ After the login page is prompted user will be redirected to where redirectUri is
 authService.getAuthTokens().
 
 ```js
- useEffect(() => {
-    const getOauth = async () => {
-      if (!authService.isAuthenticated()) {
-        return authService.authorize();
-      }
-      const { access_token, token_type } = authService.getAuthTokens();
-      const authToken = `${token_type} ${access_token}`;
-
-      if (access_token && token_type) {
-        setOauthContext({ access_token, token_type, authToken });
-      }
-    };
-
-    if (oauthEnabled) {
-      getOauth();
+  useEffect(() => {
+    if (
+      !authService.isAuthenticated() &&
+      !authService.getCodeFromLocation(window.location)
+    ) {
+      setIsLoading(true);
+      authService.authorize();
+    } else {
+      setIsLoading(false);
     }
-  }, [oauthEnabled, authService]);
+  }, [authService]); 
 ```
 
 Example of response
@@ -404,14 +408,16 @@ Example of response
 6.We are using React.Context to expose oauth token values to our app and we added some condition to give users access to the app if we have retrieved succesfully a access_token and token_type
 
 ``` js
-   {!oauthEnabled || oauthContext.authToken ? (
-     <Grid container justifyContent="center">
-       <Grid item xs={12} md={10}>
-         <Typography variant="h4" component="h4">
-           Awesome Restaurant
-         </Typography>
-        </Grid>
-     </grid>)
+  {authService.isAuthenticated() && (
+          <Grid container justifyContent="center">
+            <Grid item xs={12} md={10}>
+              <Typography variant="h4" component="h4">
+                Awesome Restaurant
+                <Button onClick={handleLogout}>Logout</Button>
+              </Typography>
+            </Grid>
+          </Grid>
+    )
    }
 ```
 ---
