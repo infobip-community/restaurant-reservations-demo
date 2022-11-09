@@ -42,11 +42,14 @@ const App = () => {
   useEffect(() => {
     const getOauth = async () => {
       if (authService.isPending()) {
+        console.log(
+          "PENDING",
+          authService.getCodeFromLocation(window.location)
+        );
         if (!authService.getCodeFromLocation(window.location)) {
           //work arround to avoid getting stuck on pending becouse the token param is missing
           localStorage.clear();
         } else {
-          console.log("Pending...");
           return;
         }
       }
@@ -68,7 +71,7 @@ const App = () => {
     if (oauthEnabled) {
       getOauth();
     }
-  }, []);
+  });
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
