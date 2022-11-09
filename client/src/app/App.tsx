@@ -56,7 +56,8 @@ const App = () => {
     console.log("___", authService.getCodeFromLocation(window.location));
 
     if (!authService.isAuthenticated()) {
-      return authService.authorize();
+      authService.authorize();
+      return;
     }
 
     const { access_token, token_type } = authService.getAuthTokens();
