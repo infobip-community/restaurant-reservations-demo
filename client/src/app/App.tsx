@@ -57,8 +57,9 @@ const App = () => {
       if (!authService.getCodeFromLocation(window.location)) {
         //work arround to avoid getting stuck on pending becouse the token param is missing
         localStorage.clear();
+        return;
       } else {
-        console.log("Pending...");
+        setIsLoading(false);
         return;
       }
     } else {
@@ -66,7 +67,9 @@ const App = () => {
     }
 
     if (!authService.isAuthenticated()) {
-      authService.authorize();
+      if (!authService.getCodeFromLocation(window.location)) {
+        authService.authorize();
+      }
     } else {
       setIsLoading(false);
     }
@@ -82,7 +85,7 @@ const App = () => {
               <br />
               <Typography variant="h4" component="h4">
                 Awesome Restaurant
-                <Button onClick={handleLogout}>Login</Button>
+                <Button onClick={handleLogout}>Logout</Button>
               </Typography>
               <br />
 
