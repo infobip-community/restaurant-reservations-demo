@@ -40,39 +40,33 @@ const App = () => {
   const theme = useTheme();
 
   useEffect(() => {
-    const getOauth = async () => {
-      if (authService.isPending()) {
-        console.log(
-          "PENDING",
-          authService.getCodeFromLocation(window.location)
-        );
-        if (!authService.getCodeFromLocation(window.location)) {
-          //work arround to avoid getting stuck on pending becouse the token param is missing
-          localStorage.clear();
-        } else {
-          return;
-        }
-      }
+    // if (authService.isPending()) {
+    //   console.log(
+    //     "PENDING",
+    //     authService.getCodeFromLocation(window.location)
+    //   );
+    //   if (!authService.getCodeFromLocation(window.location)) {
+    //     //work arround to avoid getting stuck on pending becouse the token param is missing
+    //     localStorage.clear();
+    //   } else {
+    //     return;
+    //   }
+    // }
 
-      console.log("___", authService.getCodeFromLocation(window.location));
+    console.log("___", authService.getCodeFromLocation(window.location));
 
-      if (!authService.isAuthenticated()) {
-        // return authService.authorize();
-      }
+    if (!authService.isAuthenticated()) {
+      return authService.authorize();
+    }
 
-      const { access_token, token_type } = authService.getAuthTokens();
-      const authToken = `${token_type} ${access_token}`;
+    const { access_token, token_type } = authService.getAuthTokens();
+    const authToken = `${token_type} ${access_token}`;
 
-      if (access_token && token_type) {
-        setOauthContext({ access_token, token_type, authToken });
-      }
-    };
+    if (access_token && token_type) {
+      setOauthContext({ access_token, token_type, authToken });
+    }
 
     console.log("TOKEN", authService.getAuthTokens());
-
-    if (oauthEnabled) {
-      getOauth();
-    }
   }, []);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
