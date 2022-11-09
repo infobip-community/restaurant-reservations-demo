@@ -56,7 +56,7 @@ const App = () => {
     console.log("___", authService.getCodeFromLocation(window.location));
 
     if (!authService.isAuthenticated()) {
-      authService.authorize();
+      // authService.authorize();
       return;
     }
 
