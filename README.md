@@ -401,7 +401,7 @@ Example of response
    roles: [],
    token: "d8asdn-kjasd8912j-ahsdk",
    tokenType: "IBSSO",
-   userKey: "123"
+   userKey: "123",
    userName: "user"
 }
 ```
