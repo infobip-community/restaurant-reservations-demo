@@ -10,7 +10,7 @@ const oauthService = new AuthService({
     "https://portal.infobip.com/api/amg/exchange/1/oauth",
   redirectUri:
     process.env.REACT_APP_REDIRECT_URI ||
-    "https://restaurant-reservations-demo.azurewebsites.net/",
+    "https://restaurant-reservations-demo-oauth.azurewebsites.net/",
   scopes: ["conversations"],
   location: window.location,
 });
