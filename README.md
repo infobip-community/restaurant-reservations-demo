@@ -337,10 +337,11 @@ Steps for integration:
    2.2  Replace env variables values with your own
 
 ```sh
-   REACT_APP_OAUTH_ACTIVE="true"
-   CLIENT_ID="123456789"
-   PROVIDER="www.infobip.com"
-   REDIRECT_URI="www.myawesomeapp.com"
+  REACT_APP_OAUTH_ACTIVE="true"
+  REACT_APP_CLIENT_ID="eaf2lk1j940e0124f0e7c68a121c0582"
+  REACT_APP_PROVIDER="https://portal.infobip.com/api/amg/exchange/1/oauth"
+  REACT_APP_TOKEN="https://portal.infobip.com/api/amg/exchange/1/oauth"
+  REACT_APP_REDIRECT_URI="https://restaurant-reservations-demo.azurewebsites.net/"
 ```
 
 3. Create your Auth Service instance with your credentials(If you followed step 2, you will have them ready on process.env object)
@@ -351,6 +352,7 @@ import { AuthService } from "react-oauth2-pkce";
 const oauthService = new AuthService({
   clientId: process.env.REACT_APP_CLIENT_ID || "",
   provider: process.env.REACT_APP_PROVIDER || "",
+  tokenEndpoint: process.env.REACT_APP_TOKEN || "",
   redirectUri: process.env.REACT_APP_REDIRECT_URI || "",
   scopes: ["conversations"],
   location: window.location,
@@ -404,14 +406,16 @@ Example of response
 6.We are using React.Context to expose oauth token values to our app and we added some condition to give users access to the app if we have retrieved succesfully a access_token and token_type
 
 ``` js
-   {!oauthEnabled || oauthContext.authToken ? (
-     <Grid container justifyContent="center">
-       <Grid item xs={12} md={10}>
-         <Typography variant="h4" component="h4">
-           Awesome Restaurant
-         </Typography>
-        </Grid>
-     </grid>)
+  {authService.isAuthenticated() && (
+          <Grid container justifyContent="center">
+            <Grid item xs={12} md={10}>
+              <Typography variant="h4" component="h4">
+                Awesome Restaurant
+                <Button onClick={handleLogout}>Logout</Button>
+              </Typography>
+            </Grid>
+          </Grid>
+    )
    }
 ```
 ---
