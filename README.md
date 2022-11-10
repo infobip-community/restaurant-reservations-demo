@@ -322,25 +322,31 @@ NOTE: For more information about OAuth2.0 PKCE click [here](https://auth0.com/do
 #### React Example
 
 In this repository you can find an example of using OAuth PKCE library for React. You can test it out [here](https://restaurant-reservations-demo-oauth.azurewebsites.net/)
+
 Steps for integration:
 
 1.  Add react-oauth2-pkce to your react app 
 
 `npm install react-oauth2-pkce –save`
 
-2. We have also added .env files to avoid exposing sensitive data on repositories, you can also follow this steps or skip if your able to enter your credentials directly.
+2.  We have also added `.env` files to avoid exposing sensitive data on repositories, you can also follow these steps or skip them if you are able to enter your credentials directly.
 
    2.1 Copy .env.sample file from that is on client folder to .env file
 
-   2.2  Replace env variables values with your own
+   2.2  Replace env variables values with your own client_id and redirect_uri obtained and set in exchange/partners form
 
 ```sh
   REACT_APP_OAUTH_ACTIVE="true"
-  REACT_APP_CLIENT_ID="eaf2lk1j940e0124f0e7c68a121c0582"
-  REACT_APP_PROVIDER="https://portal.infobip.com/api/amg/exchange/1/oauth"
-  REACT_APP_TOKEN="https://oneapi.ioinfobip.com/exchange/1/oauth"
+  REACT_APP_CLIENT_ID="eaf2e781440e0124f0e7c68a121c0582"
+  REACT_APP_PROVIDER="https://portal.infobip.com/conversations/api/amg/exchange/1/oauth"
+  REACT_APP_TOKEN="https://portal.infobip.com/conversations/api/amg/exchange/1/oauth"
   REACT_APP_REDIRECT_URI="https://restaurant-reservations-demo-oauth.azurewebsites.net/"
 ```
+
+2.3 Redirect URI has to be the same that you set up on the exchange partners site for your application, and also there you can get  the clientId for your app
+
+
+![Exchange partners app](https://confluence.infobip.com/download/attachments/335395322/Screen%20Shot%202022-11-10%20at%209.37.38.png?version=1&modificationDate=1668094663000&api=v2)
 
 3. Create your Auth Service instance with your credentials(If you followed step 2, you will have them ready on process.env object)
 
@@ -359,7 +365,7 @@ const oauthService = new AuthService({
 export default oauthService;
 ```
 
-4. Wrap your app in our AuthProvider, send the value of the service you created in step 3
+4. Wrap your app in our AuthProvider, and send the value of the service you created in step 3
 
 ```js
  const AppWithOauth = () => (
@@ -405,7 +411,7 @@ Example of response
    userName: "user"
 }
 ```
-6.We are using React.Context to expose oauth token values to our app and we added some condition to give users access to the app if we have retrieved succesfully a access_token and token_type
+6. We added a condition to only show the app content if the user is logged in using auth service isAuthentitated method
 
 ``` js
   {authService.isAuthenticated() && (
@@ -421,18 +427,22 @@ Example of response
    }
 ```
 
-7. How to test it
-  7.1 Your app should redirect the user to the Infobip Portal login page. The library `react-oauth2-pkce` will do this automatically after you settingx up the `provider` props in auth service.
+7. Let's try it out
+  7.1 Your app should redirect the user to the Infobip Portal login page. The library `react-oauth2-pkce` will do this automatically after you set up the `provider` props in auth service.
   
-  `INSERT IMAGE HERE` 
+
+![Infobip login portal](https://confluence.infobip.com/download/attachments/335395322/Screen%20Shot%202022-11-10%20at%209.31.26.png?version=1&modificationDate=1668094290000&api=v2)
 
   7.2 If there is an issue with the login will show you a message error
 
-  7.3 After login in successfully it will automatically redirect to your app with an `code` param that will call your `tokenProvider` url that provided on auth service also to get the user token and information.
+![Loggin message error](https://confluence.infobip.com/download/attachments/335395322/Screen%20Shot%202022-11-10%20at%209.49.00.png?version=1&modificationDate=1668095352000&api=v2)
 
-  7.4 If token endpoint returns information correctly then the `authService.isAuthenticated()` method should return true and the app will be available.
+  7.3 After login in successfully it will automatically redirect to your app with an `code` param that will call your `tokenProvider` url that is provided on auth service also to get the user token and information.
 
-     `INSERT IMAGE HERE` 
+  7.4 If the token endpoint returns information correctly then the `authService.isAuthenticated()` method should return true and the app will be available.
+
+![Loggin message error](https://confluence.infobip.com/download/attachments/335395322/Screen%20Shot%202022-11-10%20at%209.33.13.png?version=1&modificationDate=1668094398000&api=v2)
+
 
 ###### More oauth 2.0 information with examples [here](https://confluence.infobip.com/display/GOHP/OAuth+2.0)
 
