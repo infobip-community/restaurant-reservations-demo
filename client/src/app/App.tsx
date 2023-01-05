@@ -31,6 +31,7 @@ const App = () => {
   const [alert, setAlert] = useState<AlertI>(defaultAlertContextValue);
   const [currentTab, setCurrentTab] = React.useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
@@ -54,6 +55,7 @@ const App = () => {
   };
 
   useEffect(() => {
+    if (!authEnabled) { return;  }
     if (
       !authService.isAuthenticated() &&
       !authService.getCodeFromLocation(window.location)
@@ -63,19 +65,19 @@ const App = () => {
     } else {
       setIsLoading(false);
     }
-  }, [authService]);
+  }, [authService, authEnabled]);
 
   return (
     <AlertContext.Provider value={{ ...alert, updateAlertContext }}>
       <Container fixed>
         {/* ONLY SHOWS APP IF OAUTH TOKEN IS RETRIEVED */}
-        {authService.isAuthenticated() && (
+        {(!authEnabled || authService.isAuthenticated()) && (
           <Grid container justifyContent="center">
             <Grid item xs={12} md={10}>
               <br />
               <Typography variant="h4" component="h4">
                 Awesome Restaurant
-                <Button onClick={handleLogout}>Logout</Button>
+                {authEnabled && ( <Button onClick={handleLogout}>Logout</Button>)}
               </Typography>
               <br />
 
@@ -139,7 +141,7 @@ const App = () => {
           </Backdrop>
         )}
 
-        {!authService.isAuthenticated() && !isLoading && (
+        {authEnabled && !authService.isAuthenticated() && !isLoading && (
           <Button onClick={handleAuth}>Login</Button>
         )}
       </Container>
