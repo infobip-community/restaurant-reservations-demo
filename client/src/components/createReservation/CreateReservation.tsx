@@ -143,6 +143,7 @@ const CreateReservation = () => {
 
   const isReservationValid = (errors: ErrorI) => {
     return !Object.values(errors).length;
+
   };
 
   const addReservation = async () => {
