@@ -330,6 +330,15 @@ const Reservations = () => {
                   </>
                 )}
               </Box>
+                {reservationSelected.additionalFields && reservationSelected.additionalFields.map(field => <Box key={field.name} sx={{ display: "flex", flexFlow: "row", pt: 2 }}>
+                  <Typography sx={{ fontSize: 20 }} variant="h5">
+                    {field.name}:
+                  </Typography>
+                  <Typography sx={{ fontSize: 20, ml: 1 }} color="text.secondary">
+                    {field.value}
+                  </Typography>
+                    </Box>
+                )}
             </CardContent>
             <CardActions sx={{ display: "flex", flexFlow: "row-reverse" }}>
               <Button

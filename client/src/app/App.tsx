@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { AlertI } from "./App.types";
+import {AlertI, AppTypesI} from "./App.types";
 import Reservations from "../components/reservations/Reservations";
+import { useNavigate } from "@reach/router"
 import {
   Alert,
   Tab,
@@ -25,8 +26,9 @@ import {
 } from "../contexts/AlertContext";
 import oauthService from "../services/oauth";
 
-const App = () => {
+const App:React.FC<AppTypesI> = () => {
   const { authService } = useAuth();
+  const navigate = useNavigate();
   const theme = useTheme();
   const [alert, setAlert] = useState<AlertI>(defaultAlertContextValue);
   const [currentTab, setCurrentTab] = React.useState(0);
@@ -72,15 +74,16 @@ const App = () => {
       <Container fixed>
         {/* ONLY SHOWS APP IF OAUTH TOKEN IS RETRIEVED */}
         {(!authEnabled || authService.isAuthenticated()) && (
-          <Grid container justifyContent="center">
-            <Grid item xs={12} md={10}>
-              <br />
+          <Grid container spacing={2} justifyContent="center">
+            <br />
+            <Grid item  xs={12} md={10}>
               <Typography variant="h4" component="h4">
                 Awesome Restaurant
                 {authEnabled && ( <Button onClick={handleLogout}>Logout</Button>)}
               </Typography>
-              <br />
-
+            </Grid>
+            <br />
+            <Grid item xs={12} md={10}>
               <Backdrop open={!!alert.isLoading} style={{ zIndex: 1 }}>
                 <CircularProgress color="inherit" />
               </Backdrop>
@@ -149,9 +152,9 @@ const App = () => {
   );
 };
 
-const AppWithOauth = () => (
+const AppWithOauth:React.FC<AppTypesI> = () => (
   <AuthProvider authService={oauthService}>
-    <App />
+    <App path={'/'}/>
   </AuthProvider>
 );
 
