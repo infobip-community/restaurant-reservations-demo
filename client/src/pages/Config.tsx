@@ -78,10 +78,12 @@ const  ConfigPage: React.FC<ConfigTypesI> = () => {
 
     return(<Container fixed>
         <Grid container spacing={2} justifyContent="center">
+            <br />
             <Grid item xs={12} md={10}>
                 <Typography variant="h4" component="h4">
-                    Config
+                    Configuration Page
                 </Typography>
+                <br />
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                         <TableHead>
