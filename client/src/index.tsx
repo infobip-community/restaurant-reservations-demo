@@ -1,15 +1,10 @@
 import React from "react";
 import * as ReactDOM from "react-dom";
-import App from "./app/App";
-import { Router } from "@reach/router"
-import ConfigPage from "./pages/Config";
+import App from "./app";
 
 ReactDOM.render(
   <React.StrictMode>
-      <Router>
-          <App path={'/'}/>
-          <ConfigPage path={'config'}/>
-      </Router>
+   <App />
   </React.StrictMode>,
   document.getElementById("root")
 );

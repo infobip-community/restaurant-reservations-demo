@@ -1,6 +1,6 @@
 import * as React from "react";
 import Restaurant from "@mui/icons-material/Restaurant";
-import { ReservationI } from "../../app/App.types";
+import { ReservationI } from "../../pages/home/Home.types";
 import { useContext, useState } from "react";
 import { APIPath } from "../../const";
 

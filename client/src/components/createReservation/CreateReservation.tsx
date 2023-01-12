@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
-import { ErrorI, ReservationI } from "../../app/App.types";
+import { ErrorI, ReservationI } from "../../pages/home/Home.types";
 import {APIConfigPath, APIPath} from "../../const";
 import { Grid } from "@mui/material";
 import styled from "@emotion/styled";
