@@ -111,16 +111,10 @@ export const addConfigFields = async (fields) => {
   await db.write();
 };
 
-export const getAdditionalFields = async (id, reservationUpdated) => {
+export const getAdditionalFields = async () => {
   db.chain = lodash.chain(db.data);
   const configFields = db.chain.get("config").get("fields");
-  const filterFields = configFields.chain().filter(field => {
-    let f;
-    if (field.additional){
-      f = field;
-    }
-    return f
-  }).value()
+  const filterFields = configFields.chain().filter(field=> field.additional).value();
   return filterFields;
 };
 

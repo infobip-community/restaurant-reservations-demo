@@ -78,15 +78,15 @@ const CreateReservation = () => {
       const response = await fetch(`${APIConfigPath}/additionalFields`, {});
       const result = await response.json();
       let additionalFieldsArr:Field[] = [];
-      const addtionalF:FieldI[] = result.config
+      const addtionalF:FieldI[] = result.config.length ? result.config : [];
       setAdditionalFields(result.config);
-      addtionalF.map(field => {
+      addtionalF.forEach(field => {
         const newField = {name: field.name, value: ''}
         additionalFieldsArr.push(newField);
       })
       setNewReservation({...newReservation, additionalFields: [...additionalFieldsArr] });
     })();
-  },[]);
+  },[newReservation]);
 
   const handleChange = (newValue: Date | null, field: string) => {
     let today = new Date(newValue ? newValue : "");
@@ -279,7 +279,7 @@ const CreateReservation = () => {
           />
         </Grid>
         {additionalFields && additionalFields.map((additionalField, index) =>
-            <Grid item xs={12}>
+            <Grid key={index} item xs={12}>
             <TextField
                 fullWidth
                 key={additionalField.name}

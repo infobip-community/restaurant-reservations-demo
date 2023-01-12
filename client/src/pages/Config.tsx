@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import { ConfigTypesI, FieldI} from "./ConfigTypes";
 import {
-    Button,
     Container,
-    Grid, Icon, Paper,
+    Grid, Paper,
     Table, TableBody,
     TableCell,
     TableContainer,
@@ -15,7 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
-import {APIConfigPath, APIPath} from "../const";
+import {APIConfigPath} from "../const";
 
 const EmptyField = {
     name: '',
@@ -34,7 +33,6 @@ const  ConfigPage: React.FC<ConfigTypesI> = () => {
           const response = await fetch(`${APIConfigPath}`, {});
              const result = await response.json();
             result.config && setFields(result.config.fields);
-
         })();
     },[]);
 
@@ -96,7 +94,7 @@ const  ConfigPage: React.FC<ConfigTypesI> = () => {
                         <TableBody>
                             {fields.map((field,index) => (
                                 <TableRow
-                                key={`${index}`}
+                                key={index}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                             <TableCell align="right">
