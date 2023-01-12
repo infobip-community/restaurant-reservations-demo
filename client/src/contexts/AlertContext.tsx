@@ -1,5 +1,5 @@
 import React from "react";
-import { AlertI } from "../app/App.types";
+import { AlertI } from "../pages/home/Home.types";
 
 export const defaultAlertContextValue: AlertI = {
   isLoading: false,

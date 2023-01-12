@@ -7,10 +7,10 @@ import {
   SelectChangeEvent,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
-import { ErrorI, ReservationI } from "../../app/App.types";
-import { APIPath } from "../../const";
+import { ErrorI, ReservationI } from "../../pages/home/Home.types";
+import {APIConfigPath, APIPath} from "../../const";
 import { Grid } from "@mui/material";
 import styled from "@emotion/styled";
 
@@ -20,6 +20,8 @@ import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
 import { Diversity3 } from "@mui/icons-material";
 import { validateReservation } from "../../utlis/validations/validateReservation";
 import { AlertContext } from "../../contexts/AlertContext";
+import {FieldI} from "../../pages/ConfigTypes";
+import {Field} from "./CreateReservationTypes";
 
 const TODAY = new Date();
 let MINUTE = TODAY.getMinutes();
@@ -43,6 +45,7 @@ const emptyNewReservation = {
     TODAY.getUTCMonth() + 1
   }/${TODAY.getUTCDate()}/${TODAY.getUTCFullYear()}`,
   party_size: "2",
+  additionalFields: [],
 };
 
 const ButtonContainer = styled.div`
@@ -67,7 +70,23 @@ const CreateReservation = () => {
   const [date, setDate] = useState<Date | null>(new Date());
   const [startTime, setStartTime] = useState<Date | null>(TODAY);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [additionalFields, setAdditionalFields] = useState<FieldI[]>([]);
   const { updateAlertContext, isLoading } = React.useContext(AlertContext);
+
+  useEffect(()=> {
+    (async () => {
+      const response = await fetch(`${APIConfigPath}/additionalFields`, {});
+      const result = await response.json();
+      let additionalFieldsArr:Field[] = [];
+      const addtionalF:FieldI[] = result.config.length ? result.config : [];
+      setAdditionalFields(result.config);
+      addtionalF.forEach(field => {
+        const newField = {name: field.name, value: ''}
+        additionalFieldsArr.push(newField);
+      })
+      setNewReservation({...newReservation, additionalFields: [...additionalFieldsArr] });
+    })();
+  },[newReservation]);
 
   const handleChange = (newValue: Date | null, field: string) => {
     let today = new Date(newValue ? newValue : "");
@@ -109,6 +128,18 @@ const CreateReservation = () => {
     }
     setErrors(errors);
   };
+
+  const handleChangeAdditionalFields = (fieldName:string,value:string, index:number)=>{
+    const additionalField:Field = {name: fieldName, value: value};
+    let additionalFieldsArr:Field[];
+    if (newReservation.additionalFields){
+      additionalFieldsArr = [...newReservation.additionalFields]
+    }else{
+      additionalFieldsArr = []
+    }
+    additionalFieldsArr[index] = additionalField;
+    setNewReservation({...newReservation, additionalFields: [...additionalFieldsArr]});
+  }
 
   const isReservationValid = (errors: ErrorI) => {
     return !Object.values(errors).length;
@@ -152,6 +183,17 @@ const CreateReservation = () => {
       });
     }
   };
+
+  const getAdditionalFieldValue = (fieldName:string) => {
+    let value = ''
+    if (newReservation.additionalFields) {
+      const additionalField = newReservation.additionalFields.find((f) => f.name === fieldName);
+      if (additionalField){
+        value = additionalField.value;
+      }
+    }
+    return value;
+  }
 
   return (
     <>
@@ -236,6 +278,19 @@ const CreateReservation = () => {
             helperText={isSubmitted ? errors.host_email : ""}
           />
         </Grid>
+        {additionalFields && additionalFields.map((additionalField, index) =>
+            <Grid key={index} item xs={12}>
+            <TextField
+                fullWidth
+                key={additionalField.name}
+                error={false}
+                name={additionalField.name}
+                label={additionalField.placeHolder}
+                value={getAdditionalFieldValue(additionalField.name)}
+                onChange={e => handleChangeAdditionalFields(additionalField.name,e.target.value,index)}
+            />
+          </Grid>
+        )}
         <Grid item xs={12} md={12} lg={12}>
           <ButtonContainer>
             <Button

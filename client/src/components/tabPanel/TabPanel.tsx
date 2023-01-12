@@ -1,4 +1,4 @@
-import { TabPanelProps } from "../../app/App.types";
+import { TabPanelProps } from "../../pages/home/Home.types";
 
 const TabPanel = (props: TabPanelProps) => {
   const { children, value, index, ...other } = props;
