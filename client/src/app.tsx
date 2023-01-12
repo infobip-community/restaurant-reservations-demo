@@ -31,8 +31,6 @@ const AppWithOauth: React.FC = () => {
     }
   }, [authService, authEnabled]);
 
-    console.log("holi___", authEnabled)
-
   return (
     <>
       {(!authEnabled || authService.isAuthenticated()) && (
