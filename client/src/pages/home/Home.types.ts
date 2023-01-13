@@ -49,7 +49,3 @@ export interface OauthContextI {
   token_type: string;
   authToken: string;
 }
-
-export interface AppTypesI {
-  path: string;
-}

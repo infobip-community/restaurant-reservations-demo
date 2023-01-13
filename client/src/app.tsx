@@ -6,7 +6,7 @@ import {
   defaultAlertContextValue,
 } from "./contexts/AlertContext";
 import { Backdrop, CircularProgress } from "@mui/material";
-import { Router } from "@reach/router";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AlertI } from "./pages/home/Home.types";
 import HomePage from "./pages/home/Home";
 import ConfigPage from "./pages/Config";
@@ -34,10 +34,14 @@ const AppWithOauth: React.FC = () => {
   return (
     <>
       {(!authEnabled || authService.isAuthenticated()) && (
-        <Router>
-          <HomePage path="/" />
-          <ConfigPage path="config" />
-        </Router>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/">
+                <Route index element={<HomePage/>} />
+                <Route path="config" element={<ConfigPage/>} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
       )}
       {isLoading && (
         <Backdrop open={true} style={{ zIndex: 1 }}>
