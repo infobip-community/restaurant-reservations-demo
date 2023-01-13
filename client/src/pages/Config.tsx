@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { ConfigTypesI, FieldI} from "./ConfigTypes";
+import {FieldI} from "./ConfigTypes";
 import {
     Container,
     Grid, Paper,
@@ -25,7 +25,7 @@ const EmptyField = {
     saved:"true"
 };
 
-const  ConfigPage: React.FC<ConfigTypesI> = () => {
+const  ConfigPage: React.FC = () => {
     const [fields, setFields] = useState<FieldI[]>([]);
 
     useEffect(()=> {
@@ -52,7 +52,7 @@ const  ConfigPage: React.FC<ConfigTypesI> = () => {
         setFields([...fields, EmptyField])
     }
 
-    const handleDeleteField = (fieldName:FieldI, disabled:string) => async () => {
+    const handleDeleteField = (fieldName:FieldI) => async () => {
         (await fetch(`${APIConfigPath}/additionalFields`, {
                 method: "post",
                 headers: { "Content-Type": "application/json" },
@@ -116,7 +116,7 @@ const  ConfigPage: React.FC<ConfigTypesI> = () => {
                             <TableCell align="right">
                                 <SaveIcon onClick={() => handleSaveConfigField(field, index)} color={(field.saved==="false" && field.disabled ==="true") || (field.saved==="true" && field.disabled ==="true")? "disabled":"primary"}/>
                                 <EditIcon onClick={() => handleEditFields(field, index)} color={field.saved==="true"? "secondary":"disabled"}/>
-                                    <DeleteIcon onClick={handleDeleteField(field,field.saved)} color={field.saved==="false" && field.disabled ==="true"? "disabled":"error"} />
+                                    <DeleteIcon onClick={handleDeleteField(field)} color={field.saved==="false" && field.disabled ==="true"? "disabled":"error"} />
                                 </TableCell>
                             </TableRow>
                             ))}

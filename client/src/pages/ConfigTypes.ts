@@ -1,7 +1,3 @@
-export interface ConfigTypesI {
-    path: string;
-}
-
 export interface ConfigI {
     config: { fields: FieldI[]|[] };
 }

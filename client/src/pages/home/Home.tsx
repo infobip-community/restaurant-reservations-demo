@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { AppTypesI } from "./Home.types";
 import Reservations from "../../components/reservations/Reservations";
 import {
   Alert,
@@ -21,7 +20,7 @@ import { useAuth } from "react-oauth2-pkce";
 import TabPanel from "../../components/tabPanel/TabPanel";
 import { AlertContext } from "../../contexts/AlertContext";
 
-const HomePage: React.FC<AppTypesI> = () => {
+const HomePage: React.FC = () => {
   const theme = useTheme();
   const { authService } = useAuth();
   const [currentTab, setCurrentTab] = React.useState(0);
