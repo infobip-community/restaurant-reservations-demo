@@ -1,4 +1,4 @@
-import { ErrorI, ReservationI } from "../../app/App.types";
+import { ErrorI, ReservationI } from "../../pages/home/Home.types";
 
 const emailValidation =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

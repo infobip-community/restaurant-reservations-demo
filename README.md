@@ -20,7 +20,7 @@ We could have 2 types of integration in Infobip Conversations:
 
 2.- Card - will be displayed as an embedded site in the right column of the conversations window.
 
-`INSERT IMAGE HERE`
+![Conversation window](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/app/images/Conv%201.png?raw=true)
 
 ### How I can integrate this app with Infobip Conversations?
 
@@ -55,7 +55,9 @@ Note: if you have deployed this project in your environment change the urls valu
 
 That's all! You can now visit Infobip Conversations (https://portal.infobip.com/conversations) and you will see the Page and the Card.
 
-`INSERT IMAGE HERE`
+
+![Conversation window](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/app/images/Conv%202.png?raw=true)
+
 
 ---
 
@@ -249,7 +251,6 @@ Note: if you have deployed this project in your environment change the uri's val
 
 
 
-
 5.- Skipped the next optionals fields Settings URL and Redirect URL
 
 6.- Paste the url of your logo.
@@ -262,21 +263,20 @@ Note: if you have deployed this project in your environment change the uri's val
 That's all! You can now view this app in your Answers bot catalog
 
 
-
-
 #### How my bot can use this element?
 
 You will find the application "Reservations Manager" in the bottom section of the right catalog
 
-`INSERT IMAGE HERE`
+![Reservations manager](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/app/images/View%20id.png?raw=true)
+
 
 Drag the element to the bot flow, click on it and you will find the actions previously declared in the manifest (remember? the one you found an copied the ManifestAnswers.yml)
 
-`INSERT IMAGE HERE`
+![Bot](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/app/images/Bot%201.png?raw=true)
 
 After you select the action you want to implement, click on Response and you will have the opportunity to select which properties in the response will be assigned to the bot's attributes.
 
-`INSERT IMAGE HERE`
+![Properties](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/app/images/Ans%201.png?raw=true)
 
 That's it, when the values are written in the attributes you can use them to response any message.
 
@@ -294,15 +294,14 @@ Go to [private apps](https://portal.infobip.com/exchange-partners) page and foll
 
 Once you have reached your apps, click on the triple dot button, then click on View ID.
 
-`INSERT IMAGE HERE`
+![Reservations manager](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/app/images/View%20id.png?raw=true)
+
 
 The previous action will start the required calls to get the information, showing a load screen.
 
-`INSERT IMAGE HERE`
-
 Once this process is completed, a pop up  will be displayed and you would be able to see your Client ID or Client Secret by clicking the eye icon or copying it directly by using the clipboard icon.
 
-`INSERT IMAGE HERE`
+![Credentials pop up](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/app/images/oaut.png?raw=true)
 
 ---
 ### Infobip Conversations and the Oauth security
@@ -313,7 +312,8 @@ OAuth Configuration
 
 When you are creating an app in Exchange you can see the subtitle OAuth in the form, Redirect URL field will inject an IBSSO Token into the new app. This token will allow the application to be authorized for some resources needed to achieve a specific task.
 
-`INSERT IMAGE HERE`
+![Conversation window](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/app/images/security.png?raw=true)
+
 
 The link that you enter here will be the one that Infobip platform will use as a redirect URI, so you'll need to ingress the correct path to do OAuth flow in your app.
 
@@ -339,7 +339,6 @@ Steps for integration:
   REACT_APP_OAUTH_ACTIVE="true"
   REACT_APP_CLIENT_ID="eaf2e781440e0124f0e7c68a121c0582"
   REACT_APP_PROVIDER="https://portal.infobip.com/conversations/api/amg/exchange/1/oauth"
-  REACT_APP_TOKEN="https://portal.infobip.com/conversations/api/amg/exchange/1/oauth"
   REACT_APP_REDIRECT_URI="https://restaurant-reservations-demo-oauth.azurewebsites.net/"
 ```
 
@@ -356,7 +355,6 @@ import { AuthService } from "react-oauth2-pkce";
 const oauthService = new AuthService({
   clientId: process.env.REACT_APP_CLIENT_ID || "",
   provider: process.env.REACT_APP_PROVIDER || "",
-  tokenEndpoint: process.env.REACT_APP_TOKEN || "",
   redirectUri: process.env.REACT_APP_REDIRECT_URI || "",
   scopes: ["conversations"],
   location: window.location,
