@@ -6,6 +6,10 @@ import {
   getAllReservations,
   addReservation,
   getByEmail,
+  getConfigFields,
+  addConfigFields,
+  getAdditionalFields,
+  deleteConfigField
 } from "./database.js";
 
 const port = process.env.PORT || 3001;
@@ -46,4 +50,23 @@ app.put("/exchange/restaurant/reservations/:id", (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server listening on ${port}`);
+});
+
+app.get("/exchange/restaurant/config", async (req, res) => {
+  return res.json({ config: await getConfigFields() });
+});
+
+app.post("/exchange/restaurant/config", async (req, res) => {
+  const reservation = await addConfigFields(req.body).catch((error) => {
+    return res.status(500).json({ error });
+  });
+  return res.json(reservation);
+});
+
+app.get("/exchange/restaurant/config/additionalFields", async (req, res) => {
+  return res.json({ config: await getAdditionalFields() });
+});
+
+app.post("/exchange/restaurant/config/additionalFields", async (req, res) => {
+  return res.json({ config: await deleteConfigField(req.body) });
 });

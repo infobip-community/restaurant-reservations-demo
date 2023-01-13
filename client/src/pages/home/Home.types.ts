@@ -1,4 +1,5 @@
 import { AlertColor } from "@mui/material";
+import {Field} from "../../components/createReservation/CreateReservationTypes";
 
 export interface AlertI {
   isLoading?: boolean;
@@ -26,6 +27,7 @@ export interface ReservationI {
   hour?: string;
   date?: string;
   party_size?: string;
+  additionalFields?: Field[];
 }
 
 export interface ErrorI {
@@ -46,4 +48,8 @@ export interface OauthContextI {
   access_token: string;
   token_type: string;
   authToken: string;
+}
+
+export interface AppTypesI {
+  path: string;
 }
