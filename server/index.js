@@ -11,6 +11,7 @@ import {
   getAdditionalFields,
   deleteConfigField
 } from "./database.js";
+import path, { dirname }  from "path"
 
 const port = process.env.PORT || 3001;
 const app = express();
@@ -69,7 +70,7 @@ app.post("/exchange/restaurant/config/additionalFields", async (req, res) => {
 
 // All other GET requests not handled before will return our React app
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+  res.sendFile(path.resolve('client/build', 'index.html'));
 });
 
 app.listen(port, () => {
