@@ -1,6 +1,10 @@
 import { AlertColor } from "@mui/material";
 import {Field} from "../../components/createReservation/CreateReservationTypes";
 
+export interface AuthI {
+  token: string
+}
+
 export interface AlertI {
   isLoading?: boolean;
   message?: string;
