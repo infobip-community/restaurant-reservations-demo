@@ -19,6 +19,7 @@ import { CircularProgress } from "@mui/material";
 import { useAuth } from "react-oauth2-pkce";
 import TabPanel from "../../components/tabPanel/TabPanel";
 import { AlertContext } from "../../contexts/AlertContext";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
@@ -26,6 +27,7 @@ const HomePage: React.FC = () => {
   const [currentTab, setCurrentTab] = React.useState(0);
   const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
   const alert = useContext(AlertContext);
+  const {token} = useContext(AuthContext);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
@@ -44,6 +46,7 @@ const HomePage: React.FC = () => {
     <Container fixed>
       <Grid container spacing={2} justifyContent="center">
         <br />
+        <h5>TOKEN: {token}</h5>
         <Grid item xs={12} md={10}>
           <Typography variant="h4" component="h4">
             Awesome Restaurant
