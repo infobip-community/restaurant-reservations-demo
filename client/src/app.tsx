@@ -28,12 +28,13 @@ const AppWithOauth: React.FC = () => {
     ) {
       setIsLoading(true);
       authService.authorize();
+    } else {
+
       const code = authService.getCodeFromLocation(window.location);
       const auth = authService.getAuthTokens();
       console.log("holi", auth, code);
       alert(JSON.stringify(auth))
-      // setAuth({token: auth.token})
-    } else {
+      setAuth({token: JSON.stringify(auth)})
       setIsLoading(false);
     }
   }, [authService, authEnabled]);
