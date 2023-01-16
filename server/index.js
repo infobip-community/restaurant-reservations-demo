@@ -48,10 +48,6 @@ app.put("/exchange/restaurant/reservations/:id", (req, res) => {
   res.json(updateReservation(req.params.id, req.body));
 });
 
-app.listen(port, () => {
-  console.log(`Server listening on ${port}`);
-});
-
 app.get("/exchange/restaurant/config", async (req, res) => {
   return res.json({ config: await getConfigFields() });
 });
@@ -69,4 +65,13 @@ app.get("/exchange/restaurant/config/additionalFields", async (req, res) => {
 
 app.post("/exchange/restaurant/config/additionalFields", async (req, res) => {
   return res.json({ config: await deleteConfigField(req.body) });
+});
+
+// All other GET requests not handled before will return our React app
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+});
+
+app.listen(port, () => {
+  console.log(`Server listening on ${port}`);
 });
