@@ -26,6 +26,10 @@ const AppWithOauth: React.FC = () => {
     ) {
       setIsLoading(true);
       authService.authorize();
+      const code = authService.getCodeFromLocation(window.location)
+      const auth = authService.getAuthTokens()
+      console.log("holi", auth, code)
+      debugger
     } else {
       setIsLoading(false);
     }
