@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import oauthService from "./services/oauth";
 import { useAuth, AuthProvider } from "react-oauth2-pkce";
 import {
@@ -18,11 +18,6 @@ const AppWithOauth: React.FC = () => {
   const { authService } = useAuth();
   const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
 
-  const onLogout = useCallback(() => {
-    localStorage.clear();
-    authService.logout();
-  }, [authService]);
-
   useEffect(() => {
     if (!authEnabled) {
       return;
@@ -36,11 +31,18 @@ const AppWithOauth: React.FC = () => {
     } else {
       const { token, username, locale } =
         authService.getAuthTokens() as unknown as AuthI;
-      console.log("___",   authService.getAuthTokens())
-      setAuth({ token, username, locale, onLogout });
+      setAuth({
+        token,
+        username,
+        locale,
+        onLogout: () => {
+          localStorage.clear();
+          authService.logout();
+        },
+      });
       setIsLoading(false);
     }
-  }, [authService, authEnabled, onLogout]);
+  }, [authService, authEnabled]);
 
   return (
     <>
