@@ -18,13 +18,12 @@ const __dirname = path.resolve();
 const port = process.env.PORT || 3001;
 const app = express();
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
-}
+
 createConnection();
 
 app.use(express.json()); // to support JSON-encoded bodies
 
+//API ROUTES
 app.get("/exchange/restaurant/reservations/:email", async (req, res) => {
   const reservation = await getByEmail(req.params.email).catch((error) => {
     return res.status(500).json({ error });
@@ -70,7 +69,19 @@ app.post("/exchange/restaurant/config/additionalFields", async (req, res) => {
   return res.json({ config: await deleteConfigField(req.body) });
 });
 
-// All other GET requests not handled before will return our React app
+// FRONT END APP
+app.use(function (req, res, next) {
+  res.setHeader(
+    'Content-Security-Policy-Report-Only',
+    "default-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; frame-src 'self'"
+  );
+  next();
+});
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+}
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname ,'client/build','index.html'))
 });
