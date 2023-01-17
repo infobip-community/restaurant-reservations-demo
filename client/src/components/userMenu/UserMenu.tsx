@@ -6,19 +6,18 @@ import {
   ListItemText,
   Button,
   Popper,
+  Select,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import { useContext, useRef, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
-import { useAuth } from "react-oauth2-pkce";
 import styled from "@emotion/styled";
 
 const MenuContainer = styled.div`
   float: right;
-`
+`;
 
 const UserMenu = () => {
-  const { authService } = useAuth();
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
   const user = useContext(AuthContext);
@@ -26,12 +25,22 @@ const UserMenu = () => {
   const handleToggle = () => {
     setOpen(!open);
   };
+
   const handleLogout = () => {
-    localStorage.clear();
-    authService.logout();
+    user.onLogout();
   };
+
   return (
     <MenuContainer>
+      <Select
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        value={user.locale}
+        label="Age"
+        size="small"
+      >
+        <MenuItem value={user.locale}>{user.locale}</MenuItem>
+      </Select>
       <Button
         ref={anchorRef}
         id="composition-button"
@@ -39,6 +48,7 @@ const UserMenu = () => {
         aria-expanded={open ? "true" : undefined}
         aria-haspopup="true"
         onClick={handleToggle}
+        style={{ marginLeft: "1rem" }}
       >
         <PersonIcon fontSize="small" />
         {user.username}
@@ -51,9 +61,6 @@ const UserMenu = () => {
       >
         <Paper>
           <MenuList>
-            <MenuItem>
-              <ListItemText>Locale: {user.locale}</ListItemText>
-            </MenuItem>
             <MenuItem>
               <ListItemText onClick={handleLogout}>Logout</ListItemText>
             </MenuItem>

@@ -5,6 +5,7 @@ export interface AuthI {
   token: string;
   username: string;
   locale: string;
+  onLogout: () => void;
 }
 
 export interface AlertI {
