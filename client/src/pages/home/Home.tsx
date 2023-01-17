@@ -10,21 +10,21 @@ import {
   Typography,
   Backdrop,
   Grid,
-  Button,
 } from "@mui/material";
 import SwipeableViews from "react-swipeable-views";
 import CreateReservation from "../../components/createReservation/CreateReservation";
 import CloseIcon from "@mui/icons-material/Close";
 import { CircularProgress } from "@mui/material";
-import { useAuth } from "react-oauth2-pkce";
 import TabPanel from "../../components/tabPanel/TabPanel";
 import { AlertContext } from "../../contexts/AlertContext";
+import UserMenu from "../../components/userMenu/UserMenu";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
-  const { authService } = useAuth();
   const [currentTab, setCurrentTab] = React.useState(0);
   const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
+  const user = useContext(AuthContext)
   const alert = useContext(AlertContext);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -35,21 +35,18 @@ const HomePage: React.FC = () => {
     setCurrentTab(index);
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
-    authService.logout();
-  };
-
+  
   return (
     <Container fixed>
       <Grid container spacing={2} justifyContent="center">
         <br />
-        <Grid item xs={12} md={10}>
+        <Grid item xs={11} md={10}>
           <Typography variant="h4" component="h4">
             Awesome Restaurant
-            {authEnabled && <Button onClick={handleLogout}>Logout</Button>}
+            {authEnabled && user?.username && <UserMenu />}
           </Typography>
         </Grid>
+
         <br />
         <Grid item xs={12} md={10}>
           <Backdrop open={!!alert.isLoading} style={{ zIndex: 1 }}>

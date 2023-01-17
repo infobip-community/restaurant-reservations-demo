@@ -9,7 +9,7 @@ import { Backdrop, CircularProgress } from "@mui/material";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AlertI } from "./pages/home/Home.types";
 import HomePage from "./pages/home/Home";
-import ConfigPage from "./pages/Config";
+import ConfigPage from "./pages/config/Config";
 
 const AppWithOauth: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
