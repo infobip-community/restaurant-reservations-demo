@@ -41,6 +41,7 @@ const AppWithOauth: React.FC = () => {
         },
       });
       setIsLoading(false);
+      console.log("HOLA!", authService.getAuthTokens());
     }
   }, [authService, authEnabled]);
 
