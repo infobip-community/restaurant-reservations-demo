@@ -30,6 +30,7 @@ const UserMenu = () => {
   };
 
   const handleLogout = () => {
+    localStorage.clear()
     user.onLogout();
   };
 
