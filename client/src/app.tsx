@@ -9,7 +9,7 @@ import { Backdrop, CircularProgress } from "@mui/material";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AlertI, AuthI } from "./pages/home/Home.types";
 import HomePage from "./pages/home/Home";
-import ConfigPage from "./pages/Config";
+import ConfigPage from "./pages/config/Config";
 import { AuthContext, defaultAuthContext } from "./contexts/AuthContext";
 
 const AppWithOauth: React.FC = () => {
@@ -41,7 +41,6 @@ const AppWithOauth: React.FC = () => {
         },
       });
       setIsLoading(false);
-      console.log("HOLA!", authService.getAuthTokens());
     }
   }, [authService, authEnabled]);
 

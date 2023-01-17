@@ -20,7 +20,7 @@ import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
 import { Diversity3 } from "@mui/icons-material";
 import { validateReservation } from "../../utlis/validations/validateReservation";
 import { AlertContext } from "../../contexts/AlertContext";
-import {FieldI} from "../../pages/ConfigTypes";
+import {FieldI} from "../../pages/config/ConfigTypes";
 import {Field} from "./CreateReservationTypes";
 
 const TODAY = new Date();
