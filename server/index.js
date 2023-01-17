@@ -69,13 +69,24 @@ app.post("/exchange/restaurant/config/additionalFields", async (req, res) => {
   return res.json({ config: await deleteConfigField(req.body) });
 });
 
-// FRONT END APP
-app.use(function (req, res, next) {
-  res.setHeader(
-    'Content-Security-Policy-Report-Only',
-    "default-src 'self' data: ws: wss: blob: *.ioinfobip.com *.infobip.com d2ygi9hnn4h2ig.cloudfront.net d24n15hnbwhuhn.cloudfront.net d272uv7x5ewxfm.cloudfront.net d3131dgcggnrk5.cloudfront.net dxaf42r9w3qhj.cloudfront.net d1344zagihobu2.cloudfront.net netdna.bootstrapcdn.com maxcdn.bootstrapcdn.com cdnjs.cloudflare.com www.gravatar.com cdn.polyfill.io maps.googleapis.com fonts.googleapis.com fonts.gstatic.com www.gstatic.com www.googleoptimize.com www.recaptcha.net script.crazyegg.com scripts.kissmetrics.com stats.g.doubleclick.net trk.kissmetrics.com https://*.zopim.com wss://*.zopim.com https://v2assets.zopim.io https://v2uploads.zopim.io *.zdassets.com *.zendesk.com s3.eu-central-1.amazonaws.com *.amplitude.com *.aptrinsic.com *.fullstory.com *.mouseflow.com *.smartlook.com nominatim.openstreetmap.org *.youtube.com *.youtu.be *.vimeo.com *.gooddata.com consent.cookiebot.com js-agent.newrelic.com *.ingest.sentry.io")
-  next();
-});
+// // FRONT END APP
+// app.use(function (req, res, next) {
+//   res.setHeader(
+//     'Content-Security-Policy-Report-Only',
+//     "default-src 'self' data: ws: wss: blob: *.ioinfobip.com *.infobip.com d2ygi9hnn4h2ig.cloudfront.net d24n15hnbwhuhn.cloudfront.net d272uv7x5ewxfm.cloudfront.net d3131dgcggnrk5.cloudfront.net dxaf42r9w3qhj.cloudfront.net d1344zagihobu2.cloudfront.net netdna.bootstrapcdn.com maxcdn.bootstrapcdn.com cdnjs.cloudflare.com www.gravatar.com cdn.polyfill.io maps.googleapis.com fonts.googleapis.com fonts.gstatic.com www.gstatic.com www.googleoptimize.com www.recaptcha.net script.crazyegg.com scripts.kissmetrics.com stats.g.doubleclick.net trk.kissmetrics.com https://*.zopim.com wss://*.zopim.com https://v2assets.zopim.io https://v2uploads.zopim.io *.zdassets.com *.zendesk.com s3.eu-central-1.amazonaws.com *.amplitude.com *.aptrinsic.com *.fullstory.com *.mouseflow.com *.smartlook.com nominatim.openstreetmap.org *.youtube.com *.youtu.be *.vimeo.com *.gooddata.com consent.cookiebot.com js-agent.newrelic.com *.ingest.sentry.io")
+//   next();
+// });
+
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "example.com"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  })
+);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
