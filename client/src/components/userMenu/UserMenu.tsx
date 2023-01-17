@@ -12,6 +12,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { useContext, useRef, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import styled from "@emotion/styled";
+import { getLanguagesList } from "../../services/languages";
 
 const MenuContainer = styled.div`
   float: right;
@@ -21,6 +22,8 @@ const UserMenu = () => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
   const user = useContext(AuthContext);
+
+  const languages = getLanguagesList()
 
   const handleToggle = () => {
     setOpen(!open);
@@ -36,10 +39,14 @@ const UserMenu = () => {
         labelId="demo-simple-select-label"
         id="demo-simple-select"
         value={user.locale}
-        label="Age"
+        label="Language"
         size="small"
       >
-        <MenuItem value={user.locale}>{user.locale}</MenuItem>
+        {languages.map(lang => {
+          return <MenuItem value={lang.localeFull}>{lang.name}</MenuItem>
+        }
+
+        )}
       </Select>
       <Button
         ref={anchorRef}

@@ -23,8 +23,8 @@ import { AuthContext } from "../../contexts/AuthContext";
 const HomePage: React.FC = () => {
   const theme = useTheme();
   const [currentTab, setCurrentTab] = React.useState(0);
-  const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
-  const user = useContext(AuthContext)
+  // const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
+  // const user = useContext(AuthContext)
   const alert = useContext(AlertContext);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -43,7 +43,7 @@ const HomePage: React.FC = () => {
         <Grid item xs={11} md={10}>
           <Typography variant="h4" component="h4">
             Awesome Restaurant
-            {authEnabled && user?.username && <UserMenu /> }
+           user?.username && <UserMenu /> 
           </Typography>
         </Grid>
 
