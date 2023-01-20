@@ -7,12 +7,14 @@ import {
 } from "./contexts/AlertContext";
 import { Backdrop, CircularProgress } from "@mui/material";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AlertI } from "./pages/home/Home.types";
+import { AlertI, AuthI } from "./pages/home/Home.types";
 import HomePage from "./pages/home/Home";
 import ConfigPage from "./pages/config/Config";
+import { AuthContext, defaultAuthContext } from "./contexts/AuthContext";
 
 const AppWithOauth: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [auth, setAuth] = useState<AuthI>(defaultAuthContext);
   const { authService } = useAuth();
   const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
 
@@ -27,6 +29,17 @@ const AppWithOauth: React.FC = () => {
       setIsLoading(true);
       authService.authorize();
     } else {
+      const { token, username, locale } =
+        authService.getAuthTokens() as unknown as AuthI;
+      setAuth({
+        token,
+        username,
+        locale,
+        onLogout: () => {
+          localStorage.clear();
+          authService.logout();
+        },
+      });
       setIsLoading(false);
     }
   }, [authService, authEnabled]);
@@ -34,14 +47,16 @@ const AppWithOauth: React.FC = () => {
   return (
     <>
       {(!authEnabled || authService.isAuthenticated()) && (
+        <AuthContext.Provider value={auth}>
           <BrowserRouter>
             <Routes>
               <Route path="/">
-                <Route index element={<HomePage/>} />
-                <Route path="config" element={<ConfigPage/>} />
+                <Route index element={<HomePage />} />
+                <Route path="config" element={<ConfigPage />} />
               </Route>
             </Routes>
           </BrowserRouter>
+        </AuthContext.Provider>
       )}
       {isLoading && (
         <Backdrop open={true} style={{ zIndex: 1 }}>
