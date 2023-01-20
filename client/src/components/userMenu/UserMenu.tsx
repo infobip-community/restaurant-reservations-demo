@@ -11,15 +11,22 @@ import PersonIcon from "@mui/icons-material/Person";
 import { useContext, useRef, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import styled from "@emotion/styled";
+import { getLanguagesList } from "../../services/languages";
 
 const MenuContainer = styled.div`
   float: right;
+`;
+
+const LanguageLabel = styled.label`
+  font-weight: 300;
+  font-size: smaller;
 `;
 
 const UserMenu = () => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
   const user = useContext(AuthContext);
+  const languages = getLanguagesList();
 
   const handleToggle = () => {
     setOpen(!open);
@@ -31,7 +38,12 @@ const UserMenu = () => {
 
   return (
     <MenuContainer>
-      <label id="demo-language-label">{user.locale}</label>
+      <LanguageLabel>
+        {
+          languages.find((language) => language.localeFull === user.locale)
+            ?.name
+        }
+      </LanguageLabel>
       <Button
         ref={anchorRef}
         id="composition-button"
