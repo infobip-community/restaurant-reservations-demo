@@ -24,7 +24,7 @@ const HomePage: React.FC = () => {
   const theme = useTheme();
   const [currentTab, setCurrentTab] = React.useState(0);
   const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
-  const user = useContext(AuthContext)
+  const user = useContext(AuthContext);
   const alert = useContext(AlertContext);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -35,7 +35,6 @@ const HomePage: React.FC = () => {
     setCurrentTab(index);
   };
 
-  
   return (
     <Container fixed>
       <Grid container spacing={2} justifyContent="center">
