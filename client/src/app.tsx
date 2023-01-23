@@ -36,7 +36,7 @@ const AppWithOauth: React.FC = () => {
         username,
         locale,
         onLogout: () => {
-          // localStorage.clear();
+          localStorage.clear();
           authService.logout();
         },
       });

@@ -6,7 +6,6 @@ import {
   ListItemText,
   Button,
   Popper,
-  Select,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import { useContext, useRef, useState } from "react";
@@ -18,37 +17,33 @@ const MenuContainer = styled.div`
   float: right;
 `;
 
+const LanguageLabel = styled.label`
+  font-weight: 300;
+  font-size: smaller;
+`;
+
 const UserMenu = () => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
   const user = useContext(AuthContext);
-
-  const languages = getLanguagesList()
+  const languages = getLanguagesList();
 
   const handleToggle = () => {
     setOpen(!open);
   };
 
   const handleLogout = () => {
-    localStorage.clear()
     user.onLogout();
   };
 
   return (
     <MenuContainer>
-      <Select
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
-        value={user.locale}
-        label="Language"
-        size="small"
-      >
-        {languages.map(lang => {
-          return <MenuItem value={lang.localeFull}>{lang.name}</MenuItem>
+      <LanguageLabel>
+        {
+          languages.find((language) => language.localeFull === user.locale)
+            ?.name
         }
-
-        )}
-      </Select>
+      </LanguageLabel>
       <Button
         ref={anchorRef}
         id="composition-button"
