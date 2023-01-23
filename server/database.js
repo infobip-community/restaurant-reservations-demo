@@ -15,7 +15,34 @@ export const createConnection = async () => {
   // Use JSON file for storage
   // Read data from JSON file, this will set db.data content
   if (db.data === null) {
-    db.data = { reservations: [] };
+    db.data = { reservations: [], config:{fields: [{
+          "name": "Date",
+          "placeHolder": "Date",
+          "required": "true",
+          "disabled": "true",
+          "saved": "false"
+        },
+          {
+            "name": "Hour",
+            "placeHolder": "Hour",
+            "required": "true",
+            "disabled": "true",
+            "saved": "false"
+          },
+          {
+            "name": "Host Name",
+            "placeHolder": "Host Name",
+            "required": "true",
+            "disabled": "true",
+            "saved": "false"
+          },
+          {
+            "name": "Host Email",
+            "placeHolder": "Host Email",
+            "required": "true",
+            "disabled": "true",
+            "saved": "false"
+          }]} };
     await db.write();
   }
 };
@@ -71,5 +98,28 @@ export const updateReservation = async (id, reservationUpdated) => {
 export const deleteReservation = async (id) => {
   db.chain = lodash.chain(db.data);
   db.chain.get("reservations").remove({ id }).value();
+  await db.write();
+};
+
+export const getConfigFields = async () => {
+  db.chain = lodash.chain(db.data);
+  return db.chain.get("config");
+};
+
+export const addConfigFields = async (fields) => {
+  db.chain.get("config").get("fields").chain().assign(fields).value();
+  await db.write();
+};
+
+export const getAdditionalFields = async () => {
+  db.chain = lodash.chain(db.data);
+  const configFields = db.chain.get("config").get("fields");
+  const filterFields = configFields.chain().filter(field=> field.additional).value();
+  return filterFields;
+};
+
+export const deleteConfigField = async (request) => {
+  db.chain = lodash.chain(db.data);
+  db.chain.get("config").get("fields").remove({name: request.name}).value();
   await db.write();
 };

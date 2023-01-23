@@ -1,3 +1,35 @@
 {
-  "reservations": []
+  "reservations": [],
+  "config": {
+    "fields": [
+      {
+        "name": "Date",
+        "placeHolder": "Date",
+        "required": "true",
+        "disabled": "true",
+        "saved": "false"
+      },
+      {
+        "name": "Hour",
+        "placeHolder": "Hour",
+        "required": "true",
+        "disabled": "true",
+        "saved": "false"
+      },
+      {
+        "name": "Host Name",
+        "placeHolder": "Host Name",
+        "required": "true",
+        "disabled": "true",
+        "saved": "false"
+      },
+      {
+        "name": "Host Email",
+        "placeHolder": "Host Email",
+        "required": "true",
+        "disabled": "true",
+        "saved": "false"
+      }
+    ]
+  }
 }
