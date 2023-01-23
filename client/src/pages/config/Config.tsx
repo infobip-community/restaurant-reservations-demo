@@ -16,7 +16,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import {APIConfigPath} from "../../const";
 import UserMenu from '../../components/userMenu/UserMenu';
-import { AuthContext } from '../../contexts/AuthContext';
+import { UserContext } from '../../contexts/AuthContext';
 
 const EmptyField = {
     name: '',
@@ -29,7 +29,7 @@ const EmptyField = {
 
 const  ConfigPage: React.FC = () => {
     const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
-    const user = useContext(AuthContext);
+    const user = useContext(UserContext);
     const [fields, setFields] = useState<FieldI[]>([]);
 
     useEffect(()=> {

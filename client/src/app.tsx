@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from "react";
-import oauthService from "./services/oauth";
-import { useAuth, AuthProvider } from "react-oauth2-pkce";
-import {
-  AlertContext,
-  defaultAlertContextValue,
-} from "./contexts/AlertContext";
+import { AuthProvider, useAuth } from "react-oauth2-pkce";
 import { Backdrop, CircularProgress } from "@mui/material";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AlertI, AuthI } from "./pages/home/Home.types";
+import {  AlertI, UserContextI, UserUpdateParamsI } from "./pages/home/Home.types";
 import HomePage from "./pages/home/Home";
 import ConfigPage from "./pages/config/Config";
-import { AuthContext, defaultAuthContext } from "./contexts/AuthContext";
+import { defaultUserContext, UserContext } from "./contexts/AuthContext";
+import { defaultAlertContextValue, AlertContext } from "./contexts/AlertContext";
+import oauthService from "./services/oauth";
 
 const AppWithOauth: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [auth, setAuth] = useState<AuthI>(defaultAuthContext);
+  const [userContext, setUserContext] =
+    useState<UserContextI>(defaultUserContext);
   const { authService } = useAuth();
   const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
 
@@ -28,10 +26,16 @@ const AppWithOauth: React.FC = () => {
     ) {
       setIsLoading(true);
       authService.authorize();
-    } else {
-      const { token, username, locale } =
-        authService.getAuthTokens() as unknown as AuthI;
-      setAuth({
+      return;
+    }
+
+    if (userContext.username) return;
+
+    const { token, username, locale } =
+      authService.getAuthTokens() as unknown as UserContextI;
+    setUserContext({
+      ...userContext,
+      ...{
         token,
         username,
         locale,
@@ -39,15 +43,22 @@ const AppWithOauth: React.FC = () => {
           localStorage.clear();
           authService.logout();
         },
-      });
-      setIsLoading(false);
-    }
-  }, [authService, authEnabled]);
+      },
+    });
+
+    setIsLoading(false);
+  }, [authService, authEnabled, userContext]);
+
+  const updateUserContext = (newUserContext: UserUpdateParamsI) => {
+    setUserContext({ ...userContext, ...newUserContext });
+  };
 
   return (
     <>
       {(!authEnabled || authService.isAuthenticated()) && (
-        <AuthContext.Provider value={auth}>
+        <UserContext.Provider
+          value={{ ...userContext, update: updateUserContext }}
+        >
           <BrowserRouter>
             <Routes>
               <Route path="/">
@@ -56,7 +67,7 @@ const AppWithOauth: React.FC = () => {
               </Route>
             </Routes>
           </BrowserRouter>
-        </AuthContext.Provider>
+        </UserContext.Provider>
       )}
       {isLoading && (
         <Backdrop open={true} style={{ zIndex: 1 }}>
@@ -68,19 +79,18 @@ const AppWithOauth: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  const [alert, setAlert] = useState<AlertI>(defaultAlertContextValue);
-
-  const updateAlertContext = (newChanges: AlertI) => {
-    setAlert({ ...alert, ...newChanges });
-  };
-
-  return (
-    <AlertContext.Provider value={{ ...alert, updateAlertContext }}>
-      <AuthProvider authService={oauthService}>
-        <AppWithOauth />
-      </AuthProvider>
-    </AlertContext.Provider>
-  );
+    const [alert, setAlert] = useState<AlertI>(defaultAlertContextValue);
+  
+    const updateAlertContext = (newChanges: AlertI) => {
+      setAlert({ ...alert, ...newChanges });
+    };
+  
+    return (
+      <AlertContext.Provider value={{ ...alert, updateAlertContext }}>
+        <AuthProvider authService={oauthService}>
+          <AppWithOauth />
+        </AuthProvider>
+      </AlertContext.Provider>
+    );
 };
-
-export default App;
+  export default App
