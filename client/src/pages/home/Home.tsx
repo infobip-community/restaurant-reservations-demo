@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, {useContext, useEffect} from "react";
 import Reservations from "../../components/reservations/Reservations";
 import {
   Alert,
@@ -19,12 +19,13 @@ import TabPanel from "../../components/tabPanel/TabPanel";
 import { AlertContext } from "../../contexts/AlertContext";
 import UserMenu from "../../components/userMenu/UserMenu";
 import { AuthContext } from "../../contexts/AuthContext";
+import {useLocation} from "react-router-dom";
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
   const [currentTab, setCurrentTab] = React.useState(0);
   const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
-  const user = useContext(AuthContext);
+  const userContext = useContext(AuthContext);
   const alert = useContext(AlertContext);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -35,6 +36,39 @@ const HomePage: React.FC = () => {
     setCurrentTab(index);
   };
 
+  var domain = 'l2dxj.api.infobip.com';
+  var apiKey = 'd01b9f2803c64252369bd376383b9ab6-ac42ab45-01c2-4d6b-b272-949f3ea7a764';
+
+  var options = {
+    'method': 'GET',
+    'headers': {
+      'Authorization': `App ${apiKey}`
+    }
+  };
+
+  const queryParams = useLocation();
+  const conversationId = queryParams.search.substring(queryParams.search.indexOf('=') + 1);
+
+  useEffect(() => {
+    (async () => {
+      const response = await fetch(`https://${domain}/ccaas/1/conversations/${conversationId}/messages`, options)
+      const jsonResponse = await response.json();
+      const messages = jsonResponse.messages
+
+      const result = messages.filter( (message: any) =>
+      {
+        return message.direction === 'INBOUND' &&
+            message.channel === 'EMAIL';
+      });
+
+      userContext.update({
+        customerEmail: result[0].content.sender,
+        customerName: result&&result[0].content.senderName
+      });
+
+    })();
+  },[] );
+
   return (
     <Container fixed>
       <Grid container spacing={2} justifyContent="center">
@@ -42,10 +76,17 @@ const HomePage: React.FC = () => {
         <Grid item xs={11} md={10}>
           <Typography variant="h4" component="h4">
             Awesome Restaurant
-            {authEnabled && user?.username && <UserMenu />}
+            {authEnabled && userContext?.username && <UserMenu />}
           </Typography>
         </Grid>
 
+        <br />
+        <Grid item xs={11} md={10}>
+          <Typography variant="p" component="p">
+            Awesome Restaurant
+            {authEnabled && userContext?.username && <UserMenu />}
+          </Typography>
+        </Grid>
         <br />
         <Grid item xs={12} md={10}>
           <Backdrop open={!!alert.isLoading} style={{ zIndex: 1 }}>

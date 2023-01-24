@@ -1,4 +1,6 @@
 import express from "express";
+import * as path from "express";
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import {
   createConnection,
   deleteReservation,

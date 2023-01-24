@@ -5,6 +5,8 @@ export interface AuthI {
   token: string;
   username: string;
   locale: string;
+  customerName?: string;
+  customerEmail?: string;
   onLogout: () => void;
 }
 

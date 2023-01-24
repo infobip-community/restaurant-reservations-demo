@@ -5,6 +5,8 @@ export const defaultAuthContext: AuthI = {
   token: '',
   locale: '',
   username: '',
+  customerName: '',
+  customerEmail: '',
   onLogout: () => {}
 };
 
