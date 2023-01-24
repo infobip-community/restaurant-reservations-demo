@@ -337,15 +337,16 @@ Steps for integration:
 
 ```sh
   REACT_APP_OAUTH_ACTIVE="true"
-  REACT_APP_CLIENT_ID="eaf2e781440e0124f0e7c68a121c0582"
-  REACT_APP_PROVIDER="https://portal.infobip.com/conversations/api/amg/exchange/1/oauth"
+  REACT_APP_CLIENT_ID="eaf2lk1j940e0124f0e7c68a121c0582"
+  REACT_APP_PROVIDER="https://portal.infobip.com/api/amg/exchange/1/oauth"
+  REACT_APP_TOKEN="https://oneapi.ioinfobip.com/exchange/1/oauth"
   REACT_APP_REDIRECT_URI="https://restaurant-reservations-demo-oauth.azurewebsites.net/"
 ```
 
 2.3 Redirect URI has to be the same that you set up on the exchange partners site for your application, and also there you can get  the clientId for your app
 
 
-![Exchange partners app](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/app/images/Redirect.png?raw=true)
+![Exchange partners app](https://confluence.infobip.com/download/attachments/335395322/Screen%20Shot%202022-11-10%20at%209.37.38.png?version=1&modificationDate=1668094663000&api=v2)
 
 3. Create your Auth Service instance with your credentials(If you followed step 2, you will have them ready on process.env object)
 
@@ -429,18 +430,17 @@ Example of response
   7.1 Your app should redirect the user to the Infobip Portal login page. The library `react-oauth2-pkce` will do this automatically after you set up the `provider` props in auth service.
   
 
-![Infobip login portal](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/app/images/Login.png)
+![Infobip login portal](https://confluence.infobip.com/download/attachments/335395322/Screen%20Shot%202022-11-10%20at%209.31.26.png?version=1&modificationDate=1668094290000&api=v2)
 
   7.2 If there is an issue with the login will show you a message error
 
-![Loggin message error](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/app/images/error.png)
-
+![Loggin message error](https://confluence.infobip.com/download/attachments/335395322/Screen%20Shot%202022-11-10%20at%209.49.00.png?version=1&modificationDate=1668095352000&api=v2)
 
   7.3 After login in successfully it will automatically redirect to your app with an `code` param that will call your `tokenProvider` url that is provided on auth service also to get the user token and information.
 
   7.4 If the token endpoint returns information correctly then the `authService.isAuthenticated()` method should return true and the app will be available.
 
-![Awesome app](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/app/images/app.png?raw=true)
+![Loggin message error](https://confluence.infobip.com/download/attachments/335395322/Screen%20Shot%202022-11-10%20at%209.33.13.png?version=1&modificationDate=1668094398000&api=v2)
 
 
 ###### More oauth 2.0 information with examples [here](https://confluence.infobip.com/display/GOHP/OAuth+2.0)

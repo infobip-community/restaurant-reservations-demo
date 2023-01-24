@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from "react";
+import React, { useContext, useEffect } from "react";
 import Reservations from "../../components/reservations/Reservations";
 import {
   Alert,
@@ -18,14 +18,14 @@ import { CircularProgress } from "@mui/material";
 import TabPanel from "../../components/tabPanel/TabPanel";
 import { AlertContext } from "../../contexts/AlertContext";
 import UserMenu from "../../components/userMenu/UserMenu";
-import { AuthContext } from "../../contexts/AuthContext";
-import {useLocation} from "react-router-dom";
+import { UserContext } from "../../contexts/AuthContext";
+
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
   const [currentTab, setCurrentTab] = React.useState(0);
   const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
-  const userContext = useContext(AuthContext);
+  const userContext = useContext(UserContext);
   const alert = useContext(AlertContext);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -80,13 +80,6 @@ const HomePage: React.FC = () => {
           </Typography>
         </Grid>
 
-        <br />
-        <Grid item xs={11} md={10}>
-          <Typography variant="p" component="p">
-            Awesome Restaurant
-            {authEnabled && userContext?.username && <UserMenu />}
-          </Typography>
-        </Grid>
         <br />
         <Grid item xs={12} md={10}>
           <Backdrop open={!!alert.isLoading} style={{ zIndex: 1 }}>

@@ -9,9 +9,9 @@ import {
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import { useContext, useRef, useState } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
 import styled from "@emotion/styled";
 import { getLanguagesList } from "../../services/languages";
+import { UserContext } from "../../contexts/AuthContext";
 
 const MenuContainer = styled.div`
   float: right;
@@ -25,7 +25,7 @@ const LanguageLabel = styled.label`
 const UserMenu = () => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
-  const user = useContext(AuthContext);
+  const user = useContext(UserContext);
   const languages = getLanguagesList();
 
   const handleToggle = () => {

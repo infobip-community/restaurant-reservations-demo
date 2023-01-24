@@ -1,19 +1,26 @@
 import { AlertColor } from "@mui/material";
 import {Field} from "../../components/createReservation/CreateReservationTypes";
 
-export interface AuthI {
+export interface UserUpdateParamsI {
+  token?: string;
+  username?: string;
+  locale?: string;
+}
+
+export interface UserContextI {
   token: string;
   username: string;
   locale: string;
   customerName?: string;
   customerEmail?: string;
   onLogout: () => void;
+  update: (userContext: UserContextI) => void;
 }
 
 export interface AlertI {
   isLoading?: boolean;
   message?: string;
-  type?: AlertColor;
+  type?: string;
   isVisible?: boolean;
 }
 

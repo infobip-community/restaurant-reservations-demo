@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {FieldI} from "./ConfigTypes";
 import {
     Container,
@@ -15,6 +15,8 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import {APIConfigPath} from "../../const";
+import UserMenu from '../../components/userMenu/UserMenu';
+import { UserContext } from '../../contexts/AuthContext';
 
 const EmptyField = {
     name: '',
@@ -26,6 +28,8 @@ const EmptyField = {
 };
 
 const  ConfigPage: React.FC = () => {
+    const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
+    const user = useContext(UserContext);
     const [fields, setFields] = useState<FieldI[]>([]);
 
     useEffect(()=> {
@@ -80,6 +84,7 @@ const  ConfigPage: React.FC = () => {
             <Grid item xs={12} md={10}>
                 <Typography variant="h4" component="h4">
                     Configuration Page
+                    {authEnabled && user?.username && <UserMenu />}
                 </Typography>
                 <br />
                 <TableContainer component={Paper}>

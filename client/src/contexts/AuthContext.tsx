@@ -1,15 +1,16 @@
 import React from "react";
-import { AuthI } from "../pages/home/Home.types";
+import {  UserContextI } from "../pages/home/Home.types";
 
-export const defaultAuthContext: AuthI = {
+export const defaultUserContext: UserContextI = {
   token: '',
   locale: '',
   username: '',
   customerName: '',
   customerEmail: '',
-  onLogout: () => {}
+  onLogout: () => {},
+  update: () => {}
 };
 
-export const AuthContext = React.createContext<any>({
-  ...defaultAuthContext,
+export const UserContext = React.createContext<any>({
+  ...defaultUserContext,
 });
