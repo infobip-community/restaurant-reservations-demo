@@ -19,6 +19,7 @@ import TabPanel from "../../components/tabPanel/TabPanel";
 import { AlertContext } from "../../contexts/AlertContext";
 import UserMenu from "../../components/userMenu/UserMenu";
 import { UserContext } from "../../contexts/AuthContext";
+import { useLocation } from 'react-router-dom';
 
 
 const HomePage: React.FC = () => {
@@ -36,10 +37,10 @@ const HomePage: React.FC = () => {
     setCurrentTab(index);
   };
 
-  var domain = 'l2dxj.api.infobip.com';
-  var apiKey = 'd01b9f2803c64252369bd376383b9ab6-ac42ab45-01c2-4d6b-b272-949f3ea7a764';
+  const domain = 'l2dxj.api.infobip.com';
+  const apiKey = 'd01b9f2803c64252369bd376383b9ab6-ac42ab45-01c2-4d6b-b272-949f3ea7a764';
 
-  var options = {
+  const options = {
     'method': 'GET',
     'headers': {
       'Authorization': `App ${apiKey}`
@@ -51,6 +52,8 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     (async () => {
+
+      console.log(conversationId);
       const response = await fetch(`https://${domain}/ccaas/1/conversations/${conversationId}/messages`, options)
       const jsonResponse = await response.json();
       const messages = jsonResponse.messages
@@ -79,7 +82,12 @@ const HomePage: React.FC = () => {
             {authEnabled && userContext?.username && <UserMenu />}
           </Typography>
         </Grid>
-
+        <br />
+        <Grid item xs={11} md={10}>
+          <Typography variant="h6" component="h6">
+            Customer {authEnabled && userContext?.customerName} with email {authEnabled && userContext?.customerEmail}
+          </Typography>
+        </Grid>
         <br />
         <Grid item xs={12} md={10}>
           <Backdrop open={!!alert.isLoading} style={{ zIndex: 1 }}>
