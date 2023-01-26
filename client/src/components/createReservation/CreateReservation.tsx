@@ -7,10 +7,10 @@ import {
   SelectChangeEvent,
   TextField,
 } from "@mui/material";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import { ErrorI, ReservationI } from "../../pages/home/Home.types";
-import {APIConfigPath, APIPath} from "../../const";
+import { APIConfigPath, APIPath } from "../../const";
 import { Grid } from "@mui/material";
 import styled from "@emotion/styled";
 
@@ -20,8 +20,8 @@ import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
 import { Diversity3 } from "@mui/icons-material";
 import { validateReservation } from "../../utlis/validations/validateReservation";
 import { AlertContext } from "../../contexts/AlertContext";
-import {FieldI} from "../../pages/config/ConfigTypes";
-import {Field} from "./CreateReservationTypes";
+import { FieldI } from "../../pages/config/ConfigTypes";
+import { Field } from "./CreateReservationTypes";
 
 const TODAY = new Date();
 let MINUTE = TODAY.getMinutes();
@@ -73,20 +73,23 @@ const CreateReservation = () => {
   const [additionalFields, setAdditionalFields] = useState<FieldI[]>([]);
   const { updateAlertContext, isLoading } = React.useContext(AlertContext);
 
-  useEffect(()=> {
+  useEffect(() => {
     (async () => {
       const response = await fetch(`${APIConfigPath}/additionalFields`, {});
       const result = await response.json();
-      let additionalFieldsArr:Field[] = [];
-      const addtionalF:FieldI[] = result.config.length ? result.config : [];
+      let additionalFieldsArr: Field[] = [];
+      const addtionalF: FieldI[] = result.config.length ? result.config : [];
       setAdditionalFields(result.config);
-      addtionalF.forEach(field => {
-        const newField = {name: field.name, value: ''}
+      addtionalF.forEach((field) => {
+        const newField = { name: field.name, value: "" };
         additionalFieldsArr.push(newField);
-      })
-      setNewReservation({...newReservation, additionalFields: [...additionalFieldsArr] });
+      });
+      setNewReservation({
+        ...emptyNewReservation,
+        additionalFields: [...additionalFieldsArr],
+      });
     })();
-  },[newReservation]);
+  }, []);
 
   const handleChange = (newValue: Date | null, field: string) => {
     let today = new Date(newValue ? newValue : "");
@@ -117,7 +120,9 @@ const CreateReservation = () => {
       | SelectChangeEvent
   ) => {
     setNewReservation({ ...newReservation, [e.target.name]: e.target.value });
-    const errors = validateReservation(newReservation);
+    const errors = validateReservation(
+      JSON.parse(JSON.stringify(newReservation))
+    );
     if (isReservationValid(errors)) {
       updateAlertContext({
         isVisible: false,
@@ -129,17 +134,24 @@ const CreateReservation = () => {
     setErrors(errors);
   };
 
-  const handleChangeAdditionalFields = (fieldName:string,value:string, index:number)=>{
-    const additionalField:Field = {name: fieldName, value: value};
-    let additionalFieldsArr:Field[];
-    if (newReservation.additionalFields){
-      additionalFieldsArr = [...newReservation.additionalFields]
-    }else{
-      additionalFieldsArr = []
+  const handleChangeAdditionalFields = (
+    fieldName: string,
+    value: string,
+    index: number
+  ) => {
+    const additionalField: Field = { name: fieldName, value: value };
+    let additionalFieldsArr: Field[];
+    if (newReservation.additionalFields) {
+      additionalFieldsArr = [...newReservation.additionalFields];
+    } else {
+      additionalFieldsArr = [];
     }
     additionalFieldsArr[index] = additionalField;
-    setNewReservation({...newReservation, additionalFields: [...additionalFieldsArr]});
-  }
+    setNewReservation({
+      ...newReservation,
+      additionalFields: [...additionalFieldsArr],
+    });
+  };
 
   const isReservationValid = (errors: ErrorI) => {
     return !Object.values(errors).length;
@@ -184,16 +196,18 @@ const CreateReservation = () => {
     }
   };
 
-  const getAdditionalFieldValue = (fieldName:string) => {
-    let value = ''
+  const getAdditionalFieldValue = (fieldName: string) => {
+    let value = "";
     if (newReservation.additionalFields) {
-      const additionalField = newReservation.additionalFields.find((f) => f.name === fieldName);
-      if (additionalField){
+      const additionalField = newReservation.additionalFields.find(
+        (f) => f.name === fieldName
+      );
+      if (additionalField) {
         value = additionalField.value;
       }
     }
     return value;
-  }
+  };
 
   return (
     <>
@@ -278,19 +292,26 @@ const CreateReservation = () => {
             helperText={isSubmitted ? errors.host_email : ""}
           />
         </Grid>
-        {additionalFields && additionalFields.map((additionalField, index) =>
+        {additionalFields &&
+          additionalFields.map((additionalField, index) => (
             <Grid key={index} item xs={12}>
-            <TextField
+              <TextField
                 fullWidth
                 key={additionalField.name}
                 error={false}
                 name={additionalField.name}
                 label={additionalField.placeHolder}
                 value={getAdditionalFieldValue(additionalField.name)}
-                onChange={e => handleChangeAdditionalFields(additionalField.name,e.target.value,index)}
-            />
-          </Grid>
-        )}
+                onChange={(e) =>
+                  handleChangeAdditionalFields(
+                    additionalField.name,
+                    e.target.value,
+                    index
+                  )
+                }
+              />
+            </Grid>
+          ))}
         <Grid item xs={12} md={12} lg={12}>
           <ButtonContainer>
             <Button
