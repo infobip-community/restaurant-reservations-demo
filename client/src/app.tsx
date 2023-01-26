@@ -25,7 +25,9 @@ const AppWithOauth: React.FC = () => {
       !authService.getCodeFromLocation(window.location)
     ) {
       setIsLoading(true);
-      authService.authorize();
+      (async () => {
+        await authService.authorize();
+      })();
       return;
     }
 
@@ -47,7 +49,7 @@ const AppWithOauth: React.FC = () => {
     });
 
     setIsLoading(false);
-  }, [authService, authEnabled, userContext]);
+  }, [authService, authEnabled, userContext, isLoading]);
 
   const updateUserContext = (newUserContext: UserUpdateParamsI) => {
     setUserContext({ ...userContext, ...newUserContext });
@@ -69,6 +71,7 @@ const AppWithOauth: React.FC = () => {
           </BrowserRouter>
         </UserContext.Provider>
       )}
+      <div>Test</div>
       {isLoading && (
         <Backdrop open={true} style={{ zIndex: 1 }}>
           <CircularProgress color="inherit" />
@@ -80,11 +83,11 @@ const AppWithOauth: React.FC = () => {
 
 const App: React.FC = () => {
     const [alert, setAlert] = useState<AlertI>(defaultAlertContextValue);
-  
+
     const updateAlertContext = (newChanges: AlertI) => {
       setAlert({ ...alert, ...newChanges });
     };
-  
+
     return (
       <AlertContext.Provider value={{ ...alert, updateAlertContext }}>
         <AuthProvider authService={oauthService}>
