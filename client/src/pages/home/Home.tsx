@@ -19,7 +19,7 @@ import TabPanel from "../../components/tabPanel/TabPanel";
 import { AlertContext } from "../../contexts/AlertContext";
 import UserMenu from "../../components/userMenu/UserMenu";
 import { UserContext } from "../../contexts/AuthContext";
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 
 const HomePage: React.FC = () => {
@@ -47,8 +47,8 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const queryParams = useLocation();
-  const conversationId = queryParams.search.substring(queryParams.search.indexOf('=') + 1);
+  const [searchParams] = useSearchParams();
+  const conversationId = searchParams.get('conversationId');
 
   useEffect(() => {
     (async () => {
@@ -70,7 +70,7 @@ const HomePage: React.FC = () => {
       });
 
     })();
-  },[] );
+  },[userContext, conversationId, domain, apiKey, options] );
 
   return (
     <Container fixed>
