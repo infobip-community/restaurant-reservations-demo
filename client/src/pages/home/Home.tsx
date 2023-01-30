@@ -22,10 +22,13 @@ import { UserContext } from "../../contexts/AuthContext";
 import { useSearchParams } from 'react-router-dom';
 
 
+// @ts-ignore
 const HomePage: React.FC = () => {
   const theme = useTheme();
   const [currentTab, setCurrentTab] = React.useState(0);
   const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
+  const domain = process?.env.REACT_APP_ACCOUNT_DOMAIN_API;
+  const apiKey = process?.env.REACT_APP_ACCOUNT_API_KEY;
   const userContext = useContext(UserContext);
   const alert = useContext(AlertContext);
 
@@ -36,9 +39,6 @@ const HomePage: React.FC = () => {
   const handleChangeIndex = (index: number) => {
     setCurrentTab(index);
   };
-
-  const domain = 'l2dxj.api.infobip.com';
-  const apiKey = 'd01b9f2803c64252369bd376383b9ab6-ac42ab45-01c2-4d6b-b272-949f3ea7a764';
 
   const options = {
     'method': 'GET',
@@ -53,21 +53,22 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     (async () => {
 
-      console.log(conversationId);
-      const response = await fetch(`https://${domain}/ccaas/1/conversations/${conversationId}/messages`, options)
-      const jsonResponse = await response.json();
-      const messages = jsonResponse.messages
+      if(!userContext?.customerName){
+        const response = await fetch(`https://${domain}/ccaas/1/conversations/${conversationId}/messages`, options)
+        const jsonResponse = await response.json();
+        const messages = jsonResponse.messages
 
-      const result = messages.filter( (message: any) =>
-      {
-        return message.direction === 'INBOUND' &&
-            message.channel === 'EMAIL';
-      });
+        const result = messages.filter( (message: any) =>
+        {
+          return message.direction === 'INBOUND' &&
+              message.channel === 'EMAIL';
+        });
 
-      userContext.update({
-        customerEmail: result[0].content.sender,
-        customerName: result&&result[0].content.senderName
-      });
+        userContext.update({
+          customerEmail: result[0].content.sender,
+          customerName: result&&result[0].content.senderName
+        });
+      }
 
     })();
   },[userContext, conversationId, domain, apiKey, options] );
@@ -85,7 +86,7 @@ const HomePage: React.FC = () => {
         <br />
         <Grid item xs={11} md={10}>
           <Typography variant="h6" component="h6">
-            Customer {authEnabled && userContext?.customerName} with email {authEnabled && userContext?.customerEmail}
+            Customer {userContext?.customerName} with email {userContext?.customerEmail}
           </Typography>
         </Grid>
         <br />
