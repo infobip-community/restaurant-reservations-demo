@@ -1,4 +1,4 @@
-import React, { useContext} from "react";
+import React, { useContext, useEffect } from "react";
 import Reservations from "../../components/reservations/Reservations";
 import {
   Alert,
@@ -19,18 +19,13 @@ import TabPanel from "../../components/tabPanel/TabPanel";
 import { AlertContext } from "../../contexts/AlertContext";
 import UserMenu from "../../components/userMenu/UserMenu";
 import { UserContext } from "../../contexts/AuthContext";
-import { useSearchParams } from 'react-router-dom';
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
   const [currentTab, setCurrentTab] = React.useState(0);
   const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
-  const domain = process?.env.REACT_APP_ACCOUNT_DOMAIN_API;
-  const apiKey = process?.env.REACT_APP_ACCOUNT_API_KEY;
   const userContext = useContext(UserContext);
   const alert = useContext(AlertContext);
-  const [searchParams] = useSearchParams();
-  const conversationId = searchParams.get('conversationId');
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
@@ -39,41 +34,6 @@ const HomePage: React.FC = () => {
   const handleChangeIndex = (index: number) => {
     setCurrentTab(index);
   };
-
-  const { update } = useContext(UserContext);
-  useEffect(() => {
-    (async () => {
-
-      if(!conversationId)
-        return;
-
-        const options = {
-          'method': 'GET',
-          'headers': {
-            'Authorization': `App ${apiKey}`
-          }
-        };
-
-        const response = await fetch(`https://${domain}/ccaas/1/conversations/${conversationId}/messages`, options)
-        const jsonResponse = await response.json();
-        const messages = jsonResponse.messages
-
-        const result = messages.filter( (message: any) =>
-        {
-          return message.direction === 'INBOUND'
-        });
-
-        if(!result)
-          return;
-
-      update({
-        customerEmail: result[0]?.content?.sender,
-        customerName: result[0]?.content?.senderName,
-        customerPhoneNumber: result[0]?.from && !isNaN(+result[0].from) ? result[0]?.from : ''
-      });
-
-    })();
-  },[update, conversationId, domain, apiKey] );
 
   return (
     <Container fixed>
