@@ -7,6 +7,7 @@ export const defaultUserContext: UserContextI = {
   username: '',
   customerName: '',
   customerEmail: '',
+  customerPhoneNumber: '',
   onLogout: () => {},
   update: () => {}
 };

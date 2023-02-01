@@ -21,8 +21,6 @@ import UserMenu from "../../components/userMenu/UserMenu";
 import { UserContext } from "../../contexts/AuthContext";
 import { useSearchParams } from 'react-router-dom';
 
-
-// @ts-ignore
 const HomePage: React.FC = () => {
   const theme = useTheme();
   const [currentTab, setCurrentTab] = React.useState(0);
@@ -31,6 +29,8 @@ const HomePage: React.FC = () => {
   const apiKey = process?.env.REACT_APP_ACCOUNT_API_KEY;
   const userContext = useContext(UserContext);
   const alert = useContext(AlertContext);
+  const [searchParams] = useSearchParams();
+  const conversationId = searchParams.get('conversationId');
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
@@ -40,38 +40,40 @@ const HomePage: React.FC = () => {
     setCurrentTab(index);
   };
 
-  const options = {
-    'method': 'GET',
-    'headers': {
-      'Authorization': `App ${apiKey}`
-    }
-  };
-
-  const [searchParams] = useSearchParams();
-  const conversationId = searchParams.get('conversationId');
-
+  const { update } = useContext(UserContext);
   useEffect(() => {
     (async () => {
 
-      if(!userContext?.customerName){
+      if(!conversationId)
+        return;
+
+        const options = {
+          'method': 'GET',
+          'headers': {
+            'Authorization': `App ${apiKey}`
+          }
+        };
+
         const response = await fetch(`https://${domain}/ccaas/1/conversations/${conversationId}/messages`, options)
         const jsonResponse = await response.json();
         const messages = jsonResponse.messages
 
         const result = messages.filter( (message: any) =>
         {
-          return message.direction === 'INBOUND' &&
-              message.channel === 'EMAIL';
+          return message.direction === 'INBOUND'
         });
 
-        userContext.update({
-          customerEmail: result[0].content.sender,
-          customerName: result&&result[0].content.senderName
-        });
-      }
+        if(!result)
+          return;
+
+      update({
+        customerEmail: result[0]?.content?.sender,
+        customerName: result[0]?.content?.senderName,
+        customerPhoneNumber: result[0]?.from && !isNaN(+result[0].from) ? result[0]?.from : ''
+      });
 
     })();
-  },[userContext, conversationId, domain, apiKey, options] );
+  },[update, conversationId, domain, apiKey] );
 
   return (
     <Container fixed>
@@ -81,12 +83,6 @@ const HomePage: React.FC = () => {
           <Typography variant="h4" component="h4">
             Awesome Restaurant
             {authEnabled && userContext?.username && <UserMenu />}
-          </Typography>
-        </Grid>
-        <br />
-        <Grid item xs={11} md={10}>
-          <Typography variant="h6" component="h6">
-            Customer {userContext?.customerName} with email {userContext?.customerEmail}
           </Typography>
         </Grid>
         <br />

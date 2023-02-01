@@ -13,6 +13,7 @@ export interface UserContextI {
   locale: string;
   customerName?: string;
   customerEmail?: string;
+  customerPhoneNumber?: string;
   onLogout: () => void;
   update: (userContext: UserContextI) => void;
 }
@@ -40,6 +41,7 @@ export interface ReservationI {
   id?: string;
   host_email?: string;
   host_name?: string;
+  host_phone_number?: string;
   hour?: string;
   date?: string;
   party_size?: string;
@@ -49,6 +51,7 @@ export interface ReservationI {
 export interface ErrorI {
   host_email?: string;
   host_name?: string;
+  host_phone_number?: string;
   hour?: string;
   date?: string;
 }
