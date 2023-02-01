@@ -25,7 +25,9 @@ const AppWithOauth: React.FC = () => {
       !authService.getCodeFromLocation(window.location)
     ) {
       setIsLoading(true);
-      authService.authorize();
+      (async () => {
+        await authService.authorize();
+      })();
       return;
     }
 
@@ -47,7 +49,7 @@ const AppWithOauth: React.FC = () => {
     });
 
     setIsLoading(false);
-  }, [authService, authEnabled, userContext]);
+  }, [authService, authEnabled, userContext, isLoading]);
 
   const updateUserContext = (newUserContext: UserUpdateParamsI) => {
     setUserContext({ ...userContext, ...newUserContext });
