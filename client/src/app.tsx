@@ -29,13 +29,15 @@ const AppWithOauth: React.FC = () => {
     useState<UserContextI>(defaultUserContext);
   const { authService } = useAuth();
   const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
-  const params = new URLSearchParams(window.location.search);
-  const conversationId = params.get("conversationId");
   const domain = process?.env.REACT_APP_ACCOUNT_DOMAIN_API;
   const apiKey = process?.env.REACT_APP_ACCOUNT_API_KEY;
+  const conversationIntegrationEnabled = process?.env.REACT_APP_CONVERSATIONS_INTEGRATION;
+  const params = new URLSearchParams(window.location.search);
+  const conversationId = params.get("conversationId");
+
 
   useEffect(() => {
-    if (!conversationId) return;
+    if (!conversationIntegrationEnabled || !conversationId) return;
 
     const options = {
       method: "GET",
