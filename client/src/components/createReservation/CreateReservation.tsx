@@ -22,7 +22,7 @@ import { validateReservation } from "../../utlis/validations/validateReservation
 import { AlertContext } from "../../contexts/AlertContext";
 import { FieldI } from "../../pages/config/ConfigTypes";
 import { Field } from "./CreateReservationTypes";
-import { UserContext } from "../../contexts/AuthContext";
+import { CustomerContext } from "../../contexts/CustomerContext";
 
 const TODAY = new Date();
 let MINUTE = TODAY.getMinutes();
@@ -72,13 +72,9 @@ const CreateReservation = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [additionalFields, setAdditionalFields] = useState<FieldI[]>([]);
   const { updateAlertContext, isLoading } = React.useContext(AlertContext);
-  const { customerName, customerEmail, customerPhoneNumber } =
-    React.useContext(UserContext);
+  const { name, email, phoneNumber } = React.useContext(CustomerContext);
   const [newReservation, setNewReservation] = useState<ReservationI>({
     ...emptyNewReservation,
-    host_name: customerName,
-    host_email: customerEmail,
-    host_phone_number: customerPhoneNumber,
   });
 
   useEffect(() => {
@@ -94,10 +90,13 @@ const CreateReservation = () => {
       });
       setNewReservation({
         ...emptyNewReservation,
+        host_name: name,
+        host_email: email,
+        host_phone_number: phoneNumber,
         additionalFields: [...additionalFieldsArr],
       });
     })();
-  }, []);
+  }, [name, email, phoneNumber]);
 
   const handleChange = (newValue: Date | null, field: string) => {
     let today = new Date(newValue ? newValue : "");

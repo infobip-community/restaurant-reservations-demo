@@ -1,10 +1,16 @@
 import { AlertColor } from "@mui/material";
-import {Field} from "../../components/createReservation/CreateReservationTypes";
+import { Field } from "../../components/createReservation/CreateReservationTypes";
 
 export interface UserUpdateParamsI {
   token?: string;
   username?: string;
   locale?: string;
+}
+
+export interface CustomerContextI {
+  name: string;
+  email: string;
+  phoneNumber: string;
 }
 
 export interface UserContextI {

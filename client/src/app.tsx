@@ -15,9 +15,16 @@ import {
   AlertContext,
 } from "./contexts/AlertContext";
 import oauthService from "./services/oauth";
+import {
+  CustomerContext,
+  defaultCustomerContext,
+} from "./contexts/CustomerContext";
 
 const AppWithOauth: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [customerContext, setCustomerContext] = useState(
+    defaultCustomerContext
+  );
   const [userContext, setUserContext] =
     useState<UserContextI>(defaultUserContext);
   const { authService } = useAuth();
@@ -28,9 +35,7 @@ const AppWithOauth: React.FC = () => {
   const apiKey = process?.env.REACT_APP_ACCOUNT_API_KEY;
 
   useEffect(() => {
-    if (!conversationId) {
-      return;
-    }
+    if (!conversationId) return;
 
     const options = {
       method: "GET",
@@ -47,37 +52,30 @@ const AppWithOauth: React.FC = () => {
       const jsonResponse = await response.json();
       const messages = jsonResponse.messages;
 
-      const result = messages.filter((message: any) => {
-        return message.direction === "INBOUND";
-      });
+      const result = messages.filter(
+        (message: any) => message.direction === "INBOUND"
+      );
 
-      if (!result) {
-        return;
-      }
-      setUserContext({
-        ...userContext,
-        ...{
-          customerEmail: result[0]?.content?.sender,
-          customerName: result[0]?.content?.senderName,
-          customerPhoneNumber:
-            result[0]?.from && !isNaN(+result[0].from) ? result[0]?.from : "",
-        },
+      if (!result) return;
+
+      setCustomerContext({
+        email: result[0]?.content?.sender,
+        name: result[0]?.content?.senderName,
+        phoneNumber:
+          result[0]?.from && !isNaN(+result[0].from) ? result[0]?.from : "",
       });
     })();
-  }, [userContext, conversationId, apiKey, domain]);
+  }, [conversationId, apiKey, domain]);
 
   useEffect(() => {
-    if (!authEnabled) {
-      return;
-    }
+    if (!authEnabled) return;
+
     if (
       !authService.isAuthenticated() &&
       !authService.getCodeFromLocation(window.location)
     ) {
       setIsLoading(true);
-      (async () => {
-        await authService.authorize();
-      })();
+      authService.authorize();
       return;
     }
 
@@ -112,14 +110,16 @@ const AppWithOauth: React.FC = () => {
         <UserContext.Provider
           value={{ ...userContext, update: updateUserContext }}
         >
-          <BrowserRouter>
-            <Routes>
-              <Route path="/">
-                <Route index element={<HomePage />} />
-                <Route path="config" element={<ConfigPage />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
+          <CustomerContext.Provider value={customerContext}>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/">
+                  <Route index element={<HomePage />} />
+                  <Route path="config" element={<ConfigPage />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </CustomerContext.Provider>
         </UserContext.Provider>
       )}
       {isLoading && (
