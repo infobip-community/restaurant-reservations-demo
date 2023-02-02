@@ -22,6 +22,7 @@ import { validateReservation } from "../../utlis/validations/validateReservation
 import { AlertContext } from "../../contexts/AlertContext";
 import { FieldI } from "../../pages/config/ConfigTypes";
 import { Field } from "./CreateReservationTypes";
+import { CustomerContext } from "../../contexts/CustomerContext";
 
 const TODAY = new Date();
 let MINUTE = TODAY.getMinutes();
@@ -40,6 +41,7 @@ setTime();
 const emptyNewReservation = {
   host_email: "",
   host_name: "",
+  host_phone_number: "",
   hour: `${HOUR}:${MINUTE < 10 ? `0${MINUTE}` : MINUTE}`,
   date: `${
     TODAY.getUTCMonth() + 1
@@ -64,14 +66,16 @@ const FieldContainer = styled.div`
 `;
 
 const CreateReservation = () => {
-  const [newReservation, setNewReservation] =
-    useState<ReservationI>(emptyNewReservation);
   const [errors, setErrors] = useState<ErrorI>({});
   const [date, setDate] = useState<Date | null>(new Date());
   const [startTime, setStartTime] = useState<Date | null>(TODAY);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [additionalFields, setAdditionalFields] = useState<FieldI[]>([]);
   const { updateAlertContext, isLoading } = React.useContext(AlertContext);
+  const { name, email, phoneNumber } = React.useContext(CustomerContext);
+  const [newReservation, setNewReservation] = useState<ReservationI>({
+    ...emptyNewReservation,
+  });
 
   useEffect(() => {
     (async () => {
@@ -86,10 +90,13 @@ const CreateReservation = () => {
       });
       setNewReservation({
         ...emptyNewReservation,
+        host_name: name,
+        host_email: email,
+        host_phone_number: phoneNumber,
         additionalFields: [...additionalFieldsArr],
       });
     })();
-  }, []);
+  }, [name, email, phoneNumber]);
 
   const handleChange = (newValue: Date | null, field: string) => {
     let today = new Date(newValue ? newValue : "");
@@ -290,6 +297,17 @@ const CreateReservation = () => {
             value={newReservation.host_email}
             onChange={handleChangeInput}
             helperText={isSubmitted ? errors.host_email : ""}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            error={!!errors.host_phone_number && isSubmitted}
+            name="host_phone_number"
+            label="Host Phone Number"
+            value={newReservation.host_phone_number}
+            onChange={handleChangeInput}
+            helperText={isSubmitted ? errors.host_phone_number : ""}
           />
         </Grid>
         {additionalFields &&
