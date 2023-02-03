@@ -1,4 +1,4 @@
-import React, { useContext} from "react";
+import React, { useContext } from "react";
 import Reservations from "../../components/reservations/Reservations";
 import {
   Alert,
@@ -45,7 +45,6 @@ const HomePage: React.FC = () => {
             {authEnabled && userContext?.username && <UserMenu />}
           </Typography>
         </Grid>
-
         <br />
         <Grid item xs={12} md={10}>
           <Backdrop open={!!alert.isLoading} style={{ zIndex: 1 }}>

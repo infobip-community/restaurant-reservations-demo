@@ -5,6 +5,9 @@ export const defaultUserContext: UserContextI = {
   token: '',
   locale: '',
   username: '',
+  customerName: '',
+  customerEmail: '',
+  customerPhoneNumber: '',
   onLogout: () => {},
   update: () => {}
 };
