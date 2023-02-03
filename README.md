@@ -573,4 +573,70 @@ Calling isValid  with the signature and timestamp we sent you in the headers as 
 isValid(signature, timestamp)
 ```
 
-#THE END
+
+## Deploying Application to Azure
+
+### Create [Azure](https://azure.microsoft.com/) resource
+Official documentation for Azure [here](https://learn.microsoft.com)
+
+1.- Select Create a Resource
+
+![Azure Create Resoure](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/create%20resource.png?raw=true)
+
+
+2.- Select Web App option
+
+![Azure Select Resource Type](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/web%20app.png?raw=true)
+
+
+3.- Select type account for azure(You can have a free trial)
+
+![Azure Account type](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/free%20trial.png?raw=true)
+
+4.- Fill all necessary data to create your instance(You can skip other sections than basic)
+Make sure you select a node version appropriate for this app. We recommend choosing Node 16 LTS
+
+![Azure Instance Basic Details](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/create%20web%20app.png?raw=true)
+
+5.- Go to the Implementation Center Menu
+![Azure Deployment Center](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/deployment%20center.png?raw=true)
+
+6.- Go to Configuration and select GIT LOCAL
+![Azure Git Local](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/code%20source.png?raw=true)
+
+7.- Save And Refresh Page
+
+8.- Go to Credentials for Local Git Credentials and add a Username/Password and Save.
+ ![Azure Local Git Credentials](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/local%20git%20credentials.png?raw=true)
+ 
+  
+9.- From your local repository add the remote URL that azure created
+
+```git remote add azure https://test.scm.azurewebsites.net:443/test.git```
+
+10.- Before deploying make sure you created your `.env` file with your correct credentials from IB services.
+
+`REACT_APP_REDIRECT_URI` will be your azure instance
+
+```
+REACT_APP_OAUTH_ACTIVE="true"
+REACT_APP_CLIENT_ID="eaf2lk1j940e0124f0e7c68a121c0582"
+REACT_APP_PROVIDER="https://portal.infobip.com/conversations/api/amg/exchange/1/oauth"
+REACT_APP_REDIRECT_URI="https://restaurant-reservations-demo-oauth.azurewebsites.net/" 
+REACT_APP_ACCOUNT_DOMAIN_API="l2fur4j.api.infobip.com"
+REACT_APP_ACCOUNT_API_KEY="d01ssd383b9ab6-ac42abfsr272-949f3ea7a764"
+REACT_APP_CONVERSATIONS_INTEGRATION="true"
+```
+
+11.- Push the master branch to azure repository
+```
+ git push azure master
+```
+
+12. Wait for deploy and open your app
+![Azure Browse](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/browse.png?raw=true)
+
+You should see something like this:
+![Demo App](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/demo%20app.png?raw=true)
+
+13. Now you can use this instance to create your Private App on Exchange for Partners and enter your URL in configurations: Manifest, Settings URL, and Oauth fields. More information about how to do this [here]()
