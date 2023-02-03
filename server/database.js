@@ -59,8 +59,15 @@ export const getByEmail = (host_email) => {
       .get("reservations")
       .find({ host_email })
       .value();
+    const host_phone_number = host_email;
+    const reservationPhoneNumber = db.chain
+        .get("reservations")
+        .find({ host_phone_number })
+        .value();
     if (reservation) {
       resolve(reservation);
+    }else if (reservationPhoneNumber){
+      resolve(reservationPhoneNumber);
     } else {
       reject(`No reservation found for: ${host_email}`);
     }

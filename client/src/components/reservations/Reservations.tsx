@@ -1,7 +1,7 @@
 import * as React from "react";
 import Restaurant from "@mui/icons-material/Restaurant";
-import { ReservationI } from "../../pages/home/Home.types";
-import { useContext, useState } from "react";
+import {ReservationI, UserContextI} from "../../pages/home/Home.types";
+import {useContext, useEffect, useState} from "react";
 import { APIPath } from "../../const";
 
 import styled from "@emotion/styled";
@@ -27,11 +27,13 @@ import {
   Groups2,
   LocalDining,
   QueryBuilder,
+    ContactPhone
 } from "@mui/icons-material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
 import { AlertContext } from "../../contexts/AlertContext";
+import {defaultUserContext} from "../../contexts/AuthContext";
 
 const FieldContainer = styled.div`
   & > div {
@@ -48,6 +50,17 @@ const Reservations = () => {
   const [date, setDate] = useState<Date | null>();
   const [startTime, setStartTime] = useState<Date | null>();
   const alert = useContext(AlertContext);
+  const [userContext] = useState<UserContextI>(defaultUserContext);
+
+  useEffect(()=>{
+    console.log('*//**/*/', userContext)
+    if(userContext.customerEmail?.length){
+      setSearchValue(userContext.customerEmail);
+    }else if (userContext.customerPhoneNumber?.length){
+      setSearchValue(userContext.customerPhoneNumber);
+    }
+    handleSearch();
+  },[userContext.customerEmail,userContext.customerPhoneNumber])
 
   const handleOpenEdit = () => {
     setEditing(true);
@@ -195,8 +208,9 @@ const Reservations = () => {
           <TextField
             fullWidth
             type="search"
+            value={searchValue}
             onChange={handleInputChange}
-            label="Enter your email"
+            label="Enter email or phone number"
             onKeyDown={handleKeyDown}
           />
         </Grid>
@@ -226,6 +240,15 @@ const Reservations = () => {
                 <Typography sx={{ fontSize: 20, ml: 1 }} color="text.secondary">
                   {reservationSelected.host_name}
                 </Typography>
+                  <Typography sx={{ fontSize: 20, pt: 0.3, ml: 3 }} variant="h5">
+                    <ContactPhone />
+                  </Typography>
+                  <Typography
+                      sx={{ fontSize: 20, ml: 1 }}
+                      color="text.secondary"
+                  >
+                    {reservationSelected.host_phone_number}
+                  </Typography>
               </Box>
               <Box sx={{ display: "flex", flexFlow: "row", pt: 2 }}>
                 {editing ? (
@@ -322,7 +345,7 @@ const Reservations = () => {
                       <Groups2 />
                     </Typography>
                     <Typography
-                      sx={{ fontSize: 20, ml: 1 }}
+                      sx={{ fontSize: 20, ml: 1, mr: 1 }}
                       color="text.secondary"
                     >
                       {reservationSelected.party_size}
