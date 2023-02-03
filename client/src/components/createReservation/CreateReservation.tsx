@@ -23,6 +23,9 @@ import { AlertContext } from "../../contexts/AlertContext";
 import { FieldI } from "../../pages/config/ConfigTypes";
 import { Field } from "./CreateReservationTypes";
 
+const apiKey = process?.env.REACT_APP_ACCOUNT_API_KEY;
+const apiDomain = process?.env.REACT_APP_ACCOUNT_DOMAIN_API;
+
 const TODAY = new Date();
 let MINUTE = TODAY.getMinutes();
 let HOUR = TODAY.getHours();
@@ -196,6 +199,84 @@ const CreateReservation = () => {
     }
   };
 
+  const savePerson = async () => {
+    const errors = validateReservation(newReservation);
+    setIsSubmitted(true);
+    setErrors({ ...errors });
+
+    if (isReservationValid(errors)) {
+      updateAlertContext({ isLoading: true });
+
+      const response = await fetch(
+          `https://${apiDomain}/people/2/persons?email=${newReservation.host_email}`,
+          {
+            method: 'get',
+            headers: {
+              'Accept': 'application/json',
+              'Authorization': `App ${apiKey}`
+            },
+          });
+      const status = await response.status;
+      if (response && status === 200) {
+        updateAlertContext({
+          type: "warning",
+          message: "Person already exists!",
+          isVisible: true,
+          isLoading: false,
+        });
+      } else {
+        createPerson().then(response => {
+          updateAlertContext({
+            type: "success",
+            message: "Person successfully saved!",
+            isVisible: true,
+            isLoading: false,
+          });
+        }).catch(error => {
+          updateAlertContext({
+            type: "error",
+            message: error,
+            isVisible: true,
+            isLoading: false,
+          });
+        })
+      }
+    } else {
+      updateAlertContext({
+        type: "error",
+        message: "Please fill required fields",
+        isVisible: true,
+        isLoading: false,
+      });
+    }
+  };
+
+  const createPerson = async () => {
+    const newPerson = {
+      "firstName": `${newReservation.host_name}`,
+      "contactInformation": {
+        "email": [
+          {
+            "address": `${newReservation.host_email}`
+          }
+        ]
+      }
+    };
+
+    const result = await fetch(`https://${apiDomain}/people/2/persons`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `App ${apiKey}`
+      },
+      body: JSON.stringify(newPerson),
+    });
+    const createPersonResponse = await result.json().catch((error) => {
+      return error;
+    });
+    return createPersonResponse;
+  };
+
   const getAdditionalFieldValue = (fieldName: string) => {
     let value = "";
     if (newReservation.additionalFields) {
@@ -316,11 +397,25 @@ const CreateReservation = () => {
           <ButtonContainer>
             <Button
               size={"large"}
-              onClick={addReservation}
+              onClick={savePerson}
               variant="contained"
               disabled={
                 isLoading || (isSubmitted && !isReservationValid(errors))
               }
+            >
+              Save person data
+            </Button>
+          </ButtonContainer>
+        </Grid>
+        <Grid item xs={12} md={12} lg={12}>
+          <ButtonContainer>
+            <Button
+                size={"large"}
+                onClick={addReservation}
+                variant="contained"
+                disabled={
+                    isLoading || (isSubmitted && !isReservationValid(errors))
+                }
             >
               Create
             </Button>
