@@ -208,7 +208,6 @@ const CreateReservation = () => {
 
   const savePerson = async () => {
     const errors = validateReservation(newReservation);
-    setIsSubmitted(true);
     setErrors({ ...errors });
 
     if (isReservationValid(errors)) {
@@ -232,7 +231,7 @@ const CreateReservation = () => {
           isLoading: false,
         });
       } else {
-        createPerson().then(response => {
+        createPerson().then(() => {
           updateAlertContext({
             type: "success",
             message: "Person successfully saved!",
