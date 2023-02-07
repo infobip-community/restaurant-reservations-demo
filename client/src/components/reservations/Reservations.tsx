@@ -53,12 +53,7 @@ const Reservations = () => {
   const [userContext] = useState<UserContextI>(defaultUserContext);
 
   useEffect(()=>{
-    console.log('*//**/*/', userContext)
-    if(userContext.customerEmail?.length){
-      setSearchValue(userContext.customerEmail);
-    }else if (userContext.customerPhoneNumber?.length){
-      setSearchValue(userContext.customerPhoneNumber);
-    }
+    setSearchValue(userContext.customerEmail || userContext.customerPhoneNumber);
     handleSearch();
   },[userContext.customerEmail,userContext.customerPhoneNumber])
 
