@@ -34,6 +34,8 @@ const AppWithOauth: React.FC = () => {
   const conversationIntegrationEnabled = process?.env.REACT_APP_CONVERSATIONS_INTEGRATION;
   const params = new URLSearchParams(window.location.search);
   const conversationId = params.get("conversationId");
+  const notCompatibleChannelsForConversationsIntegration = ['TWITTER_DM', 'FACEBOOK_MESSENGER', "LIVE_CHAT"];
+
 
 
   useEffect(() => {
@@ -59,6 +61,8 @@ const AppWithOauth: React.FC = () => {
       );
 
       if (!result) return;
+
+      if (notCompatibleChannelsForConversationsIntegration.includes(result[0]?.channel)) return;
 
       setCustomerContext({
         email: result[0]?.content?.sender,
