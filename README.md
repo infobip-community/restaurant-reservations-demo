@@ -20,7 +20,7 @@ We could have 2 types of integration in Infobip Conversations:
 
 2.- Card - will be displayed as an embedded site in the right column of the conversations window.
 
-![Conversation window](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/app/images/Conv%201.png?raw=true)
+![Conversation window](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/conversation%20card.png?raw=true)
 
 ### How I can integrate this app with Infobip Conversations?
 
@@ -581,33 +581,34 @@ Official documentation for Azure [here](https://learn.microsoft.com)
 
 1.- Select Create a Resource
 
-![Azure Create Resoure](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/create%20resource.png?raw=true)
+![Azure Create Resoure](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/create%20resource.png?raw=true)
 
 
 2.- Select Web App option
 
-![Azure Select Resource Type](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/web%20app.png?raw=true)
+![Azure Select Resource Type](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/web%20app.png?raw=true)
 
 
 3.- Select type account for azure(You can have a free trial)
 
-![Azure Account type](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/free%20trial.png?raw=true)
+![Azure Account type](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/free%20trial.png?raw=true)
 
 4.- Fill all necessary data to create your instance(You can skip other sections than basic)
 Make sure you select a node version appropriate for this app. We recommend choosing Node 16 LTS
 
-![Azure Instance Basic Details](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/create%20web%20app.png?raw=true)
+![Azure Instance Basic Details])
 
 5.- Go to the Implementation Center Menu
-![Azure Deployment Center](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/deployment%20center.png?raw=true)
+![Azure Deployment Center](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/deployment%20center.png?raw=true)
 
 6.- Go to Configuration and select GIT LOCAL
-![Azure Git Local](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/code%20source.png?raw=true)
+![Azure Git Local](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/code%20source.png?raw=true)
 
 7.- Save And Refresh Page
 
 8.- Go to Credentials for Local Git Credentials and add a Username/Password and Save.
- ![Azure Local Git Credentials](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/local%20git%20credentials.png?raw=true)
+ ![Azure Local Git Credentials](![image](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/local%20git%20credentials.png?raw=true)
+)
  
   
 9.- From your local repository add the remote URL that azure created
@@ -634,9 +635,9 @@ REACT_APP_CONVERSATIONS_INTEGRATION="true"
 ```
 
 12. Wait for deploy and open your app
-![Azure Browse](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/browse.png?raw=true)
+![Azure Browse](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/browse.png?raw=true)
 
 You should see something like this:
-![Demo App](https://github.com/infobip-community/restaurant-reservations-demo/blob/AJO-612/Document-Deploy-To-Azure-Steps/client/images/azure/demo%20app.png?raw=true)
+![Demo App](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/demo%20app.png?raw=true)
 
 13. Now you can use this instance to create your Private App on Exchange for Partners and enter your URL in configurations: Manifest, Settings URL, and Oauth fields. More information about how to do this [here]()
