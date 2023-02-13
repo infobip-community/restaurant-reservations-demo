@@ -210,50 +210,50 @@ const CreateReservation = () => {
     const errors = validateReservation(newReservation);
     setErrors({ ...errors });
 
-    if (isReservationValid(errors)) {
-      updateAlertContext({ isLoading: true });
-
-      const response = await fetch(
-          `https://${apiDomain}/people/2/persons?email=${newReservation.host_email}`,
-          {
-            method: 'get',
-            headers: {
-              'Accept': 'application/json',
-              'Authorization': `App ${apiKey}`
-            },
-          });
-      const status = await response.status;
-      if (response && status === 200) {
-        updateAlertContext({
-          type: "warning",
-          message: "Person already exists!",
-          isVisible: true,
-          isLoading: false,
-        });
-      } else {
-        createPerson().then(() => {
-          updateAlertContext({
-            type: "success",
-            message: "Person successfully saved!",
-            isVisible: true,
-            isLoading: false,
-          });
-        }).catch(error => {
-          updateAlertContext({
-            type: "error",
-            message: error,
-            isVisible: true,
-            isLoading: false,
-          });
-        })
-      }
-    } else {
+    if (!isReservationValid(errors)) {
       updateAlertContext({
         type: "error",
         message: "Please fill required fields",
         isVisible: true,
         isLoading: false,
       });
+      return
+    }
+
+    updateAlertContext({ isLoading: true });
+    const response = await fetch(
+        `https://${apiDomain}/people/2/persons?email=${newReservation.host_email}`,
+        {
+          method: 'get',
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': `App ${apiKey}`
+          },
+        });
+    const status = await response.status;
+    if (response && status === 200) {
+      updateAlertContext({
+        type: "warning",
+        message: "Person already exists!",
+        isVisible: true,
+        isLoading: false,
+      });
+    } else {
+      createPerson().then(() => {
+        updateAlertContext({
+          type: "success",
+          message: "Person successfully saved!",
+          isVisible: true,
+          isLoading: false,
+        });
+      }).catch(error => {
+        updateAlertContext({
+          type: "error",
+          message: error,
+          isVisible: true,
+          isLoading: false,
+        });
+      })
     }
   };
 
