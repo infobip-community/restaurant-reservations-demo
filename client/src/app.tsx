@@ -31,12 +31,10 @@ const AppWithOauth: React.FC = () => {
   const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
   const domain = process?.env.REACT_APP_ACCOUNT_DOMAIN_API;
   const apiKey = process?.env.REACT_APP_ACCOUNT_API_KEY;
-  const conversationIntegrationEnabled = process?.env.REACT_APP_CONVERSATIONS_INTEGRATION;
+  const conversationIntegrationEnabled =
+    process?.env.REACT_APP_CONVERSATIONS_INTEGRATION;
   const params = new URLSearchParams(window.location.search);
   const conversationId = params.get("conversationId");
-  const notCompatibleChannelsForConversationsIntegration = ['TWITTER_DM', 'FACEBOOK_MESSENGER', "LIVE_CHAT"];
-
-
 
   useEffect(() => {
     if (!conversationIntegrationEnabled || !conversationId) return;
@@ -49,6 +47,12 @@ const AppWithOauth: React.FC = () => {
     };
 
     (async () => {
+      const notCompatibleChannelsForConversationsIntegration = [
+        "TWITTER_DM",
+        "FACEBOOK_MESSENGER",
+        "LIVE_CHAT",
+      ];
+
       const response = await fetch(
         `https://${domain}/ccaas/1/conversations/${conversationId}/messages`,
         options
@@ -62,7 +66,12 @@ const AppWithOauth: React.FC = () => {
 
       if (!result) return;
 
-      if (notCompatibleChannelsForConversationsIntegration.includes(result[0]?.channel)) return;
+      if (
+        notCompatibleChannelsForConversationsIntegration.includes(
+          result[0]?.channel
+        )
+      )
+        return;
 
       setCustomerContext({
         email: result[0]?.content?.sender,
@@ -71,7 +80,7 @@ const AppWithOauth: React.FC = () => {
           result[0]?.from && !isNaN(+result[0].from) ? result[0]?.from : "",
       });
     })();
-  }, [conversationId, apiKey, domain]);
+  }, [apiKey, conversationId, conversationIntegrationEnabled, domain]);
 
   useEffect(() => {
     if (!authEnabled) return;

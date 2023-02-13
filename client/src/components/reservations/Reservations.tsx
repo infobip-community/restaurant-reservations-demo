@@ -1,7 +1,7 @@
 import * as React from "react";
 import Restaurant from "@mui/icons-material/Restaurant";
-import {ReservationI, UserContextI} from "../../pages/home/Home.types";
-import {useContext, useEffect, useState} from "react";
+import { ReservationI } from "../../pages/home/Home.types";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { APIPath } from "../../const";
 
 import styled from "@emotion/styled";
@@ -27,13 +27,13 @@ import {
   Groups2,
   LocalDining,
   QueryBuilder,
-    ContactPhone
+  ContactPhone,
 } from "@mui/icons-material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
 import { AlertContext } from "../../contexts/AlertContext";
-import {defaultUserContext} from "../../contexts/AuthContext";
+import { CustomerContext } from "../../contexts/CustomerContext";
 
 const FieldContainer = styled.div`
   & > div {
@@ -50,12 +50,48 @@ const Reservations = () => {
   const [date, setDate] = useState<Date | null>();
   const [startTime, setStartTime] = useState<Date | null>();
   const alert = useContext(AlertContext);
-  const [userContext] = useState<UserContextI>(defaultUserContext);
+  const { email, phoneNumber } = useContext(CustomerContext);
 
-  useEffect(()=>{
-    setSearchValue(userContext.customerEmail || userContext.customerPhoneNumber);
-    handleSearch();
-  },[userContext.customerEmail,userContext.customerPhoneNumber])
+  const handleSearch = useCallback(
+    (searchValue) => {
+      (async () => {
+        const result = await fetch(`${APIPath}/${searchValue}`);
+        const response = await result.json();
+
+        if (response && response.id) {
+          setReservationSelected(response);
+          setDate(new Date(response.date ? response.date : ""));
+          setStartTime(
+            new Date(response.hour ? `${response.date} ${response.hour}` : "")
+          );
+          alert.updateAlertContext({
+            isVisible: true,
+            type: "success",
+            isLoading: false,
+            message: "",
+          });
+        } else {
+          setReservationSelected(undefined);
+          alert.updateAlertContext({
+            type: "error",
+            message: response.error,
+            isVisible: true,
+            isLoading: false,
+          });
+        }
+      })();
+    },
+    [alert]
+  );
+
+  useEffect(() => {
+    if (!searchValue) {
+      setSearchValue(email || phoneNumber || "");
+      if (email) {
+        handleSearch(email || phoneNumber);
+      }
+    }
+  }, [email, phoneNumber, handleSearch, searchValue]);
 
   const handleOpenEdit = () => {
     setEditing(true);
@@ -161,38 +197,9 @@ const Reservations = () => {
     setSearchValue(event.currentTarget.value);
   };
 
-  const handleSearch = () => {
-    (async () => {
-      const result = await fetch(`${APIPath}/${searchValue}`);
-      const response = await result.json();
-
-      if (response && response.id) {
-        setReservationSelected(response);
-        setDate(new Date(response.date ? response.date : ""));
-        setStartTime(
-          new Date(response.hour ? `${response.date} ${response.hour}` : "")
-        );
-        alert.updateAlertContext({
-          isVisible: true,
-          type: "success",
-          isLoading: false,
-          message: "",
-        });
-      } else {
-        setReservationSelected(undefined);
-        alert.updateAlertContext({
-          type: "error",
-          message: response.error,
-          isVisible: true,
-          isLoading: false,
-        });
-      }
-    })();
-  };
-
   const handleKeyDown = (event: any) => {
     if (event.key === "Enter") {
-      handleSearch();
+      handleSearch(searchValue);
     }
   };
 
@@ -235,15 +242,12 @@ const Reservations = () => {
                 <Typography sx={{ fontSize: 20, ml: 1 }} color="text.secondary">
                   {reservationSelected.host_name}
                 </Typography>
-                  <Typography sx={{ fontSize: 20, pt: 0.3, ml: 3 }} variant="h5">
-                    <ContactPhone />
-                  </Typography>
-                  <Typography
-                      sx={{ fontSize: 20, ml: 1 }}
-                      color="text.secondary"
-                  >
-                    {reservationSelected.host_phone_number}
-                  </Typography>
+                <Typography sx={{ fontSize: 20, pt: 0.3, ml: 3 }} variant="h5">
+                  <ContactPhone />
+                </Typography>
+                <Typography sx={{ fontSize: 20, ml: 1 }} color="text.secondary">
+                  {reservationSelected.host_phone_number}
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", flexFlow: "row", pt: 2 }}>
                 {editing ? (
@@ -348,15 +352,23 @@ const Reservations = () => {
                   </>
                 )}
               </Box>
-                {reservationSelected.additionalFields && reservationSelected.additionalFields.map(field => <Box key={field.name} sx={{ display: "flex", flexFlow: "row", pt: 2 }}>
-                  <Typography sx={{ fontSize: 20 }} variant="h5">
-                    {field.name}:
-                  </Typography>
-                  <Typography sx={{ fontSize: 20, ml: 1 }} color="text.secondary">
-                    {field.value}
-                  </Typography>
-                    </Box>
-                )}
+              {reservationSelected.additionalFields &&
+                reservationSelected.additionalFields.map((field) => (
+                  <Box
+                    key={field.name}
+                    sx={{ display: "flex", flexFlow: "row", pt: 2 }}
+                  >
+                    <Typography sx={{ fontSize: 20 }} variant="h5">
+                      {field.name}:
+                    </Typography>
+                    <Typography
+                      sx={{ fontSize: 20, ml: 1 }}
+                      color="text.secondary"
+                    >
+                      {field.value}
+                    </Typography>
+                  </Box>
+                ))}
             </CardContent>
             <CardActions sx={{ display: "flex", flexFlow: "row-reverse" }}>
               <Button
