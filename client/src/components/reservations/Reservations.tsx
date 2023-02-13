@@ -49,7 +49,7 @@ const Reservations = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [date, setDate] = useState<Date | null>();
   const [startTime, setStartTime] = useState<Date | null>();
-  const alert = useContext(AlertContext);
+  const { updateAlertContext } = useContext(AlertContext);
   const { email, phoneNumber } = useContext(CustomerContext);
 
   const handleSearch = useCallback(
@@ -64,7 +64,7 @@ const Reservations = () => {
           setStartTime(
             new Date(response.hour ? `${response.date} ${response.hour}` : "")
           );
-          alert.updateAlertContext({
+          updateAlertContext({
             isVisible: true,
             type: "success",
             isLoading: false,
@@ -72,7 +72,7 @@ const Reservations = () => {
           });
         } else {
           setReservationSelected(undefined);
-          alert.updateAlertContext({
+          updateAlertContext({
             type: "error",
             message: response.error,
             isVisible: true,
@@ -81,7 +81,7 @@ const Reservations = () => {
         }
       })();
     },
-    [alert]
+    [updateAlertContext]
   );
 
   useEffect(() => {
