@@ -45,6 +45,7 @@ const Reservations = () => {
   const [reservationSelected, setReservationSelected] = useState<
     ReservationI | undefined
   >();
+  const [firstLoad, setFirstLoad] = useState<boolean>(true);
   const [editing, setEditing] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [date, setDate] = useState<Date | null>();
@@ -85,15 +86,14 @@ const Reservations = () => {
   );
 
   useEffect(() => {
-    if (!searchValue) {
-      setSearchValue(email || phoneNumber);
-
-      if(email || phoneNumber || '') {
+    if (firstLoad) {
+      if (email || phoneNumber) {
+        setSearchValue(email || phoneNumber);
         handleSearch(email || phoneNumber);
+        setFirstLoad(false);
       }
-
     }
-  }, [email, phoneNumber, handleSearch, searchValue]);
+  }, [email, phoneNumber, handleSearch, firstLoad]);
 
   const handleOpenEdit = () => {
     setEditing(true);
