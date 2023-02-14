@@ -60,7 +60,10 @@ app.post("/exchange/restaurant/config", async (req, res) => {
 });
 
 app.get("/exchange/restaurant/config/additionalFields", async (req, res) => {
-  return res.json({ config: await getAdditionalFields() });
+  const config = await getAdditionalFields().catch((error) => {
+    return res.status(500).json({ error });
+  });
+  return res.json({ config });
 });
 
 app.post("/exchange/restaurant/config/additionalFields", async (req, res) => {
