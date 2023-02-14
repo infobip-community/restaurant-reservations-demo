@@ -17,7 +17,7 @@ import styled from "@emotion/styled";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
-import { Diversity3 } from "@mui/icons-material";
+import { Diversity3, Mail } from "@mui/icons-material";
 import { validateReservation } from "../../utlis/validations/validateReservation";
 import { AlertContext } from "../../contexts/AlertContext";
 import { FieldI } from "../../pages/config/ConfigTypes";
@@ -78,6 +78,9 @@ const CreateReservation = () => {
   const { name, email, phoneNumber } = React.useContext(CustomerContext);
   const [newReservation, setNewReservation] = useState<ReservationI>({
     ...emptyNewReservation,
+    host_name: name,
+    host_email: email,
+    host_phone_number: phoneNumber,
   });
 
   useEffect(() => {
