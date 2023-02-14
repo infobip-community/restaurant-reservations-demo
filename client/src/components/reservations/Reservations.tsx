@@ -68,7 +68,7 @@ const Reservations = () => {
             isVisible: true,
             type: "success",
             isLoading: false,
-            message: "",
+            message: "Reservation found",
           });
         } else {
           setReservationSelected(undefined);
@@ -86,10 +86,9 @@ const Reservations = () => {
 
   useEffect(() => {
     if (!searchValue) {
-      setSearchValue(email || phoneNumber || "");
-      if (email) {
-        handleSearch(email || phoneNumber);
-      }
+      setSearchValue(email || phoneNumber);
+      handleSearch(email || phoneNumber);
+
     }
   }, [email, phoneNumber, handleSearch, searchValue]);
 
@@ -170,6 +169,10 @@ const Reservations = () => {
     });
   };
 
+  const handleOnClick = () => {
+    handleSearch(searchValue);
+  };
+
   const handleChange = (newValue: Date | null | undefined, field: string) => {
     let today = new Date(newValue ? newValue : "");
     let value, minute, hour, day, month, year;
@@ -224,7 +227,7 @@ const Reservations = () => {
           justifyItems="center"
           display="flex"
         >
-          <Button disabled={!searchValue.length} onClick={handleSearch}>
+          <Button disabled={!searchValue.length} onClick={handleOnClick}>
             Search
           </Button>
         </Grid>
