@@ -15,34 +15,41 @@ export const createConnection = async () => {
   // Use JSON file for storage
   // Read data from JSON file, this will set db.data content
   if (db.data === null) {
-    db.data = { reservations: [], config:{fields: [{
-          "name": "Date",
-          "placeHolder": "Date",
-          "required": "true",
-          "disabled": "true",
-          "saved": "false"
-        },
+    db.data = {
+      reservations: [],
+      config: {
+        fields: [
           {
-            "name": "Hour",
-            "placeHolder": "Hour",
-            "required": "true",
-            "disabled": "true",
-            "saved": "false"
+            name: "Date",
+            placeHolder: "Date",
+            required: "true",
+            disabled: "true",
+            saved: "false",
           },
           {
-            "name": "Host Name",
-            "placeHolder": "Host Name",
-            "required": "true",
-            "disabled": "true",
-            "saved": "false"
+            name: "Hour",
+            placeHolder: "Hour",
+            required: "true",
+            disabled: "true",
+            saved: "false",
           },
           {
-            "name": "Host Email",
-            "placeHolder": "Host Email",
-            "required": "true",
-            "disabled": "true",
-            "saved": "false"
-          }]} };
+            name: "Host Name",
+            placeHolder: "Host Name",
+            required: "true",
+            disabled: "true",
+            saved: "false",
+          },
+          {
+            name: "Host Email",
+            placeHolder: "Host Email",
+            required: "true",
+            disabled: "true",
+            saved: "false",
+          },
+        ],
+      },
+    };
     await db.write();
   }
 };
@@ -59,15 +66,15 @@ export const getByEmail = (host_email) => {
       .get("reservations")
       .find({ host_email })
       .value();
-    if(reservation){
+    if (reservation) {
       resolve(reservation);
     }
     const host_phone_number = host_email;
     const reservationPhoneNumber = db.chain
-        .get("reservations")
-        .find({ host_phone_number })
-        .value();
-    if (reservationPhoneNumber){
+      .get("reservations")
+      .find({ host_phone_number })
+      .value();
+    if (reservationPhoneNumber) {
       resolve(reservationPhoneNumber);
     } else {
       reject(`No reservation found for: ${host_email}`);
@@ -122,12 +129,16 @@ export const addConfigFields = async (fields) => {
 export const getAdditionalFields = async () => {
   db.chain = lodash.chain(db.data);
   const configFields = db.chain.get("config").get("fields");
-  const filterFields = configFields.chain().filter(field=> field.additional).value();
+  const filterFields = configFields
+    .chain()
+    .filter((field) => field.additional)
+    .value();
+  await db.write();
   return filterFields;
 };
 
 export const deleteConfigField = async (request) => {
   db.chain = lodash.chain(db.data);
-  db.chain.get("config").get("fields").remove({name: request.name}).value();
+  db.chain.get("config").get("fields").remove({ name: request.name }).value();
   await db.write();
 };
