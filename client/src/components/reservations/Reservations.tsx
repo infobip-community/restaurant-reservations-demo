@@ -87,7 +87,10 @@ const Reservations = () => {
   useEffect(() => {
     if (!searchValue) {
       setSearchValue(email || phoneNumber);
-      handleSearch(email || phoneNumber);
+
+      if(email || phoneNumber || '') {
+        handleSearch(email || phoneNumber);
+      }
 
     }
   }, [email, phoneNumber, handleSearch, searchValue]);
