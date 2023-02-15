@@ -106,14 +106,14 @@ const Reservations = () => {
         headers: { "Content-type": "application/json; charset=UTF-8" },
         body: JSON.stringify(reservationSelected),
       }).catch((error) => {
-        alert.updateAlertContext({
+        updateAlertContext({
           type: "error",
           message: error,
           isVisible: true,
           isLoading: false,
         });
       });
-      alert.updateAlertContext({
+      updateAlertContext({
         type: "success",
         message: "Your reservation has been updated succesfully!",
         isVisible: true,
@@ -131,7 +131,7 @@ const Reservations = () => {
         headers: { "Content-type": "application/json; charset=UTF-8" },
         body: JSON.stringify(reservationSelected),
       }).then(() => {
-        alert.updateAlertContext({
+        updateAlertContext({
           type: "success",
           message: "Your reservation has been deleted succesfully!",
           isVisible: true,

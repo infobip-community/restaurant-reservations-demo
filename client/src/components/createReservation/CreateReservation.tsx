@@ -17,7 +17,7 @@ import styled from "@emotion/styled";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
-import { Diversity3, Mail } from "@mui/icons-material";
+import { Diversity3 } from "@mui/icons-material";
 import { validateReservation } from "../../utlis/validations/validateReservation";
 import { AlertContext } from "../../contexts/AlertContext";
 import { FieldI } from "../../pages/config/ConfigTypes";
@@ -220,19 +220,20 @@ const CreateReservation = () => {
         isVisible: true,
         isLoading: false,
       });
-      return
+      return;
     }
 
     updateAlertContext({ isLoading: true });
     const response = await fetch(
-        `https://${apiDomain}/people/2/persons?email=${newReservation.host_email}`,
-        {
-          method: 'get',
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': `App ${apiKey}`
-          },
-        });
+      `https://${apiDomain}/people/2/persons?email=${newReservation.host_email}`,
+      {
+        method: "get",
+        headers: {
+          Accept: "application/json",
+          Authorization: `App ${apiKey}`,
+        },
+      }
+    );
     const status = await response.status;
     if (response && status === 200) {
       updateAlertContext({
@@ -242,41 +243,43 @@ const CreateReservation = () => {
         isLoading: false,
       });
     } else {
-      createPerson().then(() => {
-        updateAlertContext({
-          type: "success",
-          message: "Person successfully saved!",
-          isVisible: true,
-          isLoading: false,
+      createPerson()
+        .then(() => {
+          updateAlertContext({
+            type: "success",
+            message: "Person successfully saved!",
+            isVisible: true,
+            isLoading: false,
+          });
+        })
+        .catch((error) => {
+          updateAlertContext({
+            type: "error",
+            message: error,
+            isVisible: true,
+            isLoading: false,
+          });
         });
-      }).catch(error => {
-        updateAlertContext({
-          type: "error",
-          message: error,
-          isVisible: true,
-          isLoading: false,
-        });
-      })
     }
   };
 
   const createPerson = async () => {
     const newPerson = {
-      "firstName": `${newReservation.host_name}`,
-      "contactInformation": {
-        "email": [
+      firstName: `${newReservation.host_name}`,
+      contactInformation: {
+        email: [
           {
-            "address": `${newReservation.host_email}`
-          }
-        ]
-      }
+            address: `${newReservation.host_email}`,
+          },
+        ],
+      },
     };
 
     const result = await fetch(`https://${apiDomain}/people/2/persons`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `App ${apiKey}`
+        Authorization: `App ${apiKey}`,
       },
       body: JSON.stringify(newPerson),
     });
@@ -430,12 +433,12 @@ const CreateReservation = () => {
         <Grid item xs={12} md={12} lg={12}>
           <ButtonContainer>
             <Button
-                size={"large"}
-                onClick={addReservation}
-                variant="contained"
-                disabled={
-                    isLoading || (isSubmitted && !isReservationValid(errors))
-                }
+              size={"large"}
+              onClick={addReservation}
+              variant="contained"
+              disabled={
+                isLoading || (isSubmitted && !isReservationValid(errors))
+              }
             >
               Create
             </Button>
