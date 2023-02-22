@@ -92,7 +92,7 @@ You then see a text area containing a predefined Answers format containing the r
 Each function will work as an HTTP method, so you will need to define the **outSchema** properties that you will send and the **inSchema** properties you will get in the response body.
 
 ##### ManifestAnswers.yml
-```aidl
+```yaml
 functions:
   - name: getAllReservations
     description: Get all reservations
@@ -512,7 +512,7 @@ aSdFHjKl1357JkLm=
 ```
 2. Use your preferred file reader to read the Signing Secret and store it in a variable.
 
-```aidl
+```js
 const signingSecretFile = process.cwd() + '/signingSecret.txt';
 let signingSecret = ''
 try {
@@ -566,7 +566,7 @@ const validateSignature = (request) => {
 #### Implementation example
 This is a code example for implementation.
 
-```aidl
+```js
 app.post("/exchange/restaurant/reservations/email", async (req, res) => {
 if (validateSignature(req)){
    const reservation = await getByEmail(req.body.email).catch((error) => {
@@ -770,8 +770,8 @@ The objective is to get the message with direction: _"INBOUND"_ and read what ty
 
 This is an example to access this property:
 
-```
-var settings = {
+``` js
+const settings = {
     "url": "https://l2XXX.api.infobip.com/ccaas/1/conversations/{conversationId}/messages",
     "method": "GET",
     "timeout": 0,
@@ -794,7 +794,7 @@ Using this example, you can integrate it into the demo app.
 The demo app uses React, so this example implements this feature in the `app.tsx` file:
 
 ```js
-app.tsx...const domain = process?.env.REACT_APP_ACCOUNT_DOMAIN_API;
+const domain = process?.env.REACT_APP_ACCOUNT_DOMAIN_API;
 const apiKey = process?.env.REACT_APP_ACCOUNT_API_KEY;
 const conversationIntegrationEnabled = process?.env.REACT_APP_CONVERSATIONS_INTEGRATION;
 const params = new URLSearchParams(window.location.search);
@@ -975,7 +975,7 @@ To see your API Key and the Base URL for the endpoints, go to each endpoint page
 
 To get a list of people (https://www.infobip.com/docs/api/customer-engagement/people/get-a-single-person-or-a-list-of-people).
 
-```
+```sh
 curl -L -g -X GET 'https://{baseUrl}/people/2/persons' \
 -H 'Authorization: {authorization}' \
 -H 'Accept: application/json'
@@ -983,7 +983,7 @@ curl -L -g -X GET 'https://{baseUrl}/people/2/persons' \
 
 To get a person by email (https://www.infobip.com/docs/api/customer-engagement/people/get-a-single-person-or-a-list-of-people).
 
-```
+```sh
 curl -L -g -X GET 'https://{baseUrl}/people/2/persons?email=janewilliams@acme.com' \
 -H 'Authorization: {authorization}' \
 -H 'Accept: application/json'
@@ -991,7 +991,7 @@ curl -L -g -X GET 'https://{baseUrl}/people/2/persons?email=janewilliams@acme.co
 
 To create a new person (https://www.infobip.com/docs/api/customer-engagement/people/create-a-new-person).
 
-```
+```sh
 curl -L -g -X POST 'https://{baseUrl}/people/2/persons' \
 -H 'Authorization: {authorization}' \
 -H 'Content-Type: application/json' \
@@ -1013,7 +1013,7 @@ curl -L -g -X POST 'https://{baseUrl}/people/2/persons' \
 To create a new person profile, if it does not already exist, using two of the endpoints mentioned above (get a person by email and create a new person) and API Key as authentication.
 **Create a new person profile if it does not already exist**
 
-```
+```js
 const savePerson = async () => {
  
   const response = await fetch(
