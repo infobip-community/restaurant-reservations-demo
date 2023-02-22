@@ -1,40 +1,41 @@
-# Create your first app in Exchange!
+### Restaurant Reservation Demo App
 
-Hi! This is how you can create your app in Exchange to integrate a system with Infobip Answers and Conversations. We'll make this really easy by guiding you through the steps to get the app up and running.
+The Demo App for Exchange is a sample app to help you to create your first app in Exchange. The Demo App integrates a typical system for managing reservations in a restaurant with Infobip Answers, Conversations and People.
 
-## The system
+We'll guide you through the step-by-step instructions for designing, configuring, and installing the app.
 
-We want to integrate this system with Infobip Answers and Conversations. In this repository you will find a React/NodeJS project, we have deployed this project in this url for you, use this one or deploy the project in your favorite environment.
+In this repository, you'll find a React/NodeJS project, which is deployed to this URL. Use this [URL](https://restaurant-reservations-demo.azurewebsites.net/) or deploy the project in your favorite environment.
 
----
+### How does the app work in Conversations?
 
-### Infobip Conversations integration
+This project is an app to manage reservations for a restaurant. You can create, update, or delete a reservation.
+You can see the features by opening this URL: [https://restaurant-reservations-demo.azurewebsites.net/](https://restaurant-reservations-demo.azurewebsites.net/)
 
-This project is an app to manage reservations of your restaurant. You can create, update or delete a reservation. You can see the features opening this url.
+### What can I integrate into Infobip Conversations?
 
-### What are the integration I can do in Infobip Conversations?
+You can have two types of integration in Infobip Conversations: 
 
-We could have 2 types of integration in Infobip Conversations:
+1.- **Page**  - opens a full page for functionality across multiple conversations.
 
-1.- Page - will work as a shortcut to open a page, you can access this shortcut inside the conversations window.
+2.- **Card**  - an embedded card in the right column of a single conversations window.
 
-2.- Card - will be displayed as an embedded site in the right column of the conversations window.
 
-![Conversation window](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/conversation%20card.png?raw=true)
+This Demo App creates a new context card within the Agent experience in the Conversations dashboard.
 
-### How I can integrate this app with Infobip Conversations?
+To integrate the app with Conversations:
 
-To integrate the app with Conversations you need to follow the next steps:
+1.- Login into the [web interface](https://portal.infobip.com/)
 
-1.- Login in https://portal.infobip.com
+2.- In the left menu, go to **Exchange**  -> **Publish** 
 
-2.- In the left menu, go to Exchange -> Publish
+3.- Click on **CREATE APP** 
 
-3.- Click on CREATE APP button
+4. In the **App** Name field, type "Reservations Manager".
 
-4.- Let's fill the fields: App Name -> "Reservations Manager" In product selection: Works with -> "Conversations"
+5. In the **Product Selection**: **Works with** field, select "Conversations".
 
-Then we have a textarea where you need to filled it with a predefined format, we already change this values for you to make it work with this reservations app, copy the content of the ManifestConversations.yml in this textarea.
+You then see a text area containing a predefined Conversations format containing the right values for the reservations app. Copy the content of the ManifestConversations.yml into this text area.
+
 
 ##### ManifestConversations.yml
 ```
@@ -45,15 +46,17 @@ card:
 page:
     title: Reservation Manager
     src: https://restaurant-reservations-demo.azurewebsites.net/
-    path: 
+    path: /
 ```
-Note: if you have deployed this project in your environment change the urls values with yours.
+Note: If you have deployed this project into your environment, change the url values to your own.
 
-5.- Skipped the next optionals fields Settings URL and Redirect URL 
-6.- Paste the url of your logo. 
-7.- Click CREATE APP button
+5. Skip the next two optional fields (**Settings URL** and **Redirect URL**). 
 
-That's all! You can now visit Infobip Conversations (https://portal.infobip.com/conversations) and you will see the Page and the Card.
+6. Paste the URL of your logo.
+
+7. Click **CREATE APP**.
+
+That's all! You can now go to Infobip Conversations (https://portal.infobip.com/conversations) and you will see the **Page** and the **Card**.
 
 
 ![Conversation window](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/conversation%20card.png?raw=true)
@@ -61,37 +64,32 @@ That's all! You can now visit Infobip Conversations (https://portal.infobip.com/
 
 ---
 
-### Infobip Answers integration
+### How does the app work in Answers
 
-This app will help you to manage reservations of a restaurant. You can find the API documentation of the project here.
+This app will help you to manage reservations at a restaurant. 
 
-#### What are the integration I can do in Infobip Answers?
+#### What can I integrate into Infobip Answers?
 
-You can add new features to your bot, integrating a system with an API using http calls.
+You can add new features to your bot, integrating a system with an API using HTTP calls.
 
-####  How I can integrate this app with Infobip Answers?
+To integrate the app with Answers:    
 
-To integrate the app with Answers you need to follow the next steps:
+1. Login in (https://portal.infobip.com)    
 
-1.- Login in https://portal.infobip.com
+2. In the left menu, go to Exchange -> Publish    
 
-2.- In the left menu, go to Exchange -> Publish
+3. Click on CREATE APP button     
 
-3.- Click on CREATE APP button
+4. In the **App Name** field, type "Reservations Manager".
 
-4.- Let's fill the fields:
+5. In the **Product Selection: Works with** field, select "Answers". 
 
-App Name -> "Reservations Manager"
+Note: If you have already created an app, skip steps 1-3. Then, you need to edit your app and also select "Answers" on the **Product Selection: Works with** field. 
 
-In product selection:
+You then see a text area containing a predefined Answers format containing the right values for the reservations app. Copy the content of the `ManifestAnswers.yml` into this text area.
 
-Works with -> "Answers"
 
-Note: If you already have created an app skip the step 3 and edit your app, on Works with add "Answers" too.
-
-Then we have a textarea where you need to filled it with a predefined format, we already change this values for you to make it work with this reservations app, copy the content of the ManifestAnswers.yml in this textarea in section Answers.
-
-Each function will work as an HTTP method, you will need to define the outSchema properties that you will send and inSchema properties you will get in the response body.
+Each function will work as an HTTP method, so you will need to define the **outSchema** properties that you will send and the **inSchema** properties you will get in the response body.
 
 ##### ManifestAnswers.yml
 ```aidl
@@ -109,7 +107,7 @@ functions:
           required: true
   - name: getReservationsByEmail
     description: Get reservation by email
-    method: POST
+    method: GET
     uri: >-
       https://restaurant-reservations-demo.azurewebsites.net/exchange/restaurant/reservations/email
     inSchema:
@@ -247,17 +245,13 @@ functions:
           required: true
 ```
 
-Note: if you have deployed this project in your environment change the uri's values with yours.
+Note: If you have deployed this project in your environment, change the uri values to your own.
 
+6. Skipped the optionals fields **Settings URL** and **Redirect URL**.
 
+7. In the **Logo** field, paste the URL of your logo.    
 
-5.- Skipped the next optionals fields Settings URL and Redirect URL
-
-6.- Paste the url of your logo.
-
-7.- Click CREATE APP button
-
-
+8. Click **CREATE APP**.     
 
 
 That's all! You can now view this app in your Answers bot catalog
@@ -265,72 +259,92 @@ That's all! You can now view this app in your Answers bot catalog
 
 #### How my bot can use this element?
 
-You will find the application "Reservation Manager" under the Chatbot integrations panel on the right.
+You will find the "Reservations Manager" app in the **Chatbot integrations** section of the right-side catalog.
 
-Drag the element to the bot flow, click on it and you will find the actions previously declared in the manifest (remember? the one you found an copied the ManifestAnswers.yml)
 
-![Bot](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/reservation%20bot.png?raw=true)
+![Reservations manager](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/reservation%20bot.png?raw=true)
 
-After you select the action you want to implement, click on Response and you will have the opportunity to select which properties in the response will be assigned to the bot's attributes.
 
-![Properties](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/reservation%20bot%20get%20by%20email.png?raw=true)
+Drag the element to the bot flow. When it is in the flow, click on it and you will see the actions previously declared in the manifest (from the ManifestAnswers.yml file).
 
-That's it, when the values are written in the attributes you can use them to response any message.
+
+![Bot](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/reservation%20bot%20get%20by%20email.png?raw=true)
+
+Choose the function that you want to implement from the drop-down list, and then click the **Response** tab. Then, select which properties in the response that will be assigned to the bot's attributes.
+
+
+![Properties](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/response%20attributes.png?raw=true)
+
+When the values are written in the attributes, you can use them to respond any message.
 
 ---
 
-# Authorizations and security
+### Authorizations and security
 
-We have not implemented any security in this project, but you can clone the repository add the security and deploy it in your favorite environment.
+For authorization, use a Client ID and a Secret Key for each app created in Exchange. This helps you to identify when the Infobip platform is requesting access to your system.
 
-We use a Client ID and a Secret Key per app created in Exchange, this will help you to know when Infobip platform is requesting access to your system.
+### How to get the Client ID and the Secret Key?
 
-How to get the Client ID and the Secret Key?
+Go to [Private Apps](https://portal.infobip.com/exchange-partners) page, and then follow the these steps:
 
-Go to [private apps](https://portal.infobip.com/exchange-partners) page and follow the next steps:
+1. Click on the three dots menu, and then select **View ID**.
 
-Once you have reached your apps, click on the triple dot button, then click on View ID.
+![Reservations manager](https://github.com/infobip-community/restaurant-reservations-demo/raw/main/client/images/view%20id.png?raw=true)
 
-![Reservations manager](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/view%20id.png?raw=true)
+2. The **View ID** action will start the required calls to get the information, and you see a load screen.
 
+![Credentials pop up](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/oauth%20loading.png?raw=true)
 
-The previous action will start the required calls to get the information, showing a load screen.
-
-Once this process is completed, a pop up  will be displayed and you would be able to see your Client ID or Client Secret by clicking the eye icon or copying it directly by using the clipboard icon.
+3. When this process is complete, you will see a pop up displaying the OAuth Credentials. To view your Client ID or Client Secret, click the eye icon or copy it directly by using the clipboard icon.
 
 ![Credentials pop up](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/oauth%20credentials.png?raw=true)
+
+
+### How to get the Signing Secret?
+Go to [Private Apps] (https://portal.infobip.com/exchange/partners) page and follow the these steps:
+
+1. Click on the three dots menu, and then select **Edit**.
+
+![Credentials pop up](https://github.com/infobip-community/restaurant-reservations-demo/raw/main/client/images/view%20id.png?raw=true)
+
+
+2. Go to the Security section at the bottom of the **Edit** page to find the Signing secret for your Webhooks. To view your **Signing secret**, click the eye icon or copy it directly by using the clipboard icon. 
+
+![Credentials pop up](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/webhooks.png?raw=true)
 
 ---
 ### Infobip Conversations and the Oauth security
 
-When the embedded page is loading inside Conversations via Card or Page you can add an Oauth authorization to verify that the client (agent) that is using trying to access to your page has the right permissions, you can validate the session redirecting them to your Authorization System.
+When the embedded page is loading inside Conversations via a Card or a Page, you can add OAuth authorization to verify that the client (agent) that is trying to access the page has the right permissions. You can validate the session, redirecting them to your Authorization System.
 
-OAuth Configuration
+#### OAuth Configuration
+When you create an app in Exchange, you see that there is an **OAuth** section of the form. The **Redirect URL** field will inject an IBSSO Token into the new app. This token allows the application to be authorized for some resources that are needed to achieve a specific task.
 
-When you are creating an app in Exchange you can see the subtitle OAuth in the form, Redirect URL field will inject an IBSSO Token into the new app. This token will allow the application to be authorized for some resources needed to achieve a specific task.
+![Oauth Configuration](https://github.com/infobip-community/restaurant-reservations-demo/raw/main/client/images/security.png?raw=true)
 
-![Conversation window](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/security.png?raw=true)
+The Infobip platform will use the link that you enter as a redirect URI, so you'll need to input the correct path to do OAuth flow in your app.
 
-
-The link that you enter here will be the one that Infobip platform will use as a redirect URI, so you'll need to ingress the correct path to do OAuth flow in your app.
-
-NOTE: For more information about OAuth2.0 PKCE click [here](https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow-with-proof-key-for-code-exchange-pkce).
+NOTE: For more information, see the [OAuth2.0 PKCE documentation](https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow-with-proof-key-for-code-exchange-pkce).
 
 #### React Example
 
-In this repository you can find an example of using OAuth PKCE library for React. You can test it out [here](https://restaurant-reservations-demo-oauth.azurewebsites.net/)
+This is a code example implementation with Conversations using the OAuth PKCE library for React.
+
+The following steps explain how this is integrated.
 
 Steps for integration:
 
-1.  Add react-oauth2-pkce to your react app 
+1. Add **react-oauth2-pkce** to your react app.
 
 `npm install react-oauth2-pkce –save`
 
-2.  We have also added `.env` files to avoid exposing sensitive data on repositories, you can also follow these steps or skip them if you are able to enter your credentials directly.
+2. Include env-cmd to avoid exposing sensitive data on repositories. Skip these steps if you are able to enter your credentials directly.
 
-   2.1 Copy .env.sample file from that is on client folder to .env file
+`npm install env-cmd –save`
 
-   2.2  Replace env variables values with your own client_id and redirect_uri obtained and set in exchange/partners form
+  2.1 Copy **.env.sample** file from that is on client folder. Rename it to **.env**.
+
+   2.2  Replace the environment variables values with your own.
 
 ```sh
   REACT_APP_OAUTH_ACTIVE="true"
@@ -340,12 +354,7 @@ Steps for integration:
   REACT_APP_REDIRECT_URI="https://restaurant-reservations-demo-oauth.azurewebsites.net/"
 ```
 
-2.3 Redirect URI has to be the same that you set up on the exchange partners site for your application, and also there you can get  the clientId for your app
-
-
-![Exchange partners app](https://confluence.infobip.com/download/attachments/335395322/Screen%20Shot%202022-11-10%20at%209.37.38.png?version=1&modificationDate=1668094663000&api=v2)
-
-3. Create your Auth Service instance with your credentials(If you followed step 2, you will have them ready on process.env object)
+3. Create your Auth Service instance with your credentials (if you followed step 2, you will have your credentials ready on the **process.env** object).
 
 ```js
 import { AuthService } from "react-oauth2-pkce";
@@ -361,22 +370,13 @@ const oauthService = new AuthService({
 export default oauthService;
 ```
 
-4. Wrap your app in our AuthProvider, and send the value of the service you created in step 3
 
-```js
- const AppWithOauth = () => (
-  <AuthProvider authService={oauthService}>
-    <App />
-  </AuthProvider>
-);
+4. Add AuthProvider on your app. Send the value of the service that you created in step 3.
 
-export default AppWithOauth;
-```
-
-In our example, we are calling auth service as soon as it's defined. 
-You can trigger login functionality with authService.authorize()
-After the login page is prompted user will be redirected to where redirectUri is specified and you can get tokens using 
-authService.getAuthTokens().
+This example calls authService as soon as it's defined. 
+You can trigger the login functionality with **authService.authorize()**
+After the login page prompt, the user is redirected to where redirectUri is specified. You can get tokens using 
+**authService.getAuthTokens()**.
 
 ```js
   useEffect(() => {
@@ -407,7 +407,8 @@ Example of response
    userName: "user"
 }
 ```
-6. We added a condition to only show the app content if the user is logged in using auth service isAuthentitated method
+6. This example uses React.Context to expose OAuth token values to our app. Add a condition to give users access to the app when an access_token and token_type is successfully retrieved.
+
 
 ``` js
   {authService.isAuthenticated() && (
@@ -424,57 +425,57 @@ Example of response
 ```
 
 7. Let's try it out
-  7.1 Your app should redirect the user to the Infobip Portal login page. The library `react-oauth2-pkce` will do this automatically after you set up the `provider` props in auth service.
-  
+
+### Try out the OAuth configuration
+
+1. Your app should redirect you to the Infobip web interface login page. The **react-oauth2-pkce** library will do this automatically after you set up the provider properties in AuthService.
 
 ![Infobip login portal](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/login.png?raw=true)
 
-  7.2 If there is an issue with the login will show you a message error
+2. If there is an issue with the login, you will see the following error message:
 
-![Loggin message error](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/error.png?raw=true)
+![Loggin message error](https://github.com/infobip-community/restaurant-reservations-demo/raw/main/client/images/error.png?raw=true)
 
-  7.3 After login in successfully it will automatically redirect to your app with an `code` param that will call your `tokenProvider` url that is provided on auth service also to get the user token and information.
-
-  7.4 If the token endpoint returns information correctly then the `authService.isAuthenticated()` method should return true and the app will be available.
+3. If you have logged in successfully, you are automatically redirected to your app with a **code** parameter. This parameter calls your **tokenProvider** URL that is provided on the AuthService, and also gets the user token and information.
 
 
-###### More oauth 2.0 information with examples [here](https://confluence.infobip.com/display/GOHP/OAuth+2.0)
+4. If the token endpoint returns information correctly, then the **authService.isAuthenticated()** method will return true and the app will be available.
 
----
+![Loggin message error](https://github.com/infobip-community/restaurant-reservations-demo/raw/main/client/images/azure/demo%20app.png?raw=true)
+
 
 ### Infobip Answers and the encrypted token
 
-For Answers we create a signature to tell you it is actually us, and we send it to you alongside its timestamp in the headers X-Ib-Exchange-Req-Signature and X-Ib-Exchange-Req-Timestamp of a POST request.
+For Answers, create a signature to tell you it is actually us, and send it to you, alongside its timestamp in the headers **X-Ib-Exchange-Req-Signature** and **X-Ib-Exchange-Req-Timestamp** of a POST request.
 
-This signature is created based on two elements: your Client Secret as secret key and the timestamp value we sent you followed by your account ID with no blank spaces nor separators as the data.
+This signature is created based on two elements: your Client Secret as **secret key** and the timestamp value sent to you, followed by your account ID with _no blank spaces nor separators_ as the data.
 
-In case you want to corroborate it it actually us, you can validate the signature following the sign request recipe:
+If you want to confirm that it is Infobip, then you can validate the signature following the sign request recipe:
 
-Sign request recipe
-Get your app's Client Secret.
-Extract the timestamp from the X-Ib-Exchange-Req-Timestamp header.
-Concatenate the timestamp and your account ID with no spaces nor separators between them to use it as base-string. For example, 1666752518753123456 for timestamp:1666752518753 and account ID:123456.
-Use your favorite MAC (Message Authentication Code) implementation with the HmacSHA256 algorithm to hash the above base-string using your Client Secret as secret key into a hexadecimal string.
-Once you have this hexadecimal text you may compare it with the X-Ib-Exchange-Req-Signature header we sent you on the request.
+#### Sign request recipe
+1. Get your app's Client Secret.
 
+2. Extract the timestamp from the **X-Ib-Exchange-Req-Timestamp** header.
+3. Concatenate the timestamp and your account ID with _no spaces nor separators_ between them to use it as the **base-string**. For example, 1666752518753123456 for timestamp:1666752518753 and account ID:123456.
+4. Use your favorite MAC (Message Authentication Code) implementation with the HmacSHA256 algorithm to hash the above base-string using your Client Secret as **secret key** into a hexadecimal string.
+5. Once you have this hexadecimal text, you may compare it with the **X-Ib-Exchange-Req-Signature** header sent on the request.
 
+#### Step-by-step with examples
 
+Get your app's Client Secret from the **Private Apps** page (follow the instructions from [Authorizations and security](https://confluence.infobip.com/display/EX/Demo+app+read.me#Demoappread.me-AuthorizationsAndSecurity)).
 
-Step-by-step with examples
-
-Get your app's Client Secret from the private apps page (same as above)
-For this example we will be using a simple text "Hello World!" as Client Secret
+1. This example uses a simple text **"Hello World!"** as a Client Secret.
 
 ```client_secret = "Hello World!"```
 
-Extract the timestamp from the X-Ib-Exchange-Req-Timestamp header (1666752518753 for this example).
+Extract the timestamp from the X-Ib-Exchange-Req-Timestamp header (**1666752518753** for this example).
 
 ```aidl
 timestamp = extract(X-Ib-Exchange-Req-Timestamp)
 => "1666752518753"
 ```
 
-Concatenate the timestamp (1666752518753) and your account ID (123456 for this example) with no spaces nor separators to use it as base-string.
+3. Concatenate the timestamp (**1666752518753**) and your account ID (**123456** for this example) with no spaces nor separators to use it as base-string.
 
 ```
 base_string = timestamp + account_id
@@ -482,16 +483,15 @@ base_string = timestamp + account_id
 => "1666752518753123456"
 ```
 
-Hash the base_string using the Client Secret as key with a MAC (Message Authentication Code) implementation and the HmacSHA256 algorithm, then get the hexadecimal value for that hash.
+4. Hash the base_string using the Client Secret as the key with a MAC (Message Authentication Code) implementation and the **HmacSHA256** algorithm, and then get the hexadecimal value for that hash.
 
 ```aidl
 hash = Mac.useAlgorithm(HmacSHA256).withKey(client_secret).hashString(base_string)
 signature = hexValue(hash)
 => "D138B40319432FF816072FC9C1B51594F73904175E9A9ED01873EB7B31E3801D"
 ```
-
-Extract and compare the signature we sent you in the X-Ib-Exchange-Req-Signature header with the signature you generated.
-For this example, D138B40319432FF816072FC9C1B51594F73904175E9A9ED01873EB7B31E3801D will be the signature in the header.
+5. Extract and compare the signature sent to you in the X-Ib-Exchange-Req-Signature header with the signature you generated.
+For this example, **D138B40319432FF816072FC9C1B51594F73904175E9A9ED01873EB7B31E3801D** will be the signature in the header.
 
 ```aidl
 header_signature = extract(X-Ib-Exchange-Req-Signature)
@@ -500,10 +500,89 @@ header_signature = extract(X-Ib-Exchange-Req-Signature)
 compare(header_signature, signature)
 => match!
 ```
+#### JavaScript/Node example
 
-##### Java example
+Create a file to store your Signing Secret, for example, `signingSecret.txt`.
 
-Here is a Java code example for creating and hashing a signature that might be helpful:
+Use this example as a Signing secret key.
+
+```aidl
+aSdFHjKl1357JkLm=
+
+```
+2. Use your preferred file reader to read the Signing Secret and store it in a variable.
+
+```aidl
+const signingSecretFile = process.cwd() + '/signingSecret.txt';
+let signingSecret = ''
+try {
+  fs.readFile(signingSecretFile, 'utf8', (err, data) => {
+    if (err) {
+      return;
+    }
+    signingSecret =  data;
+  });
+}catch (e) {
+  console.log(e)
+}
+
+```
+3. Create a function to compare the **X-Ib-Exchange-Req-Signature** header from the answers call with the signature that you will create with the Signing Secret.
+
+This function will receive the data and the key as a parameter.
+
+```aidl
+//data = (timestamp + payload)
+//payload = request.body (answers request body)
+//timestamp = x-ib-exchange-req-timestamp (request header)
+//key = signingSecret
+ 
+const generateSignature  = (data , key) => {
+  let signature = ''
+  try{
+    signature = Crypto.createHmac('sha256', key).update(data).digest('hex');
+  }catch (e) {
+ 
+  }
+  return signature;
+}
+
+```
+
+4.Create a method to validate both signatures to add all of your server methods (GET/POST/UPDATE/DELETE/PUT).
+
+This function will receive the answers request as a parameter, call the previously created generateSignature function, and then return the comparison between both signatures.
+
+
+```aidl
+const validateSignature = (request) => {
+  const timestamp = request.headers['x-ib-exchange-req-timestamp'];
+  const signature = request.headers['x-ib-exchange-req-signature'];
+  const payload =  JSON.stringify(request.body);
+  return signature === generateSignature((timestamp+payload).trim(), signingSecret.trim());
+}
+
+```
+#### Implementation example
+This is a code example for implementation.
+
+```aidl
+app.post("/exchange/restaurant/reservations/email", async (req, res) => {
+if (validateSignature(req)){
+   const reservation = await getByEmail(req.body.email).catch((error) => {
+    return res.status(500).json({ error });
+  });
+    return res.json(reservation);
+  }else{
+    return res.status(401).json({ error });
+  }
+});
+```
+
+#### Java example
+
+This is a Java code example for creating and hashing a signature.
+
 
 ```aidl
 public class SignRequest {
@@ -562,57 +641,57 @@ public class SignRequest {
 }
 ```
 
-Calling isValid  with the signature and timestamp we sent you in the headers as parameters will return a boolean value telling if it is valid or not.
+Calling isValid  with the signature and timestamp sent in the headers as parameters will return a boolean value to show if it is valid or not.
 
 ```aidl
 isValid(signature, timestamp)
 ```
 
+### Deploying Application to Azure
 
-## Deploying Application to Azure
+These instructions describe how to deploy your app in Azure.
 
-### Create [Azure](https://azure.microsoft.com/) resource
-Official documentation for Azure [here](https://learn.microsoft.com)
+Before you start, create an [Azure](https://azure.microsoft.com/) resource. For more information on Azure, see the official [Azure documentation](https://learn.microsoft.com/).
 
-1.- Select Create a Resource
+1. In the Azure portal, click **Create a resource**
 
 ![Azure Create Resoure](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/create%20resource.png?raw=true)
 
 
-2.- Select Web App option
+2. Select the **Web App** option.
 
 ![Azure Select Resource Type](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/web%20app.png?raw=true)
 
 
-3.- Select type account for azure(You can have a free trial)
+3.- Select a subscription option for Azure (You can have a free trial).
 
 ![Azure Account type](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/free%20trial.png?raw=true)
 
-4.- Fill all necessary data to create your instance(You can skip other sections than basic)
-Make sure you select a node version appropriate for this app. We recommend choosing Node 16 LTS
+4. Complete the instance details (if you complete the basic information, you can skip the other sections). Make sure that you select a node version that is appropriate for this app. For example, Node 16 LTS.
 
-![Azure Instance Basic Details])
 
-5.- Go to the Implementation Center Menu
+![Azure Instance Basic Details](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/create%20web%20app.png?raw=true)
+
+5. Go to the **Deployment Center** menu.
+
 ![Azure Deployment Center](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/deployment%20center.png?raw=true)
 
-6.- Go to Configuration and select GIT LOCAL
+6. Go to **Settings** and then select **Local Git**.
+
 ![Azure Git Local](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/code%20source.png?raw=true)
 
-7.- Save And Refresh Page
+7. Select **Save And Refresh the Page**.
 
-8.- Go to Credentials for Local Git Credentials and add a Username/Password and Save.
- ![Azure Local Git Credentials](![image](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/local%20git%20credentials.png?raw=true)
-)
+8. Go to the credentials for **Local Git Credentials**, add a Username and Password, and click **Save**.
+
+ ![Azure Local Git Credentials](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/local%20git%20credentials.png?raw=true)
  
   
-9.- From your local repository add the remote URL that azure created
+9. From your local repository, add the remote URL that Azure created.
 
 ```git remote add azure https://test.scm.azurewebsites.net:443/test.git```
 
-10.- Before deploying make sure you created your `.env` file with your correct credentials from IB services.
-
-`REACT_APP_REDIRECT_URI` will be your azure instance
+10.- Before deploying your app, make sure that you create your .env file with the correct credentials from your Infobip services.
 
 ```
 REACT_APP_OAUTH_ACTIVE="true"
@@ -624,15 +703,365 @@ REACT_APP_ACCOUNT_API_KEY="d01ssd383b9ab6-ac42abfsr272-949f3ea7a764"
 REACT_APP_CONVERSATIONS_INTEGRATION="true"
 ```
 
-11.- Push the master branch to azure repository
+`REACT_APP_REDIRECT_URI` will be your azure instance
+
+11. Push the master branch to the azure repository.
 ```
  git push azure master
 ```
 
-12. Wait for deploy and open your app
+12. Wait for the deployment and then open your app.
 ![Azure Browse](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/browse.png?raw=true)
 
 You should see something like this:
+
 ![Demo App](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/azure/demo%20app.png?raw=true)
 
-13. Now you can use this instance to create your Private App on Exchange for Partners and enter your URL in configurations: Manifest, Settings URL, and Oauth fields. More information about how to do this [here]()
+13. Use this instance to create your private app on Exchange and enter your URL in the configuration for Manifest, Settings URL, and Oauth fields.
+
+More information about how to do this [here](https://www.infobip.com/docs/integrations/exchange-developer#publishing-a-private-app).
+
+### Conversations API Integration
+
+Now you can see that the demo app can be loaded inside a context card, embedded inside Conversations.
+
+![Conversations](https://github.com/infobip-community/restaurant-reservations-demo/raw/main/client/images/conversation%20card.png?raw=true)
+
+To take advantage of the conversation in your demo app, it is possible to get some data from the query parameter conversationId that is injected in the URL. This value returns information about the current conversation and can create a feature in the demo app.
+
+With the _conversationId_ value and the [Infobip Conversations API](https://www.infobip.com/docs/api/customer-engagement/conversations-api), it is possible to access data in the conversation, for example, details of the conversations, messages, tags, notes, agents, and so on.
+
+### Example Feature in the Demo App
+
+This example describes how to create a feature consuming the Infobip Conversations API. The requirement is to get customer data from the conversation, for example:
+
+the _Phone Number_ if the customer messages via _Whatsapp_
+or _Name_ and _Email Address_ if they start the conversation with an _Email_
+These values are selected, depending on which channel they are using. Data is attached to the message they send, so some data is on the _Whatsapp_ channel and different data is via the _Email_ channel.
+
+![channel](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/email%20chanel.jpeg?raw=true)
+
+The example uses this data (Phone Number, Name, and/or Email) to automatically fill some fields in the form when the agent is creating the reservation.
+
+![example1](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/example%20channel%201.png?raw=true)
+
+
+![example2](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/images/example%20channel%202.png?raw=true)
+
+#### How is this implemented?
+
+The **Get Messages** endpoint (https://www.infobip.com/docs/api/customer-engagement/conversations-api/get-messages) gives all the messages in the conversation and all the message details. This endpoint asks only for the conversationId, which is already available.
+
+```
+HTTP Request with Authorization with API key
+GET https://l2XXX.api.infobip.com/ccaas/1/conversations/{conversationId}/messages
+Headers:
+Authentication: App YOUR_API_KEY
+                
+```
+
+Note: One of the authentication methods to connect with the **Infobip API** is the API KEY. Learn more about API Key in the Infobip [API documentation](https://www.infobip.com/docs/api). 
+
+Messages response 
+
+This example shows a conversation with two messages: one saying direction: _"INBOUND"_ from our customer, and one saying direction: _"OUTBOUND"_ from our agent. 
+
+The objective is to get the message with direction: _"INBOUND"_ and read what type of channel is, in this case is _SMS_. From this channel (and from _Whatsapp_ or _Viber_) it is possible to get the Phone Number, which is in the _from_ property. 
+
+This is an example to access this property:
+
+```
+var settings = {
+    "url": "https://l2XXX.api.infobip.com/ccaas/1/conversations/{conversationId}/messages",
+    "method": "GET",
+    "timeout": 0,
+    "headers": {
+        "Authorization": "{authorization}",
+        "Accept": "application/json"
+    },
+};
+ 
+$.ajax(settings).done(function (response) {
+    var phoneNumber = response.messages[0].from;
+    console.log(phoneNumber);
+});
+```
+
+Using this example, you can integrate it into the demo app.
+
+#### Implementing this feature in demo app
+
+The demo app uses React, so this example implements this feature in the `app.tsx` file:
+
+```js
+app.tsx...const domain = process?.env.REACT_APP_ACCOUNT_DOMAIN_API;
+const apiKey = process?.env.REACT_APP_ACCOUNT_API_KEY;
+const conversationIntegrationEnabled = process?.env.REACT_APP_CONVERSATIONS_INTEGRATION;
+const params = new URLSearchParams(window.location.search);
+const conversationId = params.get("conversationId");
+const notCompatibleChannelsForConversationsIntegration = ['TWITTER_DM', 'FACEBOOK_MESSENGER', 'LIVE_CHAT'];
+ 
+...
+ useEffect(() => {
+     if (!conversationIntegrationEnabled || !conversationId) return;
+ 
+     const options = {
+         method: "GET",
+         headers: {
+              Authorization: `App ${apiKey}`,
+         },
+     };
+ 
+      (async () => {
+            const response = await fetch(
+               `https://${domain}/ccaas/1/conversations/${conversationId}/messages`,
+               options
+       );
+       const jsonResponse = await response.json();
+       const messages = jsonResponse.messages;
+ 
+       const result = messages.filter(
+           (message: any) => message.direction === "INBOUND"
+       );
+ 
+       if (!result) return;
+ 
+       if (notCompatibleChannelsForConversationsIntegration.includes(result[0]?.channel)) return;
+ 
+       setCustomerContext({
+           email: result[0]?.content?.sender,
+           name: result[0]?.content?.senderName,
+           phoneNumber: result[0]?.from && !isNaN(+result[0].from) ? result[0]?.from : "",
+       });
+  })();
+}, [conversationId, apiKey, domain]);
+.....
+```
+
+As you can see, at the top there are some cons that help to create the request to the **Get Messages endpoint** (https://www.infobip.com/docs/api/customer-engagement/conversations-api/get-messages). Look for the conversationId in the query params and create the request. After the response is received, filter the messages from the conversation to only direction: "INBOUND".
+
+Infobip Conversations supports many channels, and this account supports all of them, but not all of them are compatible with our features. For example,  'TWITTER_DM', 'FACEBOOK_MESSENGER', 'LIVE_CHAT' do not have a _Phone Number_, _Email_ or _Name_ to fill our form, so they are excluded. 
+
+Finally, if the customer sends a message via _Email_, you will get the _Name_ and _Email Address_ in the properties: _result[0].content.sender_ and _result[0].content.senderName_. There is a channel that has a Phone Number in this _property result[0].from_. When you have this value, add it to the context and display it in our form.
+
+Finally, remember that the Conversations API has an extended API where you can get more functionality and use it for your business. 
+
+### People Integration
+
+#### Infobip API authentication
+
+All API requests have to be authenticated through the Authorization header. The Infobip APIs offer the following authentication methods:
+
+1. HTTP Basic authentication (Basic)
+
+2. API Keys (APIKeyHeader)
+
+3. IBSSO Tokens (IBSSOTokenHeader)
+
+4. OAuth 2.0 (OAuth2)
+
+#### Basic
+
+Basic authentication works by sending a username and password in every API request and it is the least recommended method as it is still simple to decode encrypted credentials back to their original values.
+
+About this method
+
+Credentials must be encoded in a Base64 format (for example, with the RFC2045-MIME variant) and separated by a colon:
+
+encode_data('username:password')
+
+Encoded credentials are added to the header after "Basic":
+
+'Authorization: Basic encoded_data'
+
+API Key Header
+
+An API key is an access token that a client provides when making API calls. It's a simple way to secure access and is the most popular authentication method used with REST APIs.
+
+When you create an account, you are automatically assigned an API Key (https://www.infobip.com/docs/essentials/create-account). You can generate more keys and manage the existing ones through the Infobip API key management page (https://portal.infobip.com/settings/accounts/api-keys).
+
+About this method
+
+Keys can be revoked at any time, which is useful when separating API access rights across multiple applications or use cases.
+
+Lost API keys are easily retrievable
+
+Infobip API keys have a predefined expiry date to eventually become invalid
+
+The API key is added to the header with a prefix of App. For example:
+
+'Authorization: App api_key'
+
+IBSSO Token Header
+
+IBSSO tokens are session-based, so the tokens are valid for only a short time. Although this makes the method more secure, it requires more maintenance to keep the authentication valid.
+
+Typically, this kind of authentication is used in single sign-on scenarios with multiple sign-ins, which should be avoided across the system.
+
+About this method
+
+All API requests are authenticated with a session token (https://www.infobip.com/docs/api#platform-connectivity/account-management/create-session).
+
+By default, IBSSO tokens will expire after 60 minutes. After the token expires, you must create a new token.
+
+If you want to create a new token but the previous one hasn't yet expired, first, you need to end the session (https://www.infobip.com/docs/api#platform-connectivity/account-management/destroy-session).
+
+You can shorten the session length with a dedicated API call (https://www.infobip.com/docs/api#platform-connectivity/account-management/destroy-session).
+
+How to use IBSSO tokens
+
+Make a call to create a session endpoint and take the token from the response.
+
+Include "IBSSO" and the token in the Authorization header for all subsequent calls, for example: 
+
+'Authorization: IBSSO IBSSO_token'
+
+Optionally, you can end the session to adjust the session length to your needs. By default, the session will expire after 60 minutes.
+
+OAuth 2.0
+
+This type of authentication is the most secure option and is almost industry standard. Similarly to IBSSO tokens, you'll use an access token you get from a separate endpoint (https://www.infobip.com/docs/api/platform/account-management/create-oauth2-token).
+
+About this method
+
+The access token returned in the response will expire within the time limit (in seconds) that you provided in that response. Infobip acts as both a resource and an authorization server.
+
+You need to create a new token once the token expires. Note that there is no automatic token retrieval.
+
+How to use OAuth 2.0
+
+To use OAuth 2.0, make a call to get the access token and the expiration time from a separate endpoint (https://www.infobip.com/docs/api/platform/account-management/create-oauth2-token).
+
+Include "Bearer " and the token in the Authorization header for all subsequent calls until the token expires:
+
+'Authorization: Bearer oauth_token'
+
+To learn more about Oauth authentication, see the Infobip APIs authentication documentation (https://www.infobip.com/docs/essentials/api-authentication).
+
+
+#### About People
+Infobip stores all your customer information in one place and activates it within the Infobip products and solutions that you are using. It continuously “supplies” relevant information needed for your behavior-based interaction with customers. For Conversations, that happens via the contact centers or chatbots, which help you to build a meaningful customer journey.
+
+To learn more about People, see the People documentation (https://www.infobip.com/docs/people).
+
+#### Integration with People
+With People, you can build rich profiles for each person to create audience segments for more precise targeting. You can manage duplicates and import your data over API.
+
+Events reflect actions that end-users take on your website or in your mobile application.
+
+Events API is a robust way to send those events to Infobip. Event can be sent only to an existing person in Target module and an event definition should be created beforehand to describe contents of the event.
+
+Besides using an HTTP client to do the requests, you can use one of the SDKs to track the events. For more information regarding these SDKs, see the Customer Engagement People SDK documentation (https://www.infobip.com/docs/api/customer-engagement/people).
+
+#### Using HTTP client
+There are many endpoints with which you can integrate an application with People. There are six endpoint categories:
+
+Person profile
+
+Company profile
+
+Tags
+
+Custom attributes
+
+Contact Information: Push
+
+Events
+
+To learn more about these endpoints, see the Customer Engagement People SDK documentation (https://www.infobip.com/docs/api/customer-engagement/people), and log in.
+
+#### cURL examples
+To see your API Key and the Base URL for the endpoints, go to each endpoint page or to https://www.infobip.com/docs/api and log in with your account.
+
+To get a list of people (https://www.infobip.com/docs/api/customer-engagement/people/get-a-single-person-or-a-list-of-people).
+
+```
+curl -L -g -X GET 'https://{baseUrl}/people/2/persons' \
+-H 'Authorization: {authorization}' \
+-H 'Accept: application/json'
+```
+
+To get a person by email (https://www.infobip.com/docs/api/customer-engagement/people/get-a-single-person-or-a-list-of-people).
+
+```
+curl -L -g -X GET 'https://{baseUrl}/people/2/persons?email=janewilliams@acme.com' \
+-H 'Authorization: {authorization}' \
+-H 'Accept: application/json'
+```
+
+To create a new person (https://www.infobip.com/docs/api/customer-engagement/people/create-a-new-person).
+
+```
+curl -L -g -X POST 'https://{baseUrl}/people/2/persons' \
+-H 'Authorization: {authorization}' \
+-H 'Content-Type: application/json' \
+-H 'Accept: application/json' \
+--data-raw '{
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "contactInformation": {
+    "email": [
+      {
+        "address": "janewilliams@acme.com"
+      }
+    ]
+  }
+}
+```
+
+#### Code snippet in Javascript
+To create a new person profile, if it does not already exist, using two of the endpoints mentioned above (get a person by email and create a new person) and API Key as authentication.
+**Create a new person profile if it does not already exist**
+
+```
+const savePerson = async () => {
+ 
+  const response = await fetch(
+      `https://{baseUrl}/people/2/persons?email=${newReservation.host_email}`,
+      {
+        method: 'get',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `App {apiKey}`
+        },
+      });
+  const status = await response.status;
+  if (response && status === 200) {
+    console.log('Person already exists!')
+  } else {
+    createPerson().then(() => {
+      console.log('Person created!')
+    }).catch(error => {
+      console.log('Error creating the person!')
+    })
+  }
+};
+ 
+const createPerson = async () => {
+  const newPerson = {
+    "firstName": "Jane Smith",
+    "contactInformation": {
+      "email": [
+        {
+          "address": "jane_smith@acme.com"
+        }
+      ]
+    }
+  };
+ 
+  const result = await fetch(
+    `https://{baseUrl}/people/2/persons`,
+    {
+      method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `App ${apiKey}`
+        },
+      body: JSON.stringify(newPerson),
+    });
+  const createPersonResponse = await result.json().catch((error) => {
+    return error;
+  });
+  return createPersonResponse;
+};
+```
