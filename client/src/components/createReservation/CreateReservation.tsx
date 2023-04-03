@@ -18,11 +18,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
 import { Diversity3 } from "@mui/icons-material";
-import { validateReservation } from "../../utlis/validations/validateReservation";
+import { validateReservation } from "../../utils/validations/validateReservation";
 import { AlertContext } from "../../contexts/AlertContext";
 import { FieldI } from "../../pages/config/ConfigTypes";
-import { Field } from "./CreateReservationTypes";
+import { Field, FIELD_NAME } from "./CreateReservationTypes";
 import { CustomerContext } from "../../contexts/CustomerContext";
+import { ConfigContext } from "../../contexts/ConfigContext";
 
 const apiKey = process?.env.REACT_APP_ACCOUNT_API_KEY;
 const apiDomain = process?.env.REACT_APP_ACCOUNT_DOMAIN_API;
@@ -76,6 +77,7 @@ const CreateReservation = () => {
   const [additionalFields, setAdditionalFields] = useState<FieldI[]>([]);
   const { updateAlertContext, isLoading } = React.useContext(AlertContext);
   const { name, email, phoneNumber } = React.useContext(CustomerContext);
+  const { fields } = React.useContext(ConfigContext);
   const [newReservation, setNewReservation] = useState<ReservationI>({
     ...emptyNewReservation,
     host_name: name,
@@ -104,7 +106,7 @@ const CreateReservation = () => {
     })();
   }, [name, email, phoneNumber]);
 
-  const handleChange = (newValue: Date | null, field: string) => {
+  const handleChange = (newValue: Date | null, field: FIELD_NAME) => {
     let today = new Date(newValue ? newValue : "");
     let value, minute, hour, day, month, year;
     minute = today.getMinutes();
@@ -113,13 +115,13 @@ const CreateReservation = () => {
     month = today.getUTCMonth() + 1;
     year = today.getUTCFullYear();
     switch (field) {
-      case "date":
+      case FIELD_NAME.date:
         if (newValue) {
           value = `${month}/${day}/${year}`;
           setDate(newValue);
         }
         break;
-      case "hour":
+      case FIELD_NAME.hour:
         value = `${hour}:${minute < 10 ? `0${minute}` : minute}`;
         setStartTime(newValue);
         break;
@@ -301,6 +303,10 @@ const CreateReservation = () => {
     }
     return value;
   };
+  
+  const getPlaceholder = (fieldName: FIELD_NAME) => {
+    return fields.find((item: FieldI) => item.name.toLowerCase() === fieldName)?.placeHolder;
+  };
 
   return (
     <>
@@ -311,10 +317,10 @@ const CreateReservation = () => {
             <FieldContainer>
               <DesktopDatePicker
                 data-test-id="date"
-                label="Date"
+                label={getPlaceholder(FIELD_NAME.date)}
                 inputFormat="MM/DD/YYYY"
                 value={date}
-                onChange={(value) => handleChange(value, "date")}
+                onChange={(value) => handleChange(value, FIELD_NAME.date)}
                 renderInput={(params) => <TextField {...params} />}
               />
             </FieldContainer>
@@ -329,9 +335,9 @@ const CreateReservation = () => {
                   <TimePicker
                     data-test-id="hour"
                     ampm={false}
-                    label="Hour"
+                    label={getPlaceholder(FIELD_NAME.hour)}
                     value={startTime}
-                    onChange={(value) => handleChange(value, "hour")}
+                    onChange={(value) => handleChange(value, FIELD_NAME.hour)}
                     renderInput={(params) => <TextField {...params} />}
                     minutesStep={30}
                   />
@@ -368,7 +374,7 @@ const CreateReservation = () => {
             fullWidth
             error={!!errors.host_name && isSubmitted}
             name="host_name"
-            label="Host Name"
+            label={getPlaceholder(FIELD_NAME.hostName)}
             value={newReservation.host_name}
             onChange={handleChangeInput}
             helperText={isSubmitted ? errors.host_name : ""}
@@ -379,7 +385,7 @@ const CreateReservation = () => {
             fullWidth
             error={!!errors.host_email && isSubmitted}
             name="host_email"
-            label="Host Email"
+            label={getPlaceholder(FIELD_NAME.hostEmail)}
             value={newReservation.host_email}
             onChange={handleChangeInput}
             helperText={isSubmitted ? errors.host_email : ""}
@@ -390,42 +396,38 @@ const CreateReservation = () => {
             fullWidth
             error={!!errors.host_phone_number && isSubmitted}
             name="host_phone_number"
-            label="Host Phone Number"
+            label={getPlaceholder(FIELD_NAME.phoneNumber)}
             value={newReservation.host_phone_number}
             onChange={handleChangeInput}
             helperText={isSubmitted ? errors.host_phone_number : ""}
           />
         </Grid>
-        {additionalFields &&
-          additionalFields.map((additionalField, index) => (
-            <Grid key={index} item xs={12}>
-              <TextField
-                fullWidth
-                key={additionalField.name}
-                error={false}
-                name={additionalField.name}
-                label={additionalField.placeHolder}
-                value={getAdditionalFieldValue(additionalField.name)}
-                onChange={(e) =>
-                  handleChangeAdditionalFields(
-                    additionalField.name,
-                    e.target.value,
-                    index
-                  )
-                }
-              />
-            </Grid>
-          ))}
+        {additionalFields && additionalFields.map((additionalField, index) => (
+          <Grid key={index} item xs={12}>
+            <TextField
+              fullWidth
+              key={additionalField.name}
+              error={false}
+              name={additionalField.name}
+              label={additionalField.placeHolder}
+              value={getAdditionalFieldValue(additionalField.name)}
+              onChange={(e) =>
+                handleChangeAdditionalFields(
+                  additionalField.name,
+                  e.target.value,
+                  index
+                )
+              }
+            />
+          </Grid>
+        ))}
         <Grid item xs={12} md={12} lg={12}>
           <ButtonContainer>
             <Button
               size={"large"}
               onClick={savePerson}
               variant="contained"
-              disabled={
-                isLoading || (isSubmitted && !isReservationValid(errors))
-              }
-            >
+              disabled={isLoading || (isSubmitted && !isReservationValid(errors))}>
               Save person data
             </Button>
           </ButtonContainer>
@@ -436,10 +438,7 @@ const CreateReservation = () => {
               size={"large"}
               onClick={addReservation}
               variant="contained"
-              disabled={
-                isLoading || (isSubmitted && !isReservationValid(errors))
-              }
-            >
+              disabled={isLoading || (isSubmitted && !isReservationValid(errors))}>
               Create
             </Button>
           </ButtonContainer>

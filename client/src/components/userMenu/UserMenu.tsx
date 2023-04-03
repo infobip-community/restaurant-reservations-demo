@@ -59,8 +59,6 @@ const UserMenu = () => {
       <Popper
         open={open}
         anchorEl={anchorRef.current}
-        onResize={undefined}
-        onResizeCapture={undefined}
       >
         <Paper>
           <MenuList>

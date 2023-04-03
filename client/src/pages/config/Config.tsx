@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {FieldI} from "./ConfigTypes";
+import {FieldI, FIELD_KEY} from "./ConfigTypes";
 import {
     Container,
     Grid, Paper,
@@ -17,66 +17,115 @@ import EditIcon from '@mui/icons-material/Edit';
 import {APIConfigPath} from "../../const";
 import UserMenu from '../../components/userMenu/UserMenu';
 import { UserContext } from '../../contexts/AuthContext';
+import { ConfigContext } from '../../contexts/ConfigContext';
 
-const EmptyField = {
+const EMPTY_FIELD = {
+    id: null,
     name: '',
     placeHolder: '',
-    disabled: "false",
-    required: "false",
-    additional: "true",
-    saved:"true"
+    required: false,
+    additional: true,
+    saved: true,
+    editMode: false
 };
 
-const  ConfigPage: React.FC = () => {
+const ConfigPage: React.FC = () => {
     const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
     const user = useContext(UserContext);
-    const [fields, setFields] = useState<FieldI[]>([]);
+    const { fields, setFields } = React.useContext(ConfigContext);
+    const [ mappedFields, setMappedFields ] = useState<FieldI[]>([]);
+    const [ editingField, setEditingField] = useState<FieldI>();
 
-    useEffect(()=> {
-        (async () => {
-          const response = await fetch(`${APIConfigPath}`, {});
-             const result = await response.json();
-            result.config && setFields(result.config.fields);
-        })();
-    },[]);
+    const handleSaveConfigField = async (field: FieldI) => {
+        const saveField = { ...field, saved: true, editMode: false };
+        const data  = [...mappedFields];
+        data.splice(field.id - 1, 1, saveField);
 
-    const handleSaveConfigField = async (field:FieldI, index: number) => {
-        const saveField = {...field,  disabled: "true"};
-        const fieldsArray  = [...fields];
-        fieldsArray.splice(index, 1, saveField);
-        setFields(fieldsArray);
         (await fetch(`${APIConfigPath}`, {
             method: "post",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fieldsArray),
+            body: JSON.stringify(data),
         }));
+
+        setMappedFields(data);
+        updateFieldsContext(data);
+        setEditingField(undefined);
     }
 
-    const handleAddField = ()=>{
-        setFields([...fields, EmptyField])
-    }
-
-    const handleDeleteField = (fieldName:FieldI) => async () => {
+    const handleDeleteField = (field: FieldI) => async () => {
         (await fetch(`${APIConfigPath}/additionalFields`, {
-                method: "post",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(fieldName),
-            }));
-        const fieldsArray =  [...fields];
-        setFields(fieldsArray.filter(e =>  e.name !== fieldName.name));
+            method: "post",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(field),
+        }));
+
+        const data =  [...mappedFields].filter(e => e.id !== field.id);
+        setMappedFields(data);
+        updateFieldsContext(data);
     }
 
-    const modifyField = (field:FieldI, fieldName:string, value:string, index:number) => {
-        const fieldsArray  = [...fields];
-        fieldsArray.splice(index, 1, {...field, [fieldName]: value});
-        setFields(fieldsArray);
+    const handleEditFields = (field: FieldI) => {
+        const data = [...mappedFields];
+
+        if (editingField && editingField.id !== field.id) {
+            data.splice(editingField.id - 1, 1, { ...editingField, saved: true, editMode: false });
+        }
+        if (!editingField || editingField.id !== field.id) {
+            setEditingField(field);
+        }
+        
+        const editField = { ...field, editMode: true };
+        data.splice(field.id - 1, 1, { ...editField });
+        setMappedFields(data);
     }
 
-    const handleEditFields = (field:FieldI, index:number) => {
-        const fieldsArray  = [...fields];
-        fieldsArray.splice(index, 1, {...field, disabled: "false"});
-        setFields(fieldsArray);
+    const modifyField = (field: FieldI, fieldName: FIELD_KEY, value: string) => {
+        const editField = { ...field, saved: !isFieldValid(field, fieldName, value) };
+        const data  = [...mappedFields];
+        data.splice(field.id - 1, 1, { ...editField, [fieldName]: value });
+        setMappedFields(data);
     }
+
+    const updateFieldsContext = (data: FieldI[]) => {
+        const fields: FieldI[] = data.map(item => {
+            const newField = Object.assign({}, item);
+            delete newField.saved;
+            delete newField.editMode;
+            return newField;
+        });
+        setFields!({ fields });
+    }
+
+    const handleAddField = () => {
+        setMappedFields([...mappedFields, { ...EMPTY_FIELD, id: mappedFields.length + 1 }])
+    }
+
+    const isFieldValid = (field: FieldI, fieldName: FIELD_KEY, value: string) => {
+        const existing = fields.map(item => item[fieldName]);
+        const newField = { ...field, [fieldName]: value };
+
+        if (value === '') {
+            return false;
+        }
+        if (newField.placeHolder === '' || newField.name === '') { // if any field is empty
+            return false;
+        }
+        if (existing?.includes(value)) { // already exists
+            return false;
+        }
+        if (editingField && value === editingField[fieldName]) { // same value as original
+            return false;
+        }
+        
+        return true;
+    }
+
+    useEffect(() => {
+        const mappedFields = fields.map(field => {
+            return {...field, saved: true, editMode: false};
+        });
+        setMappedFields(mappedFields);
+    }, [fields]);
 
     return(<Container fixed>
         <Grid container spacing={2} justifyContent="center">
@@ -93,39 +142,38 @@ const  ConfigPage: React.FC = () => {
                             <TableRow>
                                 <TableCell>Name</TableCell>
                                 <TableCell align="right">Place Holder</TableCell>
-                                <TableCell align="right">Actions</TableCell>
+                                <TableCell align="right" width={80}>Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {fields.map((field,index) => (
-                                <TableRow
-                                key={index}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                            <TableCell align="right">
-                                <TextField
-                                    fullWidth
-                                    disabled={field.disabled==="true"}
-                                    onChange={e => modifyField(field, 'name',e.target.value, index)}
-                                    value={field.name}
-                                />
-                            </TableCell>
-                            <TableCell align="right">
-                                <TextField
-                                fullWidth
-                                disabled={field.disabled==="true"}
-                                onChange={e => modifyField(field, 'placeHolder',e.target.value, index)}
-                                value={field.placeHolder}
-                            />
-                            </TableCell>
-                            <TableCell align="right">
-                                <SaveIcon onClick={() => handleSaveConfigField(field, index)} color={(field.saved==="false" && field.disabled ==="true") || (field.saved==="true" && field.disabled ==="true")? "disabled":"primary"}/>
-                                <EditIcon onClick={() => handleEditFields(field, index)} color={field.saved==="true"? "secondary":"disabled"}/>
-                                    <DeleteIcon onClick={handleDeleteField(field)} color={field.saved==="false" && field.disabled ==="true"? "disabled":"error"} />
-                                </TableCell>
-                            </TableRow>
+                            {mappedFields?.map((field: FieldI) => (
+                                <TableRow key={field.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableCell align="left">
+                                        <TextField
+                                            fullWidth
+                                            disabled={field.required || !field.editMode}
+                                            onChange={e => modifyField(field, FIELD_KEY.name, e.target.value)}
+                                            onClick={() => handleEditFields(field)}
+                                            value={field.name}
+                                        />
+                                    </TableCell>
+                                    <TableCell align="left">
+                                        <TextField
+                                            fullWidth
+                                            disabled={!field.editMode}
+                                            onChange={e => modifyField(field, FIELD_KEY.placeHolder, e.target.value)}
+                                            onClick={() => handleEditFields(field)}
+                                            value={field.placeHolder}
+                                        />
+                                    </TableCell>
+                                    <TableCell align="left" width={80}>
+                                        <SaveIcon onClick={() => handleSaveConfigField(field)} color={field.saved ? "disabled" : "primary"}/>
+                                        <EditIcon onClick={() => handleEditFields(field)} color={editingField && editingField.id === field.id ? "secondary" : "disabled"}/>
+                                        {!field.required && <DeleteIcon onClick={handleDeleteField(field)} color={"secondary"} />}
+                                    </TableCell>
+                                </TableRow>
                             ))}
-                            <TableRow  >
+                            <TableRow>
                                 <TableCell colSpan={3} align={'center'}>
                                     <AddCircleOutlineIcon onClick={handleAddField} color="primary" />
                                 </TableCell>

@@ -4,6 +4,7 @@ import { Backdrop, CircularProgress } from "@mui/material";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import {
   AlertI,
+  ConfigContextI,
   UserContextI,
   UserUpdateParamsI,
 } from "./pages/home/Home.types";
@@ -19,6 +20,8 @@ import {
   CustomerContext,
   defaultCustomerContext,
 } from "./contexts/CustomerContext";
+import { APIConfigPath } from "./const";
+import { ConfigContext, defaultConfigContext } from "./contexts/ConfigContext";
 
 const AppWithOauth: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,6 +30,8 @@ const AppWithOauth: React.FC = () => {
   );
   const [userContext, setUserContext] =
     useState<UserContextI>(defaultUserContext);
+  const [configContext, setConfigContext] =
+    useState<ConfigContextI>(defaultConfigContext);
   const { authService } = useAuth();
   const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
   const domain = process?.env.REACT_APP_ACCOUNT_DOMAIN_API;
@@ -115,6 +120,14 @@ const AppWithOauth: React.FC = () => {
     setIsLoading(false);
   }, [authService, authEnabled, userContext, isLoading]);
 
+  useEffect(()=> {
+    (async () => {
+      const response = await fetch(`${APIConfigPath}`, {});
+      const result = await response.json();
+      result.config && setConfigContext({ fields: result.config.fields });
+    })();
+  },[]);
+
   const updateUserContext = (newUserContext: UserUpdateParamsI) => {
     setUserContext({ ...userContext, ...newUserContext });
   };
@@ -126,14 +139,16 @@ const AppWithOauth: React.FC = () => {
           value={{ ...userContext, update: updateUserContext }}
         >
           <CustomerContext.Provider value={customerContext}>
-            <BrowserRouter>
-              <Routes>
-                <Route path="/">
-                  <Route index element={<HomePage />} />
-                  <Route path="config" element={<ConfigPage />} />
-                </Route>
-              </Routes>
-            </BrowserRouter>
+            <ConfigContext.Provider value={{ ...configContext, setFields: setConfigContext }}>
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/">
+                    <Route index element={<HomePage />} />
+                    <Route path="config" element={<ConfigPage />} />
+                  </Route>
+                </Routes>
+              </BrowserRouter>
+            </ConfigContext.Provider>
           </CustomerContext.Provider>
         </UserContext.Provider>
       )}
