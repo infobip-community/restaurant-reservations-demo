@@ -1,5 +1,6 @@
 import { AlertColor } from "@mui/material";
 import { Field } from "../../components/createReservation/CreateReservationTypes";
+import { FieldI } from "../config/ConfigTypes";
 
 export interface UserUpdateParamsI {
   token?: string;
@@ -13,6 +14,10 @@ export interface CustomerContextI {
   phoneNumber: string;
 }
 
+export interface ConfigContextI {
+  fields: FieldI[];
+  setFields?: (configContextI: ConfigContextI) => void;
+}
 export interface UserContextI {
   token: string;
   username: string;

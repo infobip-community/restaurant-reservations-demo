@@ -80,7 +80,7 @@ const HomePage: React.FC = () => {
             aria-label="Reservations"
           >
             <Tab value={0} label="Manage reservations" wrapped />
-            <Tab value={1} label="Create Reservation" />
+            <Tab value={1} label="Create Reservation" wrapped />
           </Tabs>
 
           <SwipeableViews

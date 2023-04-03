@@ -20,33 +20,44 @@ export const createConnection = async () => {
       config: {
         fields: [
           {
+            id: 1,
             name: "Date",
             placeHolder: "Date",
-            required: "true",
-            disabled: "true",
-            saved: "false",
+            required: true,
+            additional: false
+
           },
           {
+            id: 2,
             name: "Hour",
             placeHolder: "Hour",
-            required: "true",
-            disabled: "true",
-            saved: "false",
+            required: true,
+            additional: false
+
           },
           {
+            id: 3,
             name: "Host Name",
             placeHolder: "Host Name",
-            required: "true",
-            disabled: "true",
-            saved: "false",
+            required: true,
+            additional: false
+
           },
           {
+            id: 4,
             name: "Host Email",
             placeHolder: "Host Email",
-            required: "true",
-            disabled: "true",
-            saved: "false",
+            required: true,
+            additional: false
+
           },
+          {
+            id: 5,
+            name: "Host Phone Number",
+            placeHolder: "Host Phone Number",
+            required: true,
+            additional: false
+          }
         ],
       },
     };
