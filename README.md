@@ -1,4 +1,4 @@
-### Restaurant Reservation Demo App
+### Restaurant Reservation Demo App 
 
 The Demo App for Exchange is a sample app to help you to create your first app in Exchange. The Demo App integrates a typical system for managing reservations in a restaurant with Infobip Answers, Conversations and People.
 
