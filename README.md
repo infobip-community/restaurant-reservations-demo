@@ -300,12 +300,12 @@ To integrate the app with Flow:
 
 Note: If you have already created an app, skip steps 1-3. Then, you need to edit your app and also select "Moments - Flow" on the **Product Selection: Works with** field.
 
-You then see a text area containing a predefined Flow format containing the right values for the reservations app. Copy the content of the `ManifestFlow.yml` into this text area.
+You then see a text area containing a predefined Flow format containing the right values for the reservations app. Copy the content of the [ManifestFlow.yml](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/ManifestFlow.yml) into this text area.
 
 
 Each function will work as an HTTP method, so you will need to define the **inSchema** properties that you will send and the **outSchema** properties you will get in the response body.
 
-##### [ManifestFlow.yml](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/examples/ManifestFlow.yml)
+##### ManifestFlow.yml
 ```yaml
 functions:
   - name: Get all reservations
