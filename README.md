@@ -305,7 +305,7 @@ You then see a text area containing a predefined Flow format containing the righ
 
 Each function will work as an HTTP method, so you will need to define the **inSchema** properties that you will send and the **outSchema** properties you will get in the response body.
 
-##### ManifestFlow.yml
+##### [ManifestFlow.yml](https://github.com/infobip-community/restaurant-reservations-demo/blob/main/client/examples/ManifestFlow.yml)
 ```yaml
 functions:
   - name: Get all reservations

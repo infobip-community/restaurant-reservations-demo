@@ -1,0 +1,209 @@
+functions:
+  - name: Get all reservations
+    method: GET
+    description: Get all reservations
+    uri: >-
+      https://restaurant-reservations-demo.azurewebsites.net/exchange/restaurant/reservations
+    inSchema: {}
+    outSchema:
+      properties:
+        _id:
+          items:
+            - properties:
+                date:
+                  title: Reservation date
+                  type: string
+                host_email:
+                  title: Host's email
+                  type: string
+                host_name:
+                  title: Host's Name
+                  type: string
+                hour:
+                  title: Reservation time
+                  type: string
+                id:
+                  title: Reservation ID
+                  type: string
+                party_size:
+                  title: Number of participants
+                  type: number
+              type: object
+          selectViewOptionIdPath: $.reservations[*].id
+          selectViewOptionNamePath: $.reservations[*].host_email
+          type: array
+      type: object
+  - name: Create reservation
+    method: POST
+    description: Creates a reservation
+    uri: >-
+      https://restaurant-reservations-demo.azurewebsites.net/exchange/restaurant/reservations
+    inSchema:
+      properties:
+        date:
+          title: Reservation date
+          type: string
+        host_email:
+          title: Host's email
+          type: string
+        host_name:
+          title: Host's Name
+          type: string
+        hour:
+          title: Reservation time
+          type: string
+        party_size:
+          title: Number of participants
+          type: number
+      required:
+        - date
+        - host_name
+        - host_email
+        - hour
+        - party_size
+      type: object
+    outSchema:
+      properties:
+        date:
+          title: Reservation date
+          type: string
+        host_email:
+          title: Host's email
+          type: string
+        host_name:
+          title: Host's Name
+          type: string
+        hour:
+          title: Reservation time
+          type: string
+        id:
+          title: Reservation ID
+          type: string
+        party_size:
+          title: Number of participants
+          type: number
+      type: object
+  - name: Update reservation
+    method: PUT
+    description: Updates a reservation
+    uri: >-
+      https://restaurant-reservations-demo.azurewebsites.net/exchange/restaurant/reservations/{id}
+    inSchema:
+      properties:
+        _id:
+          title: Reservation ID
+          type: string
+        date:
+          title: Reservation date
+          type: string
+        host_email:
+          title: Host's email
+          type: string
+        host_name:
+          title: Host's Name
+          type: string
+        hour:
+          title: Reservation time
+          type: string
+        party_size:
+          title: Number of participants
+          type: number
+      required:
+        - _id
+      type: object
+    outSchema:
+      properties:
+        date:
+          title: Date
+          type: string
+        host_email:
+          title: Host Email
+          type: string
+        host_name:
+          title: Host Name
+          type: string
+        hour:
+          title: Hour
+          type: string
+        id:
+          title: Reservation ID
+          type: string
+        party_size:
+          title: Party Size
+          type: number
+      type: object
+  - name: Delete reservation
+    method: DELETE
+    description: Deletes a reservation
+    uri: >-
+      https://restaurant-reservations-demo.azurewebsites.net/exchange/restaurant/reservations/{id}
+    inSchema:
+      properties:
+        _id:
+          title: Reservation ID
+          type: string
+      required:
+        - _id
+      type: object
+    outSchema: {}
+actions:
+  - name: Create reservation
+    render:
+      - field: host_name
+        viewClass: TextFieldView
+        personalization: true
+        dependencies: []
+      - field: host_email
+        viewClass: TextFieldView
+        personalization: true
+        dependencies: []
+      - field: date
+        viewClass: TextFieldView
+        personalization: true
+        dependencies: []
+      - field: hour
+        viewClass: TextFieldView
+        personalization: true
+        dependencies: []
+      - field: party_size
+        viewClass: TextFieldView
+        personalization: true
+        dependencies: []
+    async: false
+  - name: Update reservation
+    render:
+      - field: _id
+        viewClass: SelectView
+        model: Get all reservations
+        personalization: false
+        dependencies: []
+      - field: host_name
+        viewClass: TextFieldView
+        personalization: true
+        dependencies: []
+      - field: host_email
+        viewClass: TextFieldView
+        personalization: true
+        dependencies: []
+      - field: date
+        viewClass: TextFieldView
+        personalization: true
+        dependencies: []
+      - field: hour
+        viewClass: TextFieldView
+        personalization: true
+        dependencies: []
+      - field: party_size
+        viewClass: TextFieldView
+        personalization: true
+        dependencies: []
+    async: false
+  - name: Delete reservation
+    render:
+      - field: _id
+        viewClass: SelectView
+        model: Get all reservations
+        personalization: false
+        dependencies: []
+    async: false
+triggers: []
