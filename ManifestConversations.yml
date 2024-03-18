@@ -1,8 +1,8 @@
 card:
   title: Reservation Manager
-  src: https://infobip-restaurant.herokuapp.com/
+  src: https://restaurant-reservations-demo.azurewebsites.net/
   size: STANDARD
 page:
   title: Reservation Manager
-  src: https://infobip-restaurant.herokuapp.com/
+  src: https://restaurant-reservations-demo.azurewebsites.net/
   path: /a
