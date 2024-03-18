@@ -2,7 +2,7 @@ functions:
   - name: getAllReservations
     description: Get all reservations
     method: GET
-    uri: https://infobip-restaurant.herokuapp.com/exchange/restaurant/reservations
+    uri: https://restaurant-reservations-demo.azurewebsites.net/exchange/restaurant/reservations
     outSchema:
       type: object
       properties:
@@ -14,7 +14,7 @@ functions:
     description: Get reservation by email
     method: POST
     uri: >-
-      https://infobip-restaurant.herokuapp.com/exchange/restaurant/reservations/email
+      https://restaurant-reservations-demo.azurewebsites.net/exchange/restaurant/reservations/email
     inSchema:
       type: object
       properties:
@@ -32,7 +32,7 @@ functions:
   - name: createReservation
     description: Creates a reservation
     method: POST
-    uri: https://infobip-restaurant.herokuapp.com/exchange/restaurant/reservations/
+    uri: https://restaurant-reservations-demo.azurewebsites.net/exchange/restaurant/reservations/
     inSchema:
       type: object
       properties:
@@ -86,7 +86,7 @@ functions:
   - name: updateReservation
     description: Updates a reservation
     method: POST
-    uri: https://infobip-restaurant.herokuapp.com/exchange/restaurant/reservations/
+    uri: https://restaurant-reservations-demo.azurewebsites.net/exchange/restaurant/reservations/
     inSchema:
       type: object
       properties:
@@ -140,7 +140,7 @@ functions:
   - name: deleteReservation
     description: Deletes a reservation
     method: DELETE
-    uri: https://infobip-restaurant.herokuapp.com/exchange/restaurant/reservations/
+    uri: https://restaurant-reservations-demo.azurewebsites.net/exchange/restaurant/reservations/
     inSchema:
       type: object
       properties:
