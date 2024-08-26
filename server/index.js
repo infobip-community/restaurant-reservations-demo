@@ -23,21 +23,27 @@ app.use(express.json()); // to support JSON-encoded bodies
 
 //API ROUTES
 app.get("/exchange/restaurant/reservations/:email", async (req, res) => {
-  const reservation = await getByEmail(req.params.email).catch((error) => {
-    return res.status(500).json({ error });
-  });
-  return res.json(reservation);
+  await getByEmail(req.params.email)
+    .then(reservation => {
+      res.json(reservation);
+    })
+    .catch((error) => {
+      res.status(404).json({ error });
+    });
 });
 
 app.get("/exchange/restaurant/reservations", async (req, res) => {
-  return res.json({ reservations: await getAllReservations() });
+  res.json({ reservations: await getAllReservations() });
 });
 
 app.post("/exchange/restaurant/reservations", async (req, res) => {
-  const reservation = await addReservation(req.body).catch((error) => {
-    return res.status(500).json({ error });
-  });
-  return res.json(reservation);
+  await addReservation(req.body)
+    .then(reservation => {
+      res.json(reservation)
+    })
+    .catch((error) => {
+      res.status(400).json({ error });
+    });
 });
 
 app.delete("/exchange/restaurant/reservations/:id", (req, res) => {
@@ -49,25 +55,31 @@ app.put("/exchange/restaurant/reservations/:id", (req, res) => {
 });
 
 app.get("/exchange/restaurant/config", async (req, res) => {
-  return res.json({ config: await getConfigFields() });
+  res.json({ config: await getConfigFields() });
 });
 
 app.post("/exchange/restaurant/config", async (req, res) => {
-  const reservation = await addConfigFields(req.body).catch((error) => {
-    return res.status(500).json({ error });
-  });
-  return res.json(reservation);
+  await addConfigFields(req.body)
+    .then(reservation => {
+      res.json(reservation);
+    })
+    .catch((error) => {
+      res.status(500).json({ error });
+    });
 });
 
 app.get("/exchange/restaurant/config/additionalFields", async (req, res) => {
-  const config = await getAdditionalFields().catch((error) => {
-    return res.status(500).json({ error });
-  });
-  return res.json({ config });
+  await getAdditionalFields()
+    .then(config => {
+      res.json({ config });
+    })
+    .catch((error) => {
+      res.status(500).json({ error });
+    });
 });
 
 app.post("/exchange/restaurant/config/additionalFields", async (req, res) => {
-  return res.json({ config: await deleteConfigField(req.body) });
+  res.json({ config: await deleteConfigField(req.body) });
 });
 
 // FRONT END APP

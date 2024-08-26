@@ -58,97 +58,67 @@ When you add the app in Exchange, in the **OAuth** section of the form, the **Re
 Update the **Redirect URL** with the location of your deployed project. The Infobip platform uses the path for the OAuth flow in your app.
 
 
-> ![OAuth call sequence](https://www.infobip.com/docs/images/uploads/articles/OAuth-flow.png)
+> ![OAuth call sequence](https://infobip-cdn-h0h7ekhqhgh4hgau.a02.azurefd.net/1g8x60m5haaeebc38sw9etdnqwq2orfxs6yjtxwklw767cqz71/oauth-flow-iframe-page.png)
 
 
-For more information about OAuth, see the [OAuth2.0  documentation](https://www.infobip.com/docs/developing-with-infobip/user-journeys-flows#authorization-and-oauth-2-0-flows).
+For more information about OAuth, see the [OAuth2.0  documentation](https://www.infobip.com/docs/developing-with-infobip/user-journeys-flows#authorization-and-oauth-20-flows).
 
 ### OAuth React example
-This is a code example implementation with Conversations using the OAuth PKCE library for React.
+This is a code example implementation with Conversations using OAuth PKCE.
 
 The following steps explain how this is integrated:
 
-1. Add **react-oauth2-pkce** to your react app.
-   `npm install react-oauth2-pkce --save`
+1. Copy `client/src/components/AuthProvider.tsx` to your React app. It contains the whole OAuth logic.
 
 2. Include env-cmd to avoid exposing sensitive data on repositories. Skip these steps if you are able to enter your credentials directly.
    `npm install env-cmd --save`
    a. Copy **.env.sample** file from that is on client folder. Rename it to **.env**.
-   b. Replace the environment variables values with your own.
+   b. Replace the environment variables values with your own (`REACT_APP_REDIRECT_URL` and `REACT_APP_CLIENT_ID`).
 
-```sh
-  REACT_APP_OAUTH_ACTIVE="true"
-  REACT_APP_CLIENT_ID="eaf2lk1j940e0124f0e7c68a121c0582"
-  REACT_APP_PROVIDER="https://portal.infobip.com/api/amg/exchange/1/oauth"
-  REACT_APP_TOKEN="https://oneapi.ioinfobip.com/exchange/1/oauth"
-  REACT_APP_REDIRECT_URI="https://restaurant-reservations-demo-oauth.azurewebsites.net/"
-```
+   ```sh
+     REACT_APP_API_BASE_URL="https://oneapi.infobip.com"
+     REACT_APP_REDIRECT_URL="https://restaurant-reservations-demo-oauth.azurewebsites.net/"
+     REACT_APP_CLIENT_ID="eaf2lk1j940e0124f0e7c68a121c0582"
+   ```
 
-3. Create your Auth Service instance with your credentials (if you followed step 2, you will have your credentials ready on the **process.env** object).
+3. Create your constants `client/src/const.ts` which are used by `AuthProvider` (if you followed step 2, you will have your credentials ready on the **process.env** object).
 
-```js
-import { AuthService } from "react-oauth2-pkce";
+   ```js
+   export const INFOBIP_API_BASE_URL = process.env.REACT_APP_INFOBIP_API_BASE_URL;
+   export const REDIRECT_URL = process.env.REACT_APP_REDIRECT_URL ?? '';
+   export const CLIENT_ID = process.env.REACT_APP_CLIENT_ID ?? '';
+   ```
 
-const oauthService = new AuthService({
-  clientId: process.env.REACT_APP_CLIENT_ID || "",
-  provider: process.env.REACT_APP_PROVIDER || "",
-  redirectUri: process.env.REACT_APP_REDIRECT_URI || "",
-  scopes: ["conversations"],
-  location: window.location,
-});
+4. Add `AuthProvider` component to your app. You can import `useAuthContext` from `AuthProvider` and then you can use info about user.
 
-export default oauthService;
-```
+   This is an example of the token response which is available under `useAuthContext()`:
 
-
-4. Add AuthProvider on your app. Send the value of the service that you created in step 3.
-   This example calls authService as soon as it's defined. You can trigger the login functionality with **authService.authorize()**
-   After the login page prompt, the user is redirected to where redirectUri is specified. You can get tokens using **authService.getAuthTokens()**.
-
-```js
-  useEffect(() => {
-    if (
-      !authService.isAuthenticated() &&
-      !authService.getCodeFromLocation(window.location)
-    ) {
-      setIsLoading(true);
-      authService.authorize();
-    } else {
-      setIsLoading(false);
-    }
-  }, [authService]); 
-```
-
-This is an example of the response:
-
-```js
-{
-   accountKey: "91823h-kj392-jkh8",
-   email: "user@infobip.com",
-   expires_at: "",
-   groups: [],
-   roles: [],
-   token: "d8asdn-kjasd8912j-ahsdk",
-   tokenType: "IBSSO",
-   userKey: "123",
-   userName: "user"
-}
-```
-6. This example uses React.Context to expose OAuth token values to the app. Add a condition to give users access to the app when an access_token and token_type is successfully retrieved.
-
-
-``` js
-  {authService.isAuthenticated() && (
-          <Grid container justifyContent="center">
-            <Grid item xs={12} md={10}>
-              <Typography variant="h4" component="h4">
-                Awesome Restaurant
-                <Button onClick={handleLogout}>Logout</Button>
-              </Typography>
-            </Grid>
-          </Grid>
-    )
+   ```js
+   {
+      accountKey: "91823h-kj392-jkh8",
+      email: "user@infobip.com",
+      expires_at: 3600,
+      groups: [],
+      roles: [],
+      token: "d8asdn-kjasd8912j-ahsdk",
+      tokenType: "IBSSO",
+      userKey: "123",
+      userName: "user"
    }
-```
+   ```
+
+   If you want to call other Infobip API endpoints, just add the following header to requests (`const authContext = useAuthContext();`):
+
+   ```
+   Auhtorization: ${authContext.token_type} ${authContext.token}
+   ```
+
+5. This example uses React.Context to expose OAuth token values to the app. Add a condition to give users access to the app when an access_token and token_type is successfully retrieved.
+
+   ``` js
+     <AuthProvider>
+       <div>Here you can put your app (React components) which will be protected by OAuth and visible only by authenticated users.</div>
+     </AuthProvider>
+   ```
 
 For more information about developing with Infobip, see [Exchange Developer Experience](https://www.infobip.com/docs/integrations/exchange-developer).

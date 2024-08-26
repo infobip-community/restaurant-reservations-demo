@@ -14,7 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
-import {APIConfigPath} from "../../const";
+import { API_CONFIG_PATH } from "../../const";
 import UserMenu from '../../components/userMenu/UserMenu';
 import { UserContext } from '../../contexts/AuthContext';
 import { ConfigContext } from '../../contexts/ConfigContext';
@@ -41,7 +41,7 @@ const ConfigPage: React.FC = () => {
         const data  = [...mappedFields];
         data.splice(field.id - 1, 1, saveField);
 
-        (await fetch(`${APIConfigPath}`, {
+        (await fetch(`${API_CONFIG_PATH}`, {
             method: "post",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
@@ -53,7 +53,7 @@ const ConfigPage: React.FC = () => {
     }
 
     const handleDeleteField = (field: FieldI) => async () => {
-        (await fetch(`${APIConfigPath}/additionalFields`, {
+        (await fetch(`${API_CONFIG_PATH}/additionalFields`, {
             method: "post",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(field),

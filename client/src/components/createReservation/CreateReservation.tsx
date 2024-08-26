@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import { ErrorI, ReservationI } from "../../pages/home/Home.types";
-import { APIConfigPath, APIPath } from "../../const";
+import { API_CONFIG_PATH, API_RESERVATIONS_PATH, INFOBIP_API_BASE_URL } from "../../const";
 import { Grid } from "@mui/material";
 import styled from "@emotion/styled";
 
@@ -24,9 +24,7 @@ import { FieldI } from "../../pages/config/ConfigTypes";
 import { Field, FIELD_NAME } from "./CreateReservationTypes";
 import { CustomerContext } from "../../contexts/CustomerContext";
 import { ConfigContext } from "../../contexts/ConfigContext";
-
-const apiKey = process?.env.REACT_APP_ACCOUNT_API_KEY;
-const apiDomain = process?.env.REACT_APP_ACCOUNT_DOMAIN_API;
+import { useAuthContext } from "../AuthProvider";
 
 const TODAY = new Date();
 let MINUTE = TODAY.getMinutes();
@@ -70,6 +68,7 @@ const FieldContainer = styled.div`
 `;
 
 const CreateReservation = () => {
+  const authContext = useAuthContext();
   const [errors, setErrors] = useState<ErrorI>({});
   const [date, setDate] = useState<Date | null>(new Date());
   const [startTime, setStartTime] = useState<Date | null>(TODAY);
@@ -87,7 +86,7 @@ const CreateReservation = () => {
 
   useEffect(() => {
     (async () => {
-      const response = await fetch(`${APIConfigPath}/additionalFields`, {});
+      const response = await fetch(`${API_CONFIG_PATH}/additionalFields`, {});
       const result = await response.json();
       let additionalFieldsArr: Field[] = [];
       const addtionalF: FieldI[] = result.config.length ? result.config : [];
@@ -179,7 +178,7 @@ const CreateReservation = () => {
 
     if (isReservationValid(errors)) {
       updateAlertContext({ isLoading: true });
-      const response = (await fetch(`${APIPath}`, {
+      const response = (await fetch(`${API_RESERVATIONS_PATH}`, {
         method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newReservation),
@@ -227,12 +226,12 @@ const CreateReservation = () => {
 
     updateAlertContext({ isLoading: true });
     const response = await fetch(
-      `https://${apiDomain}/people/2/persons?email=${newReservation.host_email}`,
+      `${INFOBIP_API_BASE_URL}/people/2/persons?email=${newReservation.host_email}`,
       {
-        method: "get",
+        method: "GET",
         headers: {
           Accept: "application/json",
-          Authorization: `App ${apiKey}`,
+          Authorization: `${authContext.token_type} ${authContext.token}`,
         },
       }
     );
@@ -277,11 +276,11 @@ const CreateReservation = () => {
       },
     };
 
-    const result = await fetch(`https://${apiDomain}/people/2/persons`, {
-      method: "post",
+    const result = await fetch(`${INFOBIP_API_BASE_URL}/people/2/persons`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `App ${apiKey}`,
+        Authorization: `${authContext.token_type} ${authContext.token}`,
       },
       body: JSON.stringify(newPerson),
     });
