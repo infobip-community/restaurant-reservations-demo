@@ -54,7 +54,7 @@ const Reservations = () => {
   const { email, phoneNumber } = useContext(CustomerContext);
 
   const handleSearch = useCallback(
-    (searchValue) => {
+    (searchValue: any) => {
       (async () => {
         const result = await fetch(`${API_RESERVATIONS_PATH}/${searchValue}`);
         const response = await result.json();
@@ -326,6 +326,7 @@ const Reservations = () => {
                       value={reservationSelected.party_size}
                       label="size"
                       onChange={handleChangeInput}
+                      variant="outlined"
                     >
                       {Array.from(Array(22), (e, i) => {
                         return (

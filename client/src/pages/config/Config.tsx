@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FieldI, FIELD_KEY} from "./ConfigTypes";
 import {
     Container,
@@ -15,8 +15,6 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import { API_CONFIG_PATH } from "../../const";
-import UserMenu from '../../components/userMenu/UserMenu';
-import { UserContext } from '../../contexts/AuthContext';
 import { ConfigContext } from '../../contexts/ConfigContext';
 
 const EMPTY_FIELD = {
@@ -30,8 +28,6 @@ const EMPTY_FIELD = {
 };
 
 const ConfigPage: React.FC = () => {
-    const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
-    const user = useContext(UserContext);
     const { fields, setFields } = React.useContext(ConfigContext);
     const [ mappedFields, setMappedFields ] = useState<FieldI[]>([]);
     const [ editingField, setEditingField] = useState<FieldI>();
@@ -131,10 +127,7 @@ const ConfigPage: React.FC = () => {
         <Grid container spacing={2} justifyContent="center">
             <br />
             <Grid item xs={12} md={10}>
-                <Typography variant="h4" component="h4">
-                    Configuration Page
-                    {authEnabled && user?.username && <UserMenu />}
-                </Typography>
+                <Typography variant="h4" component="h4">Configuration Page</Typography>
                 <br />
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">

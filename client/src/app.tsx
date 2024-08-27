@@ -56,7 +56,7 @@ const AppWithOauth: React.FC = () => {
         phoneNumber: inboundMessages[0]?.from && !isNaN(+inboundMessages[0].from) ? inboundMessages[0]?.from : "",
       });
     })();
-  }, [conversationId]);
+  }, [conversationId, authContext.token, authContext.token_type]);
 
   useEffect(() => {
     if (userContext.username) return;

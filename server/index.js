@@ -1,6 +1,5 @@
 import express from "express";
 import {
-  createConnection,
   deleteReservation,
   updateReservation,
   getAllReservations,
@@ -12,24 +11,21 @@ import {
   deleteConfigField,
 } from "./database.js";
 import path from "path";
+
 const __dirname = path.resolve();
 
 const port = process.env.PORT || 3001;
 const app = express();
 
-createConnection();
-
 app.use(express.json()); // to support JSON-encoded bodies
 
 //API ROUTES
 app.get("/exchange/restaurant/reservations/:email", async (req, res) => {
-  await getByEmail(req.params.email)
-    .then(reservation => {
-      res.json(reservation);
-    })
-    .catch((error) => {
-      res.status(404).json({ error });
-    });
+  try {
+    res.json(await getByEmail(req.params.email));
+  } catch (error) {
+    res.status(404).json({ error });
+  }
 });
 
 app.get("/exchange/restaurant/reservations", async (req, res) => {
@@ -37,13 +33,11 @@ app.get("/exchange/restaurant/reservations", async (req, res) => {
 });
 
 app.post("/exchange/restaurant/reservations", async (req, res) => {
-  await addReservation(req.body)
-    .then(reservation => {
-      res.json(reservation)
-    })
-    .catch((error) => {
-      res.status(400).json({ error });
-    });
+  try {
+    res.json(await addReservation(req.body));
+  } catch (error) {
+    res.status(400).json({ error });
+  }
 });
 
 app.delete("/exchange/restaurant/reservations/:id", (req, res) => {
@@ -59,23 +53,19 @@ app.get("/exchange/restaurant/config", async (req, res) => {
 });
 
 app.post("/exchange/restaurant/config", async (req, res) => {
-  await addConfigFields(req.body)
-    .then(reservation => {
-      res.json(reservation);
-    })
-    .catch((error) => {
-      res.status(500).json({ error });
-    });
+  try {
+    res.json(await addConfigFields(req.body));
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 });
 
 app.get("/exchange/restaurant/config/additionalFields", async (req, res) => {
-  await getAdditionalFields()
-    .then(config => {
-      res.json({ config });
-    })
-    .catch((error) => {
-      res.status(500).json({ error });
-    });
+  try {
+    res.json({ config: await getAdditionalFields() });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 });
 
 app.post("/exchange/restaurant/config/additionalFields", async (req, res) => {

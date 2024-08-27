@@ -1,69 +1,59 @@
-import { Low, JSONFile } from "lowdb";
+import { JSONFilePreset } from "lowdb/node";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { v4 as uuidv4 } from "uuid";
 import lodash from "lodash";
 
-let db;
+const defaultData = {
+  reservations: [],
+  config: {
+    fields: [
+      {
+        id: 1,
+        name: "Date",
+        placeHolder: "Date",
+        required: true,
+        additional: false
+
+      },
+      {
+        id: 2,
+        name: "Hour",
+        placeHolder: "Hour",
+        required: true,
+        additional: false
+
+      },
+      {
+        id: 3,
+        name: "Host Name",
+        placeHolder: "Host Name",
+        required: true,
+        additional: false
+
+      },
+      {
+        id: 4,
+        name: "Host Email",
+        placeHolder: "Host Email",
+        required: true,
+        additional: false
+
+      },
+      {
+        id: 5,
+        name: "Host Phone Number",
+        placeHolder: "Host Phone Number",
+        required: true,
+        additional: false
+      }
+    ],
+  },
+};
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const file = join(__dirname, "../db.json");
-const adapter = new JSONFile(file);
-db = new Low(adapter);
-db.read();
-
-export const createConnection = async () => {
-  // Use JSON file for storage
-  // Read data from JSON file, this will set db.data content
-  if (db.data === null) {
-    db.data = {
-      reservations: [],
-      config: {
-        fields: [
-          {
-            id: 1,
-            name: "Date",
-            placeHolder: "Date",
-            required: true,
-            additional: false
-
-          },
-          {
-            id: 2,
-            name: "Hour",
-            placeHolder: "Hour",
-            required: true,
-            additional: false
-
-          },
-          {
-            id: 3,
-            name: "Host Name",
-            placeHolder: "Host Name",
-            required: true,
-            additional: false
-
-          },
-          {
-            id: 4,
-            name: "Host Email",
-            placeHolder: "Host Email",
-            required: true,
-            additional: false
-
-          },
-          {
-            id: 5,
-            name: "Host Phone Number",
-            placeHolder: "Host Phone Number",
-            required: true,
-            additional: false
-          }
-        ],
-      },
-    };
-    await db.write();
-  }
-};
+const db = await JSONFilePreset(file, defaultData);
 
 export const getAllReservations = () => {
   db.chain = lodash.chain(db.data);

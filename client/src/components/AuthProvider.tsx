@@ -46,6 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .then(response => {
           setAuthContextState(response);
           removeCodeFromLocation();
+          setError(null);
           setLoading(false);
         })
         .catch(error => {
