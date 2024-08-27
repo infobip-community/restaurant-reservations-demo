@@ -24,7 +24,7 @@ const EMPTY_FIELD = {
     required: false,
     additional: true,
     saved: true,
-    editMode: false
+    editMode: true
 };
 
 const ConfigPage: React.FC = () => {
@@ -33,7 +33,7 @@ const ConfigPage: React.FC = () => {
     const [ editingField, setEditingField] = useState<FieldI>();
 
     const handleSaveConfigField = async (field: FieldI) => {
-        const saveField = { ...field, saved: true, editMode: false };
+        const saveField = { ...field, saved: true, editMode: true };
         const data  = [...mappedFields];
         data.splice(field.id - 1, 1, saveField);
 
@@ -64,7 +64,7 @@ const ConfigPage: React.FC = () => {
         const data = [...mappedFields];
 
         if (editingField && editingField.id !== field.id) {
-            data.splice(editingField.id - 1, 1, { ...editingField, saved: true, editMode: false });
+            data.splice(editingField.id - 1, 1, { ...editingField, saved: true, editMode: true });
         }
         if (!editingField || editingField.id !== field.id) {
             setEditingField(field);
@@ -118,7 +118,7 @@ const ConfigPage: React.FC = () => {
 
     useEffect(() => {
         const mappedFields = fields.map(field => {
-            return {...field, saved: true, editMode: false};
+            return {...field, saved: true, editMode: true};
         });
         setMappedFields(mappedFields);
     }, [fields]);
