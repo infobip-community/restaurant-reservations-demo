@@ -27,7 +27,7 @@ export function useAuthContext(): AuthContext {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [authContextState, setAuthContextState] = useState<AuthContext | null>(null);
   const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState<any | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -56,13 +56,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } else if (state) {
       // 1st step - redirect to authorization endpoint in order to get access code using state param
       setLoading(true);
-      try {
-        authorizeWithRedirectBack(state, conversationId);
-      } catch (error) {
-        // the most probably because you are using insecure origin. Secure origins are HTTPS scheme or localhost/localhost IP address as host
-        setError(`An error occurred while creating code challenge: ${error}`);
-        setLoading(false);
-      }
+      getAuthorizeUrl(state, conversationId)
+        .then(url => {
+          window.location.assign(url);
+        })
+        .catch(error => {
+          // the most probably because you are using insecure origin. Secure origins are HTTPS scheme or localhost/localhost IP address as host
+          setError(`An error occurred while creating code challenge: ${error}`);
+          setLoading(false);
+        });
     } else {
       setError('Missing state');
     }
@@ -101,22 +103,20 @@ function removeCodeFromLocation() {
   window.history.replaceState(null, '', `?${newUrlParams.toString()}`);
 }
 
-function authorizeWithRedirectBack(state: string, conversationId: string | null) {
+async function getAuthorizeUrl(state: string, conversationId: string | null) {
   const codeVerifier = createCodeVerifier();
   storeCodeVerifier(codeVerifier);
-  createCodeChallenge(codeVerifier)
-    .then(codeChallenge => {
-      const params = new URLSearchParams({
-        response_type: 'code',
-        code_challenge: codeChallenge,
-        client_id: CLIENT_ID,
-        redirect_uri: REDIRECT_URL + (window.location.pathname ?? '') + (conversationId ? `?=conversationId=${conversationId}` : ''),
-        scope: 'conversations',
-        state
-      });
+  const codeChallenge = await createCodeChallenge(codeVerifier);
+  const params = new URLSearchParams({
+    response_type: 'code',
+    code_challenge: codeChallenge,
+    client_id: CLIENT_ID,
+    redirect_uri: REDIRECT_URL + (window.location.pathname ?? '') + (conversationId ? `?=conversationId=${conversationId}` : ''),
+    scope: 'conversations',
+    state
+  });
 
-      window.location.assign(`${INFOBIP_API_BASE_URL}/exchange/1/oauth/authorize?${params.toString()}`);
-    });
+  return `${INFOBIP_API_BASE_URL}/exchange/1/oauth/authorize?${params.toString()}`;
 }
 
 async function createCodeChallenge(codeVerifier: string) {
