@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setError(`An error occurred while getting token: ${error}`);
           setLoading(false);
         });
-    } else if (state) {
+    } else {
       // 1st step - redirect to authorization endpoint in order to get access code using state param
       setLoading(true);
       getAuthorizeUrl(state, conversationId)
@@ -65,8 +65,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setError(`An error occurred while creating code challenge: ${error}`);
           setLoading(false);
         });
-    } else {
-      setError('Missing state');
     }
   }, [authContextState]);
 
@@ -103,7 +101,7 @@ function removeCodeFromLocation() {
   window.history.replaceState(null, '', `?${newUrlParams.toString()}`);
 }
 
-async function getAuthorizeUrl(state: string, conversationId: string | null) {
+async function getAuthorizeUrl(state: string | null, conversationId: string | null) {
   const codeVerifier = createCodeVerifier();
   storeCodeVerifier(codeVerifier);
   const codeChallenge = await createCodeChallenge(codeVerifier);
@@ -112,9 +110,11 @@ async function getAuthorizeUrl(state: string, conversationId: string | null) {
     code_challenge: codeChallenge,
     client_id: CLIENT_ID,
     redirect_uri: REDIRECT_URL + (window.location.pathname ?? '') + (conversationId ? `?=conversationId=${conversationId}` : ''),
-    scope: 'conversations',
-    state
+    scope: 'conversations'
   });
+  if (state) {
+    params.append('state', state);
+  }
 
   return `${INFOBIP_API_BASE_URL}/exchange/1/oauth/authorize?${params.toString()}`;
 }
