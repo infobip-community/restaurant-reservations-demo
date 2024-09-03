@@ -231,11 +231,11 @@ const CreateReservation = () => {
         method: "GET",
         headers: {
           Accept: "application/json",
-          Authorization: `${authContext.token_type} ${authContext.token}`,
+          Authorization: `${authContext.authorization}`,
         },
       }
     );
-    const status = await response.status;
+    const status = response.status;
     if (response && status === 200) {
       updateAlertContext({
         type: "warning",
@@ -280,7 +280,7 @@ const CreateReservation = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${authContext.token_type} ${authContext.token}`,
+        Authorization: `${authContext.authorization}`,
       },
       body: JSON.stringify(newPerson),
     });

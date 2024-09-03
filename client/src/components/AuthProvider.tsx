@@ -1,8 +1,8 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { Alert, CircularProgress, Stack } from '@mui/material';
-import { INFOBIP_API_BASE_URL, CLIENT_ID, REDIRECT_URL } from '../const';
+import { INFOBIP_API_BASE_URL, CLIENT_ID, REDIRECT_URI, OAUTH_ACTIVE, INFOBIP_API_KEY } from '../const';
 
-export interface AuthContext {
+export interface Token {
   token: string;
   token_type: string;
   expires_in: number;
@@ -11,6 +11,12 @@ export interface AuthContext {
   username: string;
   email: string;
   locale: string;
+}
+
+export interface AuthContext {
+  oauthEnabled: boolean;
+  authorization: string;
+  token: Token | null;
 }
 
 const authContext = createContext<AuthContext | null>(null);
@@ -39,12 +45,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    if (!OAUTH_ACTIVE) {
+      setAuthContextState({ oauthEnabled: false, authorization: `App ${INFOBIP_API_KEY}`, token: null });
+      return;
+    }
+
     if (code) {
       // 2nd step - after redirect back to the app with access code param in the URL, retrieve token with user info
       setLoading(true);
       getToken(code)
         .then(response => {
-          setAuthContextState(response);
+          setAuthContextState({ oauthEnabled: true, authorization: `${response.token_type} ${response.token}`, token: response });
           removeCodeFromLocation();
           setError(null);
           setLoading(false);
@@ -87,7 +98,7 @@ async function getToken(code: string) {
       grant_type: 'authorization_code',
       code_verifier: getStoredCodeVerifier() ?? '',
       client_id: CLIENT_ID,
-      redirect_uri: REDIRECT_URL,
+      redirect_uri: REDIRECT_URI,
       code
     })
   });
@@ -109,7 +120,7 @@ async function getAuthorizeUrl(state: string | null, conversationId: string | nu
     response_type: 'code',
     code_challenge: codeChallenge,
     client_id: CLIENT_ID,
-    redirect_uri: REDIRECT_URL + (window.location.pathname ?? '') + (conversationId ? `?=conversationId=${conversationId}` : ''),
+    redirect_uri: REDIRECT_URI + (window.location.pathname ?? '') + (conversationId ? `?=conversationId=${conversationId}` : ''),
     scope: 'conversations'
   });
   if (state) {

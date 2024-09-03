@@ -72,21 +72,29 @@ The following steps explain how this is integrated:
 
 2. Include env-cmd to avoid exposing sensitive data on repositories. Skip these steps if you are able to enter your credentials directly.
    `npm install env-cmd --save`
-   a. Copy **.env.sample** file from that is on client folder. Rename it to **.env**.
-   b. Replace the environment variables values with your own (`REACT_APP_REDIRECT_URL` and `REACT_APP_CLIENT_ID`).
 
-   ```sh
-     REACT_APP_API_BASE_URL="https://oneapi.infobip.com"
-     REACT_APP_REDIRECT_URL="https://restaurant-reservations-demo-oauth.azurewebsites.net/"
-     REACT_APP_CLIENT_ID="eaf2lk1j940e0124f0e7c68a121c0582"
-   ```
+   * Copy **.env.sample** file from that is on client folder. Rename it to **.env**.
+
+   * Replace the environment variables values in the example with your own:
+
+      * `REACT_APP_CLIENT_ID` is client ID from your app created in the Infobip Exchange,
+      * `REACT_APP_REDIRECT_URI` is URL of your app where it's hosted,
+      * `REACT_APP_ACCOUNT_DOMAIN_API` is API Base URL you've been given by Infobip.
+
+      ```sh
+      REACT_APP_OAUTH_ACTIVE="true"
+      REACT_APP_CLIENT_ID="eaf2lk1j940e0124f0e7c68a121c0582"
+      REACT_APP_REDIRECT_URI="https://restaurant-reservations-demo-oauth.azurewebsites.net"
+      REACT_APP_ACCOUNT_DOMAIN_API="l2fur4j.api.infobip.com"
+      ```
 
 3. Create your constants `client/src/const.ts` which are used by `AuthProvider` (if you followed step 2, you will have your credentials ready on the **process.env** object).
 
    ```js
-   export const INFOBIP_API_BASE_URL = process.env.REACT_APP_INFOBIP_API_BASE_URL;
-   export const REDIRECT_URL = process.env.REACT_APP_REDIRECT_URL ?? '';
+   export const OAUTH_ACTIVE = process.env.REACT_APP_OAUTH_ACTIVE === 'true' ?? false;
    export const CLIENT_ID = process.env.REACT_APP_CLIENT_ID ?? '';
+   export const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI ?? '';
+   export const INFOBIP_API_BASE_URL = 'https://' + process.env.REACT_APP_ACCOUNT_DOMAIN_API;
    ```
 
 4. Add `AuthProvider` component to your app. You can import `useAuthContext` from `AuthProvider` and then you can use info about user.

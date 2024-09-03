@@ -36,7 +36,7 @@ const AppWithOauth: React.FC = () => {
       const response = await fetch(`${INFOBIP_API_BASE_URL}/ccaas/1/conversations/${conversationId}/messages`, {
         method: 'GET',
         headers: {
-          Authorization: `${authContext.token_type} ${authContext.token}`,
+          Authorization: `${authContext.authorization}`
         },
       });
       const jsonResponse = await response.json();
@@ -56,12 +56,13 @@ const AppWithOauth: React.FC = () => {
         phoneNumber: inboundMessages[0]?.from && !isNaN(+inboundMessages[0].from) ? inboundMessages[0]?.from : "",
       });
     })();
-  }, [conversationId, authContext.token, authContext.token_type]);
+  }, [conversationId, authContext.authorization]);
 
   useEffect(() => {
+    if (!authContext.oauthEnabled || !authContext.token) return;
     if (userContext.username) return;
 
-    const { token, username, locale } = authContext;
+    const { token, username, locale } = authContext.token;
 
     setUserContext({
       ...userContext,
