@@ -16,10 +16,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import { CircularProgress } from "@mui/material";
 import TabPanel from "../../components/tabPanel/TabPanel";
 import { AlertContext } from "../../contexts/AlertContext";
+import { UserContext } from "../../contexts/AuthContext";
+import UserMenu from "../../components/userMenu/UserMenu";
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
   const [currentTab, setCurrentTab] = React.useState(0);
+  const userContext = useContext(UserContext);
   const alert = useContext(AlertContext);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -31,7 +34,10 @@ const HomePage: React.FC = () => {
       <Grid container spacing={2} justifyContent="center">
         <br />
         <Grid item xs={11} md={10}>
-          <Typography variant="h4" component="h4">Awesome Restaurant</Typography>
+          <Typography variant="h4" component="h4">
+            Awesome Restaurant
+            {userContext?.username && <UserMenu />}
+          </Typography>
         </Grid>
         <br />
         <Grid item xs={12} md={10}>

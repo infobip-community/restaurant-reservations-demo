@@ -59,7 +59,7 @@ const AppWithOauth: React.FC = () => {
   }, [conversationId, authContext.authorization]);
 
   useEffect(() => {
-    if (!authContext.oauthEnabled || !authContext.token) return;
+    if (!authContext.token) return; // OAuth disabled
     if (userContext.username) return;
 
     const { token, username, locale } = authContext.token;

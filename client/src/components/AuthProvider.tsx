@@ -14,7 +14,6 @@ export interface Token {
 }
 
 export interface AuthContext {
-  oauthEnabled: boolean;
   authorization: string;
   token: Token | null;
 }
@@ -46,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     if (!OAUTH_ACTIVE) {
-      setAuthContextState({ oauthEnabled: false, authorization: `App ${INFOBIP_API_KEY}`, token: null });
+      setAuthContextState({ authorization: `App ${INFOBIP_API_KEY}`, token: null });
       return;
     }
 
@@ -55,13 +54,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       getToken(code)
         .then(response => {
-          setAuthContextState({ oauthEnabled: true, authorization: `${response.token_type} ${response.token}`, token: response });
+          setAuthContextState({ authorization: `${response.token_type} ${response.token}`, token: response });
           removeCodeFromLocation();
           setError(null);
           setLoading(false);
         })
         .catch(error => {
-          setError(`An error occurred while getting token: ${error}`);
+          setError(`Invalid token: ${error}`);
           setLoading(false);
         });
     } else {
@@ -73,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         })
         .catch(error => {
           // the most probably because you are using insecure origin. Secure origins are HTTPS scheme or localhost/localhost IP address as host
-          setError(`An error occurred while creating code challenge: ${error}`);
+          setError(`Unable to create code challenge: ${error}`);
           setLoading(false);
         });
     }
