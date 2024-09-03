@@ -1,108 +1,68 @@
 import React, { useEffect, useState } from "react";
-import { AuthProvider, useAuth } from "react-oauth2-pkce";
 import { Backdrop, CircularProgress } from "@mui/material";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import {
-  AlertI,
-  ConfigContextI,
-  UserContextI,
-  UserUpdateParamsI,
-} from "./pages/home/Home.types";
+import { AlertI, ConfigContextI, UserContextI, UserUpdateParamsI } from "./pages/home/Home.types";
 import HomePage from "./pages/home/Home";
 import ConfigPage from "./pages/config/Config";
 import { defaultUserContext, UserContext } from "./contexts/AuthContext";
-import {
-  defaultAlertContextValue,
-  AlertContext,
-} from "./contexts/AlertContext";
-import oauthService from "./services/oauth";
-import {
-  CustomerContext,
-  defaultCustomerContext,
-} from "./contexts/CustomerContext";
-import { APIConfigPath } from "./const";
+import { defaultAlertContextValue, AlertContext } from "./contexts/AlertContext";
+import { CustomerContext, defaultCustomerContext } from "./contexts/CustomerContext";
+import { CONVERSATIONS_INTEGRATION_ENABLED, INFOBIP_API_BASE_URL, API_CONFIG_PATH } from "./const";
 import { ConfigContext, defaultConfigContext } from "./contexts/ConfigContext";
+import { AuthProvider, useAuthContext } from "./components/AuthProvider";
 
 const AppWithOauth: React.FC = () => {
+  const authContext = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
-  const [customerContext, setCustomerContext] = useState(
-    defaultCustomerContext
-  );
-  const [userContext, setUserContext] =
-    useState<UserContextI>(defaultUserContext);
-  const [configContext, setConfigContext] =
-    useState<ConfigContextI>(defaultConfigContext);
-  const { authService } = useAuth();
-  const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
-  const domain = process?.env.REACT_APP_ACCOUNT_DOMAIN_API;
-  const apiKey = process?.env.REACT_APP_ACCOUNT_API_KEY;
-  const conversationIntegrationEnabled =
-    process?.env.REACT_APP_CONVERSATIONS_INTEGRATION;
+  const [customerContext, setCustomerContext] = useState(defaultCustomerContext);
+  const [userContext, setUserContext] = useState<UserContextI>(defaultUserContext);
+  const [configContext, setConfigContext] = useState<ConfigContextI>(defaultConfigContext);
   const params = new URLSearchParams(window.location.search);
-  const conversationId = params.get("conversationId");
+  const conversationId = params.get('conversationId');
 
   useEffect(() => {
-    if (!conversationIntegrationEnabled || !conversationId) return;
-
-    const options = {
-      method: "GET",
-      headers: {
-        Authorization: `App ${apiKey}`,
-      },
-    };
-
-    (async () => {
-      const notCompatibleChannelsForConversationsIntegration = [
-        "TWITTER_DM",
-        "FACEBOOK_MESSENGER",
-        "LIVE_CHAT",
-      ];
-
-      const response = await fetch(
-        `https://${domain}/ccaas/1/conversations/${conversationId}/messages`,
-        options
-      );
-      const jsonResponse = await response.json();
-      const messages = jsonResponse.messages;
-
-      const result = messages.filter(
-        (message: any) => message.direction === "INBOUND"
-      );
-
-      if (!result) return;
-
-      if (
-        notCompatibleChannelsForConversationsIntegration.includes(
-          result[0]?.channel
-        )
-      )
-        return;
-
-      setCustomerContext({
-        email: result[0]?.content?.sender,
-        name: result[0]?.content?.senderName,
-        phoneNumber:
-          result[0]?.from && !isNaN(+result[0].from) ? result[0]?.from : "",
-      });
-    })();
-  }, [apiKey, conversationId, conversationIntegrationEnabled, domain]);
-
-  useEffect(() => {
-    if (!authEnabled) return;
-
-    if (
-      !authService.isAuthenticated() &&
-      !authService.getCodeFromLocation(window.location)
-    ) {
-      setIsLoading(true);
-      authService.authorize();
+    if (!CONVERSATIONS_INTEGRATION_ENABLED || !conversationId) {
       return;
     }
 
+    (async () => {
+      const incompatibleChannelsForIntegration = [
+        'TWITTER_DM',
+        'FACEBOOK_MESSENGER',
+        'LIVE_CHAT',
+        'INTERNAL'
+      ];
+
+      const response = await fetch(`${INFOBIP_API_BASE_URL}/ccaas/1/conversations/${conversationId}/messages`, {
+        method: 'GET',
+        headers: {
+          Authorization: `${authContext.authorization}`
+        },
+      });
+      const jsonResponse = await response.json();
+      const messages = jsonResponse.messages as Array<any>;
+
+      const inboundMessages = messages.filter((message: any) => message.direction === 'INBOUND');
+      if (!inboundMessages) {
+        return;
+      }
+      if (incompatibleChannelsForIntegration.includes(inboundMessages[0]?.channel)) {
+        return;
+      }
+
+      setCustomerContext({
+        email: inboundMessages[0]?.content?.sender,
+        name: inboundMessages[0]?.content?.senderName,
+        phoneNumber: inboundMessages[0]?.from && !isNaN(+inboundMessages[0].from) ? inboundMessages[0]?.from : "",
+      });
+    })();
+  }, [conversationId, authContext.authorization]);
+
+  useEffect(() => {
+    if (!authContext.token) return; // OAuth disabled
     if (userContext.username) return;
 
-    const { token, username, locale } =
-      authService.getAuthTokens() as unknown as UserContextI;
+    const { token, username, locale } = authContext.token;
 
     setUserContext({
       ...userContext,
@@ -112,17 +72,16 @@ const AppWithOauth: React.FC = () => {
         locale,
         onLogout: () => {
           localStorage.clear();
-          authService.logout();
         },
       },
     });
 
     setIsLoading(false);
-  }, [authService, authEnabled, userContext, isLoading]);
+  }, [authContext, userContext, isLoading]);
 
   useEffect(()=> {
     (async () => {
-      const response = await fetch(`${APIConfigPath}`, {});
+      const response = await fetch(`${API_CONFIG_PATH}`, {});
       const result = await response.json();
       result.config && setConfigContext({ fields: result.config.fields });
     })();
@@ -134,24 +93,20 @@ const AppWithOauth: React.FC = () => {
 
   return (
     <>
-      {(!authEnabled || authService.isAuthenticated()) && (
-        <UserContext.Provider
-          value={{ ...userContext, update: updateUserContext }}
-        >
-          <CustomerContext.Provider value={customerContext}>
-            <ConfigContext.Provider value={{ ...configContext, setFields: setConfigContext }}>
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/">
-                    <Route index element={<HomePage />} />
-                    <Route path="config" element={<ConfigPage />} />
-                  </Route>
-                </Routes>
-              </BrowserRouter>
-            </ConfigContext.Provider>
-          </CustomerContext.Provider>
-        </UserContext.Provider>
-      )}
+      <UserContext.Provider value={{ ...userContext, update: updateUserContext }}>
+        <CustomerContext.Provider value={customerContext}>
+          <ConfigContext.Provider value={{ ...configContext, setFields: setConfigContext }}>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/">
+                  <Route index element={<HomePage />} />
+                  <Route path="config" element={<ConfigPage />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </ConfigContext.Provider>
+        </CustomerContext.Provider>
+      </UserContext.Provider>
       {isLoading && (
         <Backdrop open={true} style={{ zIndex: 1 }}>
           <CircularProgress color="inherit" />
@@ -170,7 +125,7 @@ const App: React.FC = () => {
 
   return (
     <AlertContext.Provider value={{ ...alert, updateAlertContext }}>
-      <AuthProvider authService={oauthService}>
+      <AuthProvider>
         <AppWithOauth />
       </AuthProvider>
     </AlertContext.Provider>

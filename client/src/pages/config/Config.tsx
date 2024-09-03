@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {FieldI, FIELD_KEY} from "./ConfigTypes";
 import {
     Container,
@@ -14,10 +14,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
-import {APIConfigPath} from "../../const";
-import UserMenu from '../../components/userMenu/UserMenu';
-import { UserContext } from '../../contexts/AuthContext';
+import { API_CONFIG_PATH } from "../../const";
 import { ConfigContext } from '../../contexts/ConfigContext';
+import UserMenu from "../../components/userMenu/UserMenu";
+import { UserContext } from "../../contexts/AuthContext";
 
 const EMPTY_FIELD = {
     id: null,
@@ -26,22 +26,21 @@ const EMPTY_FIELD = {
     required: false,
     additional: true,
     saved: true,
-    editMode: false
+    editMode: true
 };
 
 const ConfigPage: React.FC = () => {
-    const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
-    const user = useContext(UserContext);
+    const userContext = useContext(UserContext);
     const { fields, setFields } = React.useContext(ConfigContext);
     const [ mappedFields, setMappedFields ] = useState<FieldI[]>([]);
     const [ editingField, setEditingField] = useState<FieldI>();
 
     const handleSaveConfigField = async (field: FieldI) => {
-        const saveField = { ...field, saved: true, editMode: false };
+        const saveField = { ...field, saved: true, editMode: true };
         const data  = [...mappedFields];
         data.splice(field.id - 1, 1, saveField);
 
-        (await fetch(`${APIConfigPath}`, {
+        (await fetch(`${API_CONFIG_PATH}`, {
             method: "post",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
@@ -53,7 +52,7 @@ const ConfigPage: React.FC = () => {
     }
 
     const handleDeleteField = (field: FieldI) => async () => {
-        (await fetch(`${APIConfigPath}/additionalFields`, {
+        (await fetch(`${API_CONFIG_PATH}/additionalFields`, {
             method: "post",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(field),
@@ -68,7 +67,7 @@ const ConfigPage: React.FC = () => {
         const data = [...mappedFields];
 
         if (editingField && editingField.id !== field.id) {
-            data.splice(editingField.id - 1, 1, { ...editingField, saved: true, editMode: false });
+            data.splice(editingField.id - 1, 1, { ...editingField, saved: true, editMode: true });
         }
         if (!editingField || editingField.id !== field.id) {
             setEditingField(field);
@@ -122,7 +121,7 @@ const ConfigPage: React.FC = () => {
 
     useEffect(() => {
         const mappedFields = fields.map(field => {
-            return {...field, saved: true, editMode: false};
+            return {...field, saved: true, editMode: true};
         });
         setMappedFields(mappedFields);
     }, [fields]);
@@ -133,7 +132,7 @@ const ConfigPage: React.FC = () => {
             <Grid item xs={12} md={10}>
                 <Typography variant="h4" component="h4">
                     Configuration Page
-                    {authEnabled && user?.username && <UserMenu />}
+                    {userContext?.username && <UserMenu />}
                 </Typography>
                 <br />
                 <TableContainer component={Paper}>

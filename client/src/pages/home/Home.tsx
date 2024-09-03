@@ -11,28 +11,22 @@ import {
   Backdrop,
   Grid,
 } from "@mui/material";
-import SwipeableViews from "react-swipeable-views";
 import CreateReservation from "../../components/createReservation/CreateReservation";
 import CloseIcon from "@mui/icons-material/Close";
 import { CircularProgress } from "@mui/material";
 import TabPanel from "../../components/tabPanel/TabPanel";
 import { AlertContext } from "../../contexts/AlertContext";
-import UserMenu from "../../components/userMenu/UserMenu";
 import { UserContext } from "../../contexts/AuthContext";
+import UserMenu from "../../components/userMenu/UserMenu";
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
   const [currentTab, setCurrentTab] = React.useState(0);
-  const authEnabled = process?.env.REACT_APP_OAUTH_ACTIVE;
   const userContext = useContext(UserContext);
   const alert = useContext(AlertContext);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
-  };
-
-  const handleChangeIndex = (index: number) => {
-    setCurrentTab(index);
   };
 
   return (
@@ -42,7 +36,7 @@ const HomePage: React.FC = () => {
         <Grid item xs={11} md={10}>
           <Typography variant="h4" component="h4">
             Awesome Restaurant
-            {authEnabled && userContext?.username && <UserMenu />}
+            {userContext?.username && <UserMenu />}
           </Typography>
         </Grid>
         <br />
@@ -83,20 +77,14 @@ const HomePage: React.FC = () => {
             <Tab value={1} label="Create Reservation" wrapped />
           </Tabs>
 
-          <SwipeableViews
-            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-            index={currentTab}
-            onChangeIndex={handleChangeIndex}
-          >
-            <TabPanel value={currentTab} index={0} dir={theme.direction}>
-              <br />
-              <Reservations />
-            </TabPanel>
+          <TabPanel value={currentTab} index={0} dir={theme.direction}>
+            <br />
+            <Reservations />
+          </TabPanel>
 
-            <TabPanel value={currentTab} index={1} dir={theme.direction}>
-              <CreateReservation />
-            </TabPanel>
-          </SwipeableViews>
+          <TabPanel value={currentTab} index={1} dir={theme.direction}>
+            <CreateReservation />
+          </TabPanel>
         </Grid>
       </Grid>
     </Container>

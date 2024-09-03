@@ -2,7 +2,7 @@ import * as React from "react";
 import Restaurant from "@mui/icons-material/Restaurant";
 import { ReservationI } from "../../pages/home/Home.types";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { APIPath } from "../../const";
+import { API_RESERVATIONS_PATH } from "../../const";
 
 import styled from "@emotion/styled";
 import {
@@ -54,9 +54,9 @@ const Reservations = () => {
   const { email, phoneNumber } = useContext(CustomerContext);
 
   const handleSearch = useCallback(
-    (searchValue) => {
+    (searchValue: any) => {
       (async () => {
-        const result = await fetch(`${APIPath}/${searchValue}`);
+        const result = await fetch(`${API_RESERVATIONS_PATH}/${searchValue}`);
         const response = await result.json();
 
         if (response && response.id) {
@@ -101,7 +101,7 @@ const Reservations = () => {
 
   const handleSave = async () => {
     if (reservationSelected) {
-      await fetch(`${APIPath}/${reservationSelected.id}`, {
+      await fetch(`${API_RESERVATIONS_PATH}/${reservationSelected.id}`, {
         method: "PUT",
         headers: { "Content-type": "application/json; charset=UTF-8" },
         body: JSON.stringify(reservationSelected),
@@ -126,7 +126,7 @@ const Reservations = () => {
   const handleDelete = async () => {
     if (reservationSelected) {
       setEditing(false);
-      await fetch(`${APIPath}/${reservationSelected.id}`, {
+      await fetch(`${API_RESERVATIONS_PATH}/${reservationSelected.id}`, {
         method: "DELETE",
         headers: { "Content-type": "application/json; charset=UTF-8" },
         body: JSON.stringify(reservationSelected),
@@ -147,9 +147,7 @@ const Reservations = () => {
   const handleCloseEdit = () => {
     setEditing(false);
     (async () => {
-      const result = await fetch(
-        `${APIPath}/${reservationSelected?.host_email}`
-      );
+      const result = await fetch(`${API_RESERVATIONS_PATH}/${reservationSelected?.host_email}`);
       const response = await result.json();
       if (response && response.id) {
         setReservationSelected(response);
@@ -328,6 +326,7 @@ const Reservations = () => {
                       value={reservationSelected.party_size}
                       label="size"
                       onChange={handleChangeInput}
+                      variant="outlined"
                     >
                       {Array.from(Array(22), (e, i) => {
                         return (
