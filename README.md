@@ -126,7 +126,7 @@ The following steps explain how this is integrated:
 
    If you want to call other Infobip API endpoints, just add the following header to requests:
 
-   ```
+   ```js
    Auhtorization: ${authContext().authorization}
    ```
 
