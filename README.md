@@ -3,9 +3,10 @@ The Restaurant Reservations Demo App is an example to help you get started with 
 
 The demo app takes a typical reservations system for managing table bookings in a restaurant and enables you to integrate it into Infobip **Conversations**, **Answers** and **Moments Flow**.
 
-In this repository, you'll find a React/NodeJS project, which is deployed to this URL:
+In this repository, you'll find a React/NodeJS project, which is deployed under these URLs:
 
-https://restaurant-reservations-demo.azurewebsites.net/
+* https://restaurant-reservations-demo.azurewebsites.net - with disabled OAuth
+* https://restaurant-reservations-demo-oauth.azurewebsites.net - with enabled OAuth
 
 You can also deploy the project in your favorite environment.
 
@@ -86,6 +87,7 @@ The following steps explain how this is integrated:
       REACT_APP_CLIENT_ID="eaf2lk1j940e0124f0e7c68a121c0582"
       REACT_APP_REDIRECT_URI="https://restaurant-reservations-demo-oauth.azurewebsites.net"
       REACT_APP_ACCOUNT_DOMAIN_API="l2fur4j.api.infobip.com"
+      
       ```
 
 3. Create your constants `client/src/const.ts` which are used by `AuthProvider` (if you followed step 2, you will have your credentials ready on the **process.env** object).
@@ -97,9 +99,16 @@ The following steps explain how this is integrated:
    export const INFOBIP_API_BASE_URL = 'https://' + process.env.REACT_APP_ACCOUNT_DOMAIN_API;
    ```
 
-4. Add `AuthProvider` component to your app. You can import `useAuthContext` from `AuthProvider` and then you can use info about user.
+4. Add `AuthProvider` component to your app:
 
-   This is an example of the token response which is available under `useAuthContext()`:
+   ```js
+   <AuthProvider>
+      <!-- Here you can put your app (React components) which will be protected by OAuth and visible only by authenticated users. -->
+      <YourApp />
+   </AuthProvider>
+   ```
+
+5. Then you can import `useAuthContext` from `AuthProvider` in `YourApp` component (or wherever underneath) where you can use info about user. The info is available under property `token` (`useAuthContext().token`) and here is an example how it looks like:
 
    ```js
    {
@@ -115,18 +124,10 @@ The following steps explain how this is integrated:
    }
    ```
 
-   If you want to call other Infobip API endpoints, just add the following header to requests (`const authContext = useAuthContext();`):
+   If you want to call other Infobip API endpoints, just add the following header to requests:
 
    ```
-   Auhtorization: ${authContext.token_type} ${authContext.token}
-   ```
-
-5. This example uses React.Context to expose OAuth token values to the app. Add a condition to give users access to the app when an access_token and token_type is successfully retrieved.
-
-   ``` js
-     <AuthProvider>
-       <div>Here you can put your app (React components) which will be protected by OAuth and visible only by authenticated users.</div>
-     </AuthProvider>
+   Auhtorization: ${authContext().authorization}
    ```
 
 For more information about developing with Infobip, see [Exchange Developer Experience](https://www.infobip.com/docs/integrations/exchange-developer).
