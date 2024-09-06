@@ -35,7 +35,7 @@ const HomePage: React.FC = () => {
         <br />
         <Grid item xs={11} md={10}>
           <Typography variant="h4" component="h4">
-            Awesome Restaurant Test3
+            Awesome Restaurant
             {userContext?.username && <UserMenu />}
           </Typography>
         </Grid>
