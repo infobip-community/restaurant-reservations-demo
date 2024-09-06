@@ -42,9 +42,7 @@ const FieldContainer = styled.div`
 `;
 
 const Reservations = () => {
-  const [reservationSelected, setReservationSelected] = useState<
-    ReservationI | undefined
-  >();
+  const [reservationSelected, setReservationSelected] = useState<ReservationI | undefined>();
   const [firstLoad, setFirstLoad] = useState<boolean>(true);
   const [editing, setEditing] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>("");
