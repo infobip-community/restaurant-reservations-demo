@@ -32,6 +32,7 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
 import { AlertContext } from "../../contexts/AlertContext";
 import { CustomerContext } from "../../contexts/CustomerContext";
 
@@ -46,8 +47,8 @@ const Reservations = () => {
   const [firstLoad, setFirstLoad] = useState<boolean>(true);
   const [editing, setEditing] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>("");
-  const [date, setDate] = useState<Date | null>();
-  const [startTime, setStartTime] = useState<Date | null>();
+  const [date, setDate] = useState<Dayjs | null>();
+  const [startTime, setStartTime] = useState<Dayjs | null>();
   const { updateAlertContext } = useContext(AlertContext);
   const { email, phoneNumber } = useContext(CustomerContext);
 
@@ -59,9 +60,9 @@ const Reservations = () => {
 
         if (response && response.id) {
           setReservationSelected(response);
-          setDate(new Date(response.date ? response.date : ""));
+          setDate(response.date ? dayjs(response.date) : null);
           setStartTime(
-            new Date(response.hour ? `${response.date} ${response.hour}` : "")
+            response.hour ? dayjs(`${response.date} ${response.hour}`) : null
           );
           updateAlertContext({
             isVisible: true,
@@ -149,9 +150,9 @@ const Reservations = () => {
       const response = await result.json();
       if (response && response.id) {
         setReservationSelected(response);
-        setDate(new Date(response.date ? response.date : ""));
+        setDate(response.date ? dayjs(response.date) : null);
         setStartTime(
-          new Date(response.hour ? `${response.date} ${response.hour}` : "")
+          response.hour ? dayjs(`${response.date} ${response.hour}`) : null
         );
       }
     })();
@@ -172,25 +173,25 @@ const Reservations = () => {
     handleSearch(searchValue);
   };
 
-  const handleChange = (newValue: Date | null | undefined, field: string) => {
-    let today = new Date(newValue ? newValue : "");
-    let value, minute, hour, day, month, year;
-    minute = today.getMinutes();
-    hour = today.getHours();
-    day = today.getUTCDate();
-    month = today.getUTCMonth() + 1;
-    year = today.getUTCFullYear();
+  const handleChange = (newValue: Dayjs | null | undefined, field: string) => {
+    if (!newValue) return;
+    const minute = newValue.minute();
+    const hour = newValue.hour();
+    const day = newValue.date();
+    const month = newValue.month() + 1;
+    const year = newValue.year();
+    let value: string;
     switch (field) {
       case "date":
-        if (newValue) {
-          value = `${month}/${day}/${year}`;
-          setDate(newValue);
-        }
+        value = `${month}/${day}/${year}`;
+        setDate(newValue);
         break;
       case "hour":
-        value = `${hour}:${minute && minute < 10 ? `0${minute}` : minute}`;
+        value = `${hour}:${minute < 10 ? `0${minute}` : minute}`;
         setStartTime(newValue);
         break;
+      default:
+        return;
     }
     setReservationSelected({ ...reservationSelected, [field]: value });
   };
@@ -208,7 +209,7 @@ const Reservations = () => {
   return (
     <>
       <Grid container>
-        <Grid item xs={10} md={11}>
+        <Grid size={{ xs: 10, md: 11 }}>
           <TextField
             fullWidth
             type="search"
@@ -219,12 +220,8 @@ const Reservations = () => {
           />
         </Grid>
         <Grid
-          item
-          xs={2}
-          md={1}
-          justifyContent="center"
-          justifyItems="center"
-          display="flex"
+          size={{ xs: 2, md: 1 }}
+          sx={{ display: "flex", justifyContent: "center" }}
         >
           <Button disabled={!searchValue.length} onClick={handleOnClick}>
             Search
@@ -254,38 +251,32 @@ const Reservations = () => {
               <Box sx={{ display: "flex", flexFlow: "row", pt: 2 }}>
                 {editing ? (
                   <>
-                    <Grid item xs={6} md={6}>
+                    <Grid size={{ xs: 6, md: 6 }}>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <FieldContainer>
                           <DesktopDatePicker
-                            data-test-id="date"
                             label="Date"
-                            inputFormat="MM/DD/YYYY"
+                            format="MM/DD/YYYY"
                             value={date}
                             onChange={(value) => handleChange(value, "date")}
-                            renderInput={(params) => <TextField {...params} />}
                           />
                         </FieldContainer>
                       </LocalizationProvider>
                     </Grid>
 
-                    <Grid item xs={6} md={6}>
+                    <Grid size={{ xs: 6, md: 6 }}>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <Grid container spacing={2} rowSpacing="1rem">
-                          <Grid item xs={12}>
+                          <Grid size={12}>
                             <FieldContainer>
                               <TimePicker
-                                data-test-id="hour"
                                 ampm={false}
                                 label="Hour"
                                 value={startTime}
                                 onChange={(value) =>
                                   handleChange(value, "hour")
                                 }
-                                renderInput={(params) => (
-                                  <TextField {...params} />
-                                )}
-                                minutesStep={30}
+                                timeSteps={{ minutes: 30 }}
                               />
                             </FieldContainer>
                           </Grid>

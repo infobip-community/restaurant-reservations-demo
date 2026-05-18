@@ -31,16 +31,16 @@ const HomePage: React.FC = () => {
 
   return (
     <Container fixed>
-      <Grid container spacing={2} justifyContent="center">
+      <Grid container spacing={2} sx={{ justifyContent: "center" }}>
         <br />
-        <Grid item xs={11} md={10}>
+        <Grid size={{ xs: 11, md: 10 }}>
           <Typography variant="h4" component="h4">
             Awesome Restaurant
             {userContext?.username && <UserMenu />}
           </Typography>
         </Grid>
         <br />
-        <Grid item xs={12} md={10}>
+        <Grid size={{ xs: 12, md: 10 }}>
           <Backdrop open={!!alert.isLoading} style={{ zIndex: 1 }}>
             <CircularProgress color="inherit" />
           </Backdrop>

@@ -11,7 +11,7 @@ import {
     Typography
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import { API_CONFIG_PATH } from "../../const";
@@ -127,9 +127,9 @@ const ConfigPage: React.FC = () => {
     }, [fields]);
 
     return(<Container fixed>
-        <Grid container spacing={2} justifyContent="center">
+        <Grid container spacing={2} sx={{ justifyContent: "center" }}>
             <br />
-            <Grid item xs={12} md={10}>
+            <Grid size={{ xs: 12, md: 10 }}>
                 <Typography variant="h4" component="h4">
                     Configuration Page
                     {userContext?.username && <UserMenu />}

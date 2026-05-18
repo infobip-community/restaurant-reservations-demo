@@ -17,6 +17,7 @@ import styled from "@emotion/styled";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
 import { Diversity3 } from "@mui/icons-material";
 import { validateReservation } from "../../utils/validations/validateReservation";
 import { AlertContext } from "../../contexts/AlertContext";
@@ -70,8 +71,8 @@ const FieldContainer = styled.div`
 const CreateReservation = () => {
   const authContext = useAuthContext();
   const [errors, setErrors] = useState<ErrorI>({});
-  const [date, setDate] = useState<Date | null>(new Date());
-  const [startTime, setStartTime] = useState<Date | null>(TODAY);
+  const [date, setDate] = useState<Dayjs | null>(dayjs());
+  const [startTime, setStartTime] = useState<Dayjs | null>(dayjs(TODAY));
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [additionalFields, setAdditionalFields] = useState<FieldI[]>([]);
   const { updateAlertContext, isLoading } = React.useContext(AlertContext);
@@ -105,25 +106,25 @@ const CreateReservation = () => {
     })();
   }, [name, email, phoneNumber]);
 
-  const handleChange = (newValue: Date | null, field: FIELD_NAME) => {
-    let today = new Date(newValue ? newValue : "");
-    let value, minute, hour, day, month, year;
-    minute = today.getMinutes();
-    hour = today.getHours();
-    day = today.getUTCDate();
-    month = today.getUTCMonth() + 1;
-    year = today.getUTCFullYear();
+  const handleChange = (newValue: Dayjs | null, field: FIELD_NAME) => {
+    if (!newValue) return;
+    const minute = newValue.minute();
+    const hour = newValue.hour();
+    const day = newValue.date();
+    const month = newValue.month() + 1;
+    const year = newValue.year();
+    let value: string;
     switch (field) {
       case FIELD_NAME.date:
-        if (newValue) {
-          value = `${month}/${day}/${year}`;
-          setDate(newValue);
-        }
+        value = `${month}/${day}/${year}`;
+        setDate(newValue);
         break;
       case FIELD_NAME.hour:
         value = `${hour}:${minute < 10 ? `0${minute}` : minute}`;
         setStartTime(newValue);
         break;
+      default:
+        return;
     }
     setNewReservation({ ...newReservation, [field]: value });
   };
@@ -302,7 +303,7 @@ const CreateReservation = () => {
     }
     return value;
   };
-  
+
   const getPlaceholder = (fieldName: FIELD_NAME) => {
     return fields.find((item: FieldI) => item.name.toLowerCase() === fieldName)?.placeHolder;
   };
@@ -311,41 +312,37 @@ const CreateReservation = () => {
     <>
       <br />
       <Grid container spacing={2} rowSpacing="1rem">
-        <Grid item xs={6} md={6}>
+        <Grid size={{ xs: 6, md: 6 }}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <FieldContainer>
               <DesktopDatePicker
-                data-test-id="date"
                 label={getPlaceholder(FIELD_NAME.date)}
-                inputFormat="MM/DD/YYYY"
+                format="MM/DD/YYYY"
                 value={date}
                 onChange={(value) => handleChange(value, FIELD_NAME.date)}
-                renderInput={(params) => <TextField {...params} />}
               />
             </FieldContainer>
           </LocalizationProvider>
         </Grid>
 
-        <Grid item xs={6} md={6}>
+        <Grid size={{ xs: 6, md: 6 }}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Grid container spacing={2} rowSpacing="1rem">
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <FieldContainer>
                   <TimePicker
-                    data-test-id="hour"
                     ampm={false}
                     label={getPlaceholder(FIELD_NAME.hour)}
                     value={startTime}
                     onChange={(value) => handleChange(value, FIELD_NAME.hour)}
-                    renderInput={(params) => <TextField {...params} />}
-                    minutesStep={30}
+                    timeSteps={{ minutes: 30 }}
                   />
                 </FieldContainer>
               </Grid>
             </Grid>
           </LocalizationProvider>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">
               <Diversity3 />
@@ -368,7 +365,7 @@ const CreateReservation = () => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <TextField
             fullWidth
             error={!!errors.host_name && isSubmitted}
@@ -379,7 +376,7 @@ const CreateReservation = () => {
             helperText={isSubmitted ? errors.host_name : ""}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <TextField
             fullWidth
             error={!!errors.host_email && isSubmitted}
@@ -390,7 +387,7 @@ const CreateReservation = () => {
             helperText={isSubmitted ? errors.host_email : ""}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <TextField
             fullWidth
             error={!!errors.host_phone_number && isSubmitted}
@@ -402,7 +399,7 @@ const CreateReservation = () => {
           />
         </Grid>
         {additionalFields && additionalFields.map((additionalField, index) => (
-          <Grid key={index} item xs={12}>
+          <Grid key={index} size={12}>
             <TextField
               fullWidth
               key={additionalField.name}
@@ -420,7 +417,7 @@ const CreateReservation = () => {
             />
           </Grid>
         ))}
-        <Grid item xs={12} md={12} lg={12}>
+        <Grid size={12}>
           <ButtonContainer>
             <Button
               size={"large"}
@@ -431,7 +428,7 @@ const CreateReservation = () => {
             </Button>
           </ButtonContainer>
         </Grid>
-        <Grid item xs={12} md={12} lg={12}>
+        <Grid size={12}>
           <ButtonContainer>
             <Button
               size={"large"}
