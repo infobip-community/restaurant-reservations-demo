@@ -49,6 +49,21 @@ To integrate the pre-built demo app with Conversations, Answers and Moments Flow
 
 You can now go to Infobip and see the app integrated into Conversations (https://portal.infobip.com/conversations), Answers (https://portal.infobip.com/bots) and Moments (https://portal.infobip.com/communications/).
 
+## Requirements
+
+- **Node.js** >= 24.15.0
+- **npm** >= 11.10.0
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React 19, TypeScript 5, Vite 8 |
+| UI components | MUI v9 (`@mui/material`, `@mui/x-date-pickers`) |
+| Routing | React Router v7 |
+| Backend | Node.js, Express 5 |
+| Database | lowdb (JSON file) |
+
 ## OAuth configuration
 Use OAuth configuration when you need additional information about who is using this app. For example, you may need to get more data on all messages in a conversation. For this, you would need the account key, and user information like email address, phone number, and so on.
 
@@ -71,32 +86,28 @@ The following steps explain how this is integrated:
 
 1. Copy `client/src/components/AuthProvider.tsx` to your React app. It contains the whole OAuth logic.
 
-2. Include env-cmd to avoid exposing sensitive data on repositories. Skip these steps if you are able to enter your credentials directly.
-   `npm install env-cmd --save`
+2. Copy **.env.sample** from the `client` folder, rename it to **.env**, and replace the values with your own:
 
-   * Copy **.env.sample** file from that is on client folder. Rename it to **.env**.
+   * `VITE_CLIENT_ID` — client ID from your app created in Infobip Exchange
+   * `VITE_REDIRECT_URI` — URL where your app is hosted
+   * `VITE_ACCOUNT_DOMAIN_API` — API Base URL provided by Infobip
 
-   * Replace the environment variables values in the example with your own:
+   ```sh
+   VITE_OAUTH_ACTIVE="true"
+   VITE_CLIENT_ID="eaf2lk1j940e0124f0e7c68a121c0582"
+   VITE_REDIRECT_URI="https://restaurant-reservations-demo-oauth.azurewebsites.net"
+   VITE_ACCOUNT_DOMAIN_API="l2fur4j.api.infobip.com"
+   ```
 
-      * `REACT_APP_CLIENT_ID` is client ID from your app created in the Infobip Exchange,
-      * `REACT_APP_REDIRECT_URI` is URL of your app where it's hosted,
-      * `REACT_APP_ACCOUNT_DOMAIN_API` is API Base URL you've been given by Infobip.
+   > **Note:** The project uses Vite, so environment variables use the `VITE_` prefix and are accessed via `import.meta.env` instead of `process.env`. Variables without the `VITE_` prefix are not exposed to the browser.
 
-      ```sh
-      REACT_APP_OAUTH_ACTIVE="true"
-      REACT_APP_CLIENT_ID="eaf2lk1j940e0124f0e7c68a121c0582"
-      REACT_APP_REDIRECT_URI="https://restaurant-reservations-demo-oauth.azurewebsites.net"
-      REACT_APP_ACCOUNT_DOMAIN_API="l2fur4j.api.infobip.com"
-      
-      ```
-
-3. Create your constants `client/src/const.ts` which are used by `AuthProvider` (if you followed step 2, you will have your credentials ready on the **process.env** object).
+3. The constants in `client/src/const.ts` are already configured to read from `import.meta.env`:
 
    ```js
-   export const OAUTH_ACTIVE = process.env.REACT_APP_OAUTH_ACTIVE === 'true' ?? false;
-   export const CLIENT_ID = process.env.REACT_APP_CLIENT_ID ?? '';
-   export const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI ?? '';
-   export const INFOBIP_API_BASE_URL = 'https://' + process.env.REACT_APP_ACCOUNT_DOMAIN_API;
+   export const OAUTH_ACTIVE = import.meta.env.VITE_OAUTH_ACTIVE === 'true';
+   export const CLIENT_ID = import.meta.env.VITE_CLIENT_ID ?? '';
+   export const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI ?? '';
+   export const INFOBIP_API_BASE_URL = 'https://' + import.meta.env.VITE_ACCOUNT_DOMAIN_API;
    ```
 
 4. Add `AuthProvider` component to your app:

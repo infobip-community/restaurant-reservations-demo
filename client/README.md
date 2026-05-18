@@ -1,55 +1,65 @@
-# Getting Started with Create React App
+# Restaurant Reservations Demo — Client
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React frontend for the Restaurant Reservations Demo App, built with Vite.
 
-## Requirements 
-node 14.17.5
-npm 8.0.0
+## Requirements
 
-## Install dependencies
+- **Node.js** >= 24.15.0
+- **npm** >= 11.10.0
 
-### `npm i && cd/client npm i`
+## Tech stack
 
-## Available Scripts
+| Package | Version |
+|---|---|
+| Framework | React 19 |
+| Language | TypeScript 5 |
+| Build tool | Vite 8 |
+| UI components | MUI v9 (`@mui/material`, `@mui/icons-material`, `@mui/x-date-pickers`) |
+| Routing | React Router v7 |
+| Styling | Emotion (`@emotion/react`, `@emotion/styled`) |
 
-In the project directory, you can run locally with:
+## Install
 
-### `npm start:dev`
+From the **project root** (not this folder):
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```sh
+npm install
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Environment variables
 
-### `npm test`
+Copy `.env.sample` to `.env` and fill in your values:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```sh
+cp .env.sample .env
+```
 
+| Variable | Description |
+|---|---|
+| `VITE_OAUTH_ACTIVE` | Set to `"true"` to enable OAuth |
+| `VITE_CLIENT_ID` | Client ID from your Infobip Exchange app |
+| `VITE_REDIRECT_URI` | URL where the app is hosted |
+| `VITE_ACCOUNT_DOMAIN_API` | API Base URL provided by Infobip |
+| `VITE_ACCOUNT_API_KEY` | API key (used when OAuth is disabled) |
+| `VITE_CONVERSATIONS_INTEGRATION` | Set to `"true"` to enable Conversations integration |
 
-### `npm run build`
+> Variables must be prefixed with `VITE_` to be exposed to the browser. They are accessed via `import.meta.env.VITE_*`.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Scripts
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Run these from the **project root**:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+| Command | Description |
+|---|---|
+| `npm run front:dev` | Start the frontend dev server at `http://localhost:5173` |
+| `npm run back:dev` | Start the backend dev server at `http://localhost:3001` |
+| `npm run start:dev` | Start both frontend and backend in parallel |
+| `npm run start` | Build frontend for production and start the backend |
 
-### `npm run eject`
+Or run directly from this folder:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+| Command | Description |
+|---|---|
+| `npm start` | Start Vite dev server |
+| `npm run build` | Type-check and build for production (output: `build/`) |
+| `npm run preview` | Preview the production build locally |
