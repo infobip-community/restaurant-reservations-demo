@@ -2,38 +2,33 @@
   "name": "infobip-exchange-agenda-demo-client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3001/",
   "engines": {
-    "node": ">=20",
-    "npm": ">=10"
+    "node": ">=24.15.0",
+    "npm": ">=11.10.0"
   },
   "dependencies": {
-    "@emotion/styled": "^11.13.0",
-    "@mui/icons-material": "^5.16.7",
-    "@mui/material": "^5.16.7",
-    "@mui/x-date-pickers": "^5.0.20",
-    "@types/node": "^20.14.8",
-    "@types/react": "^18.3.4",
-    "@types/react-dom": "^18.3.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^9.0.1",
+    "@mui/material": "^9.0.1",
+    "@mui/x-date-pickers": "^9.2.0",
+    "@types/node": "^20.19.41",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "dayjs": "^1.11.5",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.1",
-    "react-scripts": "^5.0.1",
-    "typescript": "^5.5.4",
-    "webpack": "^5.94.0"
+    "react": "19.2.5",
+    "react-dom": "19.2.5",
+    "react-router-dom": "^7.0.0",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.2",
+    "vite": "^8.0.13"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": " react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "start": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "browserslist": {
     "production": [

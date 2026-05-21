@@ -80,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <>
-      {isLoading && <Stack alignItems='center'><CircularProgress /></Stack>}
+      {isLoading && <Stack sx={{ alignItems: 'center' }}><CircularProgress /></Stack>}
       {error && <Alert severity='error'>{error}</Alert>}
       {authContextState && <authContext.Provider value={authContextState}>{children}</authContext.Provider>}
     </>
